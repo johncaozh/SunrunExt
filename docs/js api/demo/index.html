@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>尚融超融合JS-SDK Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <style type="text/css">
+        html {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            line-height: 1.6;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f1f0f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        /* <!DOCTYPE html><html><head><meta charset="utf-8"><title>尚融超融合JS-SDK Demo</title><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0"><style type="text/css">html {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            -webkit-user-select: none;
+            user-select: none;
+        } */
+
+        body {
+            line-height: 1.6;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f1f0f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 100%;
+            margin: 0;
+            *font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        ul,
+        ol {
+            padding-left: 0;
+            list-style-type: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .label_box {
+            background-color: #ffffff;
+        }
+
+        .label_item {
+            padding-left: 15px;
+        }
+
+        .label_inner {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            min-height: 24px;
+            position: relative;
+        }
+
+        .label_inner:before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 200%;
+            height: 1px;
+            border-top: 1px solid #ededed;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+            top: auto;
+            bottom: -2px;
+        }
+
+        .lbox_close {
+            position: relative;
+        }
+
+        .lbox_close:before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 200%;
+            height: 1px;
+            border-top: 1px solid #ededed;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+
+        .lbox_close:after {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 200%;
+            height: 1px;
+            border-top: 1px solid #ededed;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+            top: auto;
+            bottom: -2px;
+        }
+
+        .lbox_close .label_item:last-child .label_inner:before {
+            display: none;
+        }
+
+        .btn {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 14px;
+            padding-right: 14px;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            overflow: visible;
+            /*.btn_h(@btnHeight);*/
+            height: 42px;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            color: #ffffff;
+            line-height: 42px;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        }
+
+        .btn.btn_inline {
+            display: inline-block;
+        }
+
+        .btn_primary {
+            background-color: #437DBA;
+        }
+
+        .btn_primary:not(.btn_disabled):visited {
+            color: #ffffff;
+        }
+
+        .btn_primary:not(.btn_disabled):active {
+            color: rgba(255, 255, 255, 0.9);
+            background-color: #3b78b9;
+        }
+
+        button.btn {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            -webkit-appearance: none;
+        }
+
+        button.btn:focus {
+            outline: 0;
+        }
+
+        .wxapi_container {
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 2em;
+            padding-left: 15px;
+            color: #8d8c92;
+        }
+
+        .desc {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 2em;
+            color: #8d8c92;
+        }
+
+        .wxapi_index_item a {
+            display: block;
+            color: #3e3e3e;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        .wxapi_form {
+            background-color: #ffffff;
+            padding: 0 15px;
+            margin-top: 30px;
+            padding-bottom: 15px;
+        }
+
+        h3 {
+            padding-top: 16px;
+            margin-top: 25px;
+            font-size: 16px;
+            font-weight: 400;
+            color: #3e3e3e;
+            position: relative;
+        }
+
+        h3:first-child {
+            padding-top: 15px;
+        }
+
+        h3:before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 200%;
+            height: 1px;
+            border-top: 1px solid #ededed;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+
+        .btn {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body ontouchstart="">
+    <div class="wxapi_container">
+        <div class="wxapi_index_container">
+            <ul class="label_box lbox_close wxapi_index_list">
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-basic">基础接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-share">分享接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-voice">音频接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-image">图像接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-previewfile">文件接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-device">设备信息接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-location">地理位置接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-webview">界面操作接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-scan">扫一扫接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-user">通讯录接口</a>
+                </li>
+                <li class="label_item wxapi_index_item">
+                    <a class="label_inner" href="#menu-session">会话接口</a>
+                </li>
+            </ul>
+        </div>
+        <div class="lbox_close wxapi_form">
+            <h3 id="menu-basic">基础接口</h3>
+            <span class="desc">判断当前客户端是否支持指定JS接口</span>
+            <button class="btn btn_primary" id="checkJsApi">checkJsApi</button>
+            <h3 id="menu-share">分享接口</h3>
+            <span class="desc">获取“分享到朋友圈”按钮点击状态及自定义分享内容接口</span>
+            <button class="btn btn_primary" id="onMenuShareTimeline">onMenuShareTimeline</button>
+            <span class="desc">获取“转发”按钮点击状态及自定义分享内容接口</span>
+            <button class="btn btn_primary" id="onMenuShareAppMessage">onMenuShareAppMessage</button>
+            <span class="desc">获取“微信”按钮点击状态及自定义分享内容接口</span>
+            <button class="btn btn_primary" id="onMenuShareWechat">onMenuShareWechat</button>
+            <span class="desc">获取“分享到QQ”按钮点击状态及自定义分享内容接口</span>
+            <button class="btn btn_primary" id="onMenuShareQQ">onMenuShareQQ</button>
+            <span class="desc">获取“分享到新浪微博”按钮点击状态及自定义分享内容接口</span>
+            <button class="btn btn_primary" id="onMenuShareWeibo">onMenuShareWeibo</button>
+            <span class="desc">获取“收藏”按钮点击状态及自定义收藏内容接口</span>
+            <button class="btn btn_primary" id="onMenuFavorite">onMenuFavorite</button>
+            <span class="desc">获取“邮件”按钮点击状态及自定义邮件内容接口</span>
+            <button class="btn btn_primary" id="onMenuMail">onMenuMail</button>
+            <span class="desc">获取“浏览器打开”按钮点击状态及自定义浏览器打开内容接口</span>
+            <button class="btn btn_primary" id="onMenuOpenByBrowser">onMenuOpenByBrowser</button>
+            <h3 id="menu-voice">音频接口</h3>
+            <span class="desc">开始录音接口</span>
+            <button class="btn btn_primary" id="startRecord">startRecord</button>
+            <span class="desc">停止录音接口</span>
+            <button class="btn btn_primary" id="stopRecord">stopRecord</button>
+            <span class="desc">播放语音接口</span>
+            <button class="btn btn_primary" id="playVoice">playVoice</button>
+            <span class="desc">暂停播放接口</span>
+            <button class="btn btn_primary" id="pauseVoice">pauseVoice</button>
+            <span class="desc">停止播放接口</span>
+            <button class="btn btn_primary" id="stopVoice">stopVoice</button>
+            <span class="desc">上传语音接口</span>
+            <button class="btn btn_primary" id="uploadVoice">uploadVoice</button>
+            <span class="desc">下载语音接口</span>
+            <button class="btn btn_primary" id="downloadVoice">downloadVoice</button>
+            <span class="desc">识别音频并返回识别结果接口</span>
+            <button class="btn btn_primary" id="translateVoice">translateVoice</button>
+            <h3 id="menu-image">图像接口</h3>
+            <span class="desc">拍照或从手机相册中选图接口</span>
+            <button class="btn btn_primary" id="chooseImage">chooseImage</button>
+            <span class="desc">预览图片接口</span>
+            <button class="btn btn_primary" id="previewImage">previewImage</button>
+            <span class="desc">上传图片接口</span>
+            <button class="btn btn_primary" id="uploadImage">uploadImage</button>
+            <span class="desc">下载图片接口</span>
+            <button class="btn btn_primary" id="downloadImage">downloadImage</button>
+            <h3 id="menu-previewfile">文件接口</h3>
+            <span class="desc">从本地存储或者沙箱中选择文件</span>
+            <button class="btn btn_primary" id="chooseFile">chooseFile</button>
+            <span class="desc">文件预览接口</span>
+            <button class="btn btn_primary" id="previewFile">previewFile</button>
+            <span class="desc">上传文件接口</span>
+            <button class="btn btn_primary" id="uploadFile">uploadFile</button>
+            <span class="desc">下载文件接口</span>
+            <button class="btn btn_primary" id="downloadFile">downloadFile</button>
+            <h3 id="menu-device">设备信息接口</h3>
+            <span class="desc">获取网络状态接口</span>
+            <button class="btn btn_primary" id="getNetworkType">getNetworkType</button>
+            <h3 id="menu-location">地理位置接口</h3>
+            <span class="desc">使用超融合客户端内置地图查看位置接口</span>
+            <button class="btn btn_primary" id="openLocation">openLocation</button>
+            <span class="desc">获取地理位置接口</span>
+            <button class="btn btn_primary" id="getLocation">getLocation</button>
+            <h3 id="menu-webview">界面操作接口</h3>
+            <span class="desc">隐藏右上角菜单接口</span>
+            <button class="btn btn_primary" id="hideOptionMenu">hideOptionMenu</button>
+            <span class="desc">显示右上角菜单接口</span>
+            <button class="btn btn_primary" id="showOptionMenu">showOptionMenu</button>
+            <span class="desc">关闭当前网页窗口接口</span>
+            <button class="btn btn_primary" id="closeWindow">closeWindow</button>
+            <span class="desc">批量隐藏功能按钮接口</span>
+            <button class="btn btn_primary" id="hideMenuItems">hideMenuItems</button>
+            <span class="desc">批量显示功能按钮接口</span>
+            <button class="btn btn_primary" id="showMenuItems">showMenuItems</button>
+            <span class="desc">隐藏所有非基础按钮接口</span>
+            <button class="btn btn_primary" id="hideAllNonBaseMenuItem">hideAllNonBaseMenuItem</button>
+            <span class="desc">显示所有功能按钮接口</span>
+            <button class="btn btn_primary" id="showAllNonBaseMenuItem">showAllNonBaseMenuItem</button>
+            <span class="desc">程序内跳转（跳转到DFS）</span>
+            <button class="btn btn_primary" id="redirectInApp">redirectInApp</button>
+            <span class="desc">监听页面返回事件</span>
+            <button class="btn btn_primary" id="onHistoryBack">onHistoryBack</button>
+            <h3 id="menu-scan">融合客户端扫一扫</h3>
+            <span class="desc">调起融合客户端扫一扫接口</span>
+            <button class="btn btn_primary" id="scanQRCode0">scanQRCode(融合客户端处理结果)</button>
+            <button class="btn btn_primary" id="scanQRCode1">scanQRCode(直接返回结果给页面处理)</button>
+            <h3 id="menu-user">通讯录接口</h3>
+            <span class="desc">通讯录选人接口</span>
+            <button class="btn btn_primary" id="selectContact">selectContact</button>
+            <span class="desc">获取用户信息（昵称、头像等信息）</span>
+            <button class="btn btn_primary" id="getUserInfo">getUserInfo</button>
+            <h3 id="menu-session">会话接口</h3>
+            <span class="desc">打开用户会话</span>
+            <button class="btn btn_primary" id="openUserChat">openUserChat</button>
+            <span class="desc">打开群会话</span>
+            <button class="btn btn_primary" id="openGroupChat">openGroupChat</button>
+            <span class="desc">创建新群并打开群会话</span>
+            <button class="btn btn_primary" id="buildAndOpenGroupChat">buildAndOpenGroupChat</button>
+            <span class="desc">打开应用会话</span>
+            <button class="btn btn_primary" id="openAppChat">openAppChat</button>
+        </div>
+    </div>
+</body>
+<script src="./static/sr.js"></script>
+<script>
+    var signUrl = "http://work.weixin.qq.com/api/jsapidemo";
+    var ticket = "";
+
+    sr.config({
+        debug: true,
+        beta: true,
+        check: true,
+        appId: 'wwd6caf1ae7fe4633e',
+        timestamp: 1514270548,
+        nonceStr: 'y11cd9cf8yk138f',
+        signature: '1aa34413da9ca305346ca67ed2677698414a5dbd',
+        jsApiList: ['preVerifyJSAPI', 'checkJsApi', 'onMenuShareTimeline', 'onMenuShareAppMessage',
+            'onMenuShareWechat', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuFavorite', 'onMenuMail',
+            'onMenuOpenByBrowser', 'shareTimeline', 'sendAppMessage', 'shareWechat', 'shareQQ',
+            'shareWeiboApp', 'favorite', 'mail', 'openByBrowser', 'onHistoryBack', 'startRecord',
+            'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd',
+            'uploadVoice', 'downloadVoice', 'translateVoice', 'chooseImage', 'previewImage', 'uploadImage',
+            'downloadImage', 'chooseFile', 'previewFile', 'uploadFile', 'downloadFile', 'getNetworkType',
+            'openLocation', 'getLocation', 'hideOptionMenu', 'showOptionMenu', 'closeWindow',
+            'hideMenuItems', 'showMenuItems', 'hideAllNonBaseMenuItem', 'showAllNonBaseMenuItem',
+            'scanQRCode', 'selectContract', 'getUserInfo', 'redirectInApp', 'openUserChat', 'openGroupChat',
+            'buildAndOpenGroupChat', 'openAppChat'
+        ]
+    });
+</script>
+<script type="text/javascript" src="./static/zepto.min.js"></script>
+<script type="text/javascript" src="./static/demo.js"></script>
+
+</html>

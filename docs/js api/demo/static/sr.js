@@ -1,19 +1,14 @@
-!function (g, initFunc) {
+! function (g, initFunc) {
     'function' == typeof define && (define.amd || define.cmd) ? define(function () {
         return initFunc(g)
     }) : initFunc(g, true)
 }(this,
-
-
     function (glob, setGlobal) {
-
         function invokeCmd(cmd, param, callbackObj) {
             glob.WeixinJSBridge ? WeixinJSBridge.invoke(cmd, normParameter(param), function (res) {
                 completeBridgeInteraction(cmd, res, callbackObj);
             }) : debugBridgeInteraction(cmd, callbackObj)
         }
-
-
 
         function bindEvent(targetItem, callbackObj, debugCallback) {
             glob.WeixinJSBridge ? WeixinJSBridge.on(targetItem, function (res) {
@@ -23,7 +18,6 @@
                 completeBridgeInteraction(targetItem, res, callbackObj);
             }) : debugCallback ? debugBridgeInteraction(targetItem, debugCallback) : debugBridgeInteraction(targetItem, callbackObj);
         }
-
 
         function normParameter(param) {
             param = param || {};
@@ -37,7 +31,6 @@
             return param;
         }
 
-
         function buildPayParameter(obj) {
             return {
                 timeStamp: obj.timestamp + '',
@@ -48,9 +41,11 @@
             };
         }
 
-
         function completeBridgeInteraction(cmd, res, callbackObj) {
-            //var d, e, f;
+            if (typeof res == "string") {
+                res = JSON.parse(res);
+            }
+
             var errMsg, resMsg;
 
             delete res.err_code;
@@ -70,8 +65,9 @@
                 delete callbackObj._complete;
             }
             //debug, show command result
-            if (cfg.debug && !callbackObj.isInnerInvoke)
-                alert(JSON.stringify(res));
+            if (cfg.debug && !callbackObj.isInnerInvoke) {
+                alert(JSON.stringify(res, null, 4));
+            }
 
             errMsg = res.errMsg || '';
             resMsg = errMsg.substring(errMsg.indexOf(':') + 1);
@@ -89,7 +85,6 @@
             callbackObj.complete && callbackObj.complete(res);
         }
 
-
         function parseResultMsg(cmd, errMsg) {
             var idx, cmdStr, msgStr;
 
@@ -97,11 +92,8 @@
                 idx = errMsg.indexOf(':');
 
                 switch (cmd) {
-                    case apiNameMap.config:
+                    case "preVerifyJSAPI":
                         cmdStr = 'config';
-                        break;
-                    case apiNameMap.openProductSpecificView:
-                        cmdStr = 'openProductSpecificView';
                         break;
                     default:
                         cmdStr = errMsg.substring(0, idx).replace(/_/g, ' ').replace(/\b\w+\b/g, function (str) {
@@ -110,12 +102,7 @@
 
                         cmdStr = cmdStr.substring(0, 1).toLowerCase() + cmdStr.substring(1);
                         cmdStr = cmdStr.replace(/ /g, '');
-                        if (cmdStr.indexOf('Wcpay') != -1)
-                            cmdStr = cmdStr.replace('Wcpay', 'WCPay');
-
-                        if (apiNameMapInv[cmdStr])
-                            cmdStr = apiNameMapInv[cmdStr];
-                }//end switch
+                } //end switch
 
                 msgStr = errMsg.substring(idx + 1);
                 if (msgStr == 'confirm')
@@ -139,31 +126,14 @@
             return errMsg;
         }
 
-
-        function mapApiBridgeId(names) {
-            if (names) {
-                for (var idx = 0, len = names.length; idx < len; idx++) {
-                    var n = names[idx];
-                    if (apiNameMap[n])
-                        names[idx] = apiNameMap[n];
-                }
-
-                return names;
-            }
-        }
-
-
         function debugBridgeInteraction(cmd, callbackObj) {
             if (cfg.debug && !callbackObj.isInnerInvoke) {
-                if (apiNameMapInv[cmd])
-                    cmd = apiNameMapInv[cmd];
                 if (callbackObj && callbackObj._complete)
                     delete callbackObj._complete;
 
                 console.log('"' + cmd + '",', callbackObj || '');
             }
         }
-
 
         function reportSDK() {
             if (!('6.0.2' > wxVer || sdkInfo.systemType < 0)) {
@@ -210,51 +180,27 @@
 
 
 
-        var srAPI;    //API object, C
-        var isWXBrowser;  //is weixin browser? t
-        var isAndroid;    //is android browser? u
-        var isIOS;        //is iphone or ipad browser? v
-        var doc;  //document object, q
-        var apiNameMap;   //api name - bridge command mapping, o
-        var apiNameMapInv;    //bridge command - api name mapping, p
-        var title;    //document title, r
-        var nav;      //navigator string, s
-        var wxVer;    //weixin version, w
+        var srAPI; //API object, C
+        var isWXBrowser; //is weixin browser? t
+        var isAndroid; //is android browser? u
+        var isIOS; //is iphone or ipad browser? v
+        var doc; //document object, q
+        var title; //document title, r
+        var nav; //navigator string, s
+        var wxVer; //weixin version, w
         var timeInfo; //timestamp information, x
-        var sdkInfo;  //sdk information, y
-        var cfg;      //config information, z
-        var cmdExecCB;    //command execution callback, A
-        var stateInfo;    //state information, B
+        var sdkInfo; //sdk information, y
+        var cfg; //config information, z
+        var cmdExecCB; //command execution callback, A
+        var stateInfo; //state information, B
 
 
         if (!glob.jWeixin) {
-            apiNameMap = {
-                config: 'preVerifyJSAPI',
-                onMenuShareTimeline: 'menu:share:timeline',
-                onMenuShareAppMessage: 'menu:share:appmessage',
-                onMenuShareQQ: 'menu:share:qq',
-                onMenuShareWeibo: 'menu:share:weiboApp',
-                onMenuShareQZone: 'menu:share:QZone',
-                previewImage: 'imagePreview',
-                getLocation: 'geoLocation',
-                openProductSpecificView: 'openProductViewWithPid',
-                addCard: 'batchAddCard',
-                openCard: 'batchViewCard',
-                chooseWXPay: 'getBrandWCPayRequest'
-            };
-
-            apiNameMapInv = function () {
-                var map = {};
-                for (var attr in apiNameMap)
-                    map[apiNameMap[attr]] = attr;
-
-                return map;
-            }();
-
             doc = glob.document;
             title = doc.title;
             nav = navigator.userAgent.toLowerCase();
-            isWXBrowser = (nav.indexOf('micromessenger') != -1);
+            // isWXBrowser = (nav.indexOf('micromessenger') != -1);
+            isWXBrowser = true;
             isAndroid = (nav.indexOf('android') != -1);
             isIOS = (nav.indexOf('iphone') != -1 || nav.indexOf('ipad') != -1);
 
@@ -276,7 +222,7 @@
                 initTime: 0,
                 preVerifyTime: 0,
                 networkType: '',
-                isPreVerifyOk: 1,   //OK-0, FAIL-1
+                isPreVerifyOk: 1, //OK-0, FAIL-1
                 systemType: isIOS ? 1 : isAndroid ? 2 : -1,
                 clientVersion: wxVer,
                 url: encodeURIComponent(location.href)
@@ -287,8 +233,8 @@
                 _completes: []
             };
             stateInfo = {
-                state: 0,   //-1:fail, 1:complete
-                res: {}     //result data
+                state: 0, //-1:fail, 1:complete
+                res: {} //result data
             };
 
 
@@ -309,8 +255,8 @@
                         //verify API
                         if (preVerifyAPI) {
                             //preform 'preVerifyJSAPI' command
-                            invokeCmd(apiNameMap.config, {
-                                verifyJsApiList: mapApiBridgeId(cfg.jsApiList)
+                            invokeCmd("preVerifyJSAPI", {
+                                jsApiList: cfg.jsApiList
                             }, function () {
                                 //build command execution callback object
                                 cmdExecCB._complete = function (res) {
@@ -334,15 +280,14 @@
                                     for (var i = 0, len = cbArray.length; i < len; ++i)
                                         cbArray[i]();
 
-                                    cmdExecCB._completes = [];  //clear registered complete callbacks
+                                    cmdExecCB._completes = []; //clear registered complete callbacks
                                 };
 
                                 return cmdExecCB;
                             }());
 
                             timeInfo.preVerifyStartTime = getCurrentTimestamp();
-                        }
-                        else {
+                        } else {
                             stateInfo.state = 1;
                             var cbArray = cmdExecCB._completes;
                             for (var i = 0, len = cbArray.length; i < len; ++i)
@@ -350,11 +295,11 @@
 
                             cmdExecCB._completes = [];
                         }
-                    });//end 'ready' function registration
+                    }); //end 'ready' function registration
 
                     if (cfg.beta)
                         extendBridgeInteraction();
-                },  //end 'config' API
+                }, //end 'config' API
 
 
 
@@ -362,13 +307,12 @@
                     if (stateInfo.state != 0) {
                         //api-call already finished
                         completeFunc();
-                    }
-                    else {
+                    } else {
                         cmdExecCB._completes.push(completeFunc);
                         if (!isWXBrowser && cfg.debug)
                             completeFunc();
                     }
-                },  //end 'ready' API
+                }, //end 'ready' API
 
 
 
@@ -379,47 +323,25 @@
                         else
                             cmdExecCB._fail = errorFunc;
                     }
-                },  //end 'error' API
+                }, //end 'error' API
 
 
 
                 checkJsApi: function (checkParam) {
-                    //fix command with api name
-                    var fixApiName = function (res) {
-                        var c, d, b = res.checkResult;
-
-                        var apiObj = res.checkResult;
-                        for (var cmdName in apiObj) {
-                            var apiName = apiNameMapInv[cmdName];
-                            if (apiName) {
-                                apiObj[apiName] = apiObj[cmdName];
-                                delete apiObj[cmdName];
-                            }
-                        }
-
-                        return res;
-                    };
 
                     invokeCmd('checkJsApi', {
-                        jsApiList: mapApiBridgeId(checkParam.jsApiList)
+                        jsApiList: checkParam.jsApiList
                     }, function () {
-                        checkParam._complete = function (res) {
-                            if (isAndroid) {
-                                if (res.checkResult)
-                                    res.checkResult = JSON.parse(res.checkResult);
-                            }
-
-                            res = fixApiName(res);
-                        };
+                        checkParam._complete = function (res) {};
 
                         return checkParam;
                     }());
-                },  //end 'checkJsApi' API
+                }, //end 'checkJsApi' API
 
 
 
                 onMenuShareTimeline: function (shareParam) {
-                    bindEvent(apiNameMap.onMenuShareTimeline, {
+                    bindEvent("onMenuShareTimeline", {
                         complete: function () {
                             invokeCmd('shareTimeline', {
                                 title: shareParam.title || title,
@@ -429,12 +351,12 @@
                             }, shareParam);
                         }
                     }, shareParam);
-                },  //end 'onMenuShareTimeline' API
+                }, //end 'onMenuShareTimeline' API
 
 
 
                 onMenuShareAppMessage: function (shareParam) {
-                    bindEvent(apiNameMap.onMenuShareAppMessage, {
+                    bindEvent("onMenuShareAppMessage", {
                         complete: function () {
                             invokeCmd('sendAppMessage', {
                                 title: shareParam.title || title,
@@ -446,12 +368,23 @@
                             }, shareParam);
                         }
                     }, shareParam);
-                },  //end 'onMenuShareAppMessage' API
+                }, //end 'onMenuShareAppMessage' API
 
-
+                onMenuShareWechat: function (shareParam) {
+                    bindEvent("onMenuShareWechat", {
+                        complete: function () {
+                            invokeCmd('shareWechat', {
+                                title: shareParam.title || title,
+                                desc: shareParam.desc || '',
+                                img_url: shareParam.imgUrl || '',
+                                link: shareParam.link || location.href
+                            }, shareParam);
+                        }
+                    }, shareParam);
+                }, //end 'onMenuShareWechat' API
 
                 onMenuShareQQ: function (shareParam) {
-                    bindEvent(apiNameMap.onMenuShareQQ, {
+                    bindEvent("onMenuShareQQ", {
                         complete: function () {
                             invokeCmd('shareQQ', {
                                 title: shareParam.title || title,
@@ -461,12 +394,12 @@
                             }, shareParam);
                         }
                     }, shareParam);
-                },  //end 'onMenuShareQQ' API
+                }, //end 'onMenuShareQQ' API
 
 
 
                 onMenuShareWeibo: function (shareParam) {
-                    bindEvent(apiNameMap.onMenuShareWeibo, {
+                    bindEvent("onMenuShareWeibo", {
                         complete: function () {
                             invokeCmd('shareWeiboApp', {
                                 title: shareParam.title || title,
@@ -476,40 +409,65 @@
                             }, shareParam);
                         }
                     }, shareParam);
-                },  //end 'onMenuShareWeibo' API
+                }, //end 'onMenuShareWeibo' API
 
-
-
-                onMenuShareQZone: function (shareParam) {
-                    bindEvent(apiNameMap.onMenuShareQZone, {
+                onMenuFavorite: function (favoriteParam) {
+                    bindEvent("onMenuFavorite", {
                         complete: function () {
-                            invokeCmd('shareQZone', {
-                                title: shareParam.title || title,
-                                desc: shareParam.desc || '',
-                                img_url: shareParam.imgUrl || '',
-                                link: shareParam.link || location.href
-                            }, shareParam);
+                            invokeCmd('favorite', {
+                                title: favoriteParam.title || title,
+                                desc: favoriteParam.desc || '',
+                                img_url: favoriteParam.imgUrl || '',
+                                link: favoriteParam.link || location.href
+                            }, favoriteParam);
                         }
-                    }, shareParam);
-                },  //end 'onMenuShareQZone' API
+                    }, favoriteParam);
+                }, //end 'onMenuFavorite' API
 
+                onMenuMail: function (mailParam) {
+                    bindEvent("onMenuMail", {
+                        complete: function () {
+                            invokeCmd('mail', {
+                                title: mailParam.title || title,
+                                link: mailParam.link || location.href
+                            }, mailParam);
+                        }
+                    }, mailParam);
+                }, //end 'onMenuMail' API
 
+                onMenuOpenByBrowser: function (openByBrowserParam) {
+                    bindEvent("onMenuOpenByBrowser", {
+                        complete: function () {
+                            invokeCmd('openByBrowser', {
+                                link: openByBrowserParam.link || location.href
+                            }, openByBrowserParam);
+                        }
+                    }, openByBrowserParam);
+                }, //end 'onMenuOpenByBrowser' API
+
+                onHistoryBack: function (confirmParam) {
+                    bindEvent("onHistoryBack", {
+                        complete: function () {
+                            return confirmParam.confirm();
+                        }
+                    }, confirmParam);
+                }, //end 'onHistoryBack' API
 
                 startRecord: function (callbackObj) {
                     invokeCmd('startRecord', {}, callbackObj);
-                },  //end 'startRecord' API
+                }, //end 'startRecord' API
 
 
 
                 stopRecord: function (callbackObj) {
                     invokeCmd('stopRecord', {}, callbackObj);
-                },  //end 'stopRecord' API
+                }, //end 'stopRecord' API
 
 
 
                 onVoiceRecordEnd: function (callbackObj) {
                     bindEvent('onVoiceRecordEnd', callbackObj);
-                },  //end 'onVoiceRecordEnd' API
+                }, //end 'onVoiceRecordEnd' API
 
 
 
@@ -517,7 +475,7 @@
                     invokeCmd('playVoice', {
                         localId: callbackObj.localId
                     }, callbackObj);
-                },  //end 'playVoice' API
+                }, //end 'playVoice' API
 
 
 
@@ -525,7 +483,7 @@
                     invokeCmd('pauseVoice', {
                         localId: callbackObj.localId
                     }, callbackObj);
-                },  //end 'pauseVoice' API
+                }, //end 'pauseVoice' API
 
 
 
@@ -533,13 +491,13 @@
                     invokeCmd('stopVoice', {
                         localId: callbackObj.localId
                     }, callbackObj);
-                },  //end 'stopVoice' API
+                }, //end 'stopVoice' API
 
 
 
                 onVoicePlayEnd: function (callbackObj) {
                     bindEvent('onVoicePlayEnd', callbackObj);
-                },  //end 'onVoicePlayEnd' API
+                }, //end 'onVoicePlayEnd' API
 
 
 
@@ -548,7 +506,7 @@
                         localId: callbackObj.localId,
                         isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
                     }, callbackObj);
-                },  //end 'uploadVoice' API
+                }, //end 'uploadVoice' API
 
 
 
@@ -557,7 +515,7 @@
                         serverId: callbackObj.serverId,
                         isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
                     }, callbackObj);
-                },  //end 'downloadVoice' API
+                }, //end 'downloadVoice' API
 
 
 
@@ -566,9 +524,7 @@
                         localId: callbackObj.localId,
                         isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
                     }, callbackObj);
-                },  //end 'translateVoice' API
-
-
+                }, //end 'translateVoice' API
 
                 chooseImage: function (callbackObj) {
                     invokeCmd('chooseImage', {
@@ -576,56 +532,73 @@
                         count: callbackObj.count || 9,
                         sizeType: callbackObj.sizeType || ['original', 'compressed']
                     }, function () {
-                        callbackObj._complete = function (res) {
-                            if (isAndroid) {
-                                if (res.localIds)
-                                    res.localIds = JSON.parse(res.localIds);
-                            }
-                        };
+                        callbackObj._complete = function (res) {};
 
                         return callbackObj;
                     }());
-                },  //end 'chooseImage' API
-
-
+                }, //end 'chooseImage' API
 
                 previewImage: function (callbackObj) {
-                    invokeCmd(apiNameMap.previewImage, {
+                    invokeCmd("previewImage", {
                         current: callbackObj.current,
                         urls: callbackObj.urls
                     }, callbackObj);
-                },  //end 'previewImage' API
-
-
+                }, //end 'previewImage' API
 
                 uploadImage: function (callbackObj) {
                     invokeCmd('uploadImage', {
                         localId: callbackObj.localId,
                         isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
                     }, callbackObj);
-                },  //end 'uploadImage' API
-
-
+                }, //end 'uploadImage' API
 
                 downloadImage: function (callbackObj) {
                     invokeCmd('downloadImage', {
                         serverId: callbackObj.serverId,
                         isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
                     }, callbackObj);
-                },  //end 'downloadImage' API
+                }, //end 'downloadImage' API
 
+                chooseFile: function (callbackObj) {
+                    invokeCmd('chooseFile', {
+                        count: callbackObj.count || 9,
+                    }, function () {
+                        callbackObj._complete = function (res) {};
 
+                        return callbackObj;
+                    }());
+                }, //end 'chooseFile' API
+
+                previewFile: function (callbackObj) {
+                    invokeCmd("previewFile", {
+                        url: callbackObj.url
+                    }, callbackObj);
+                }, //end 'previewFile' API
+
+                uploadFile: function (callbackObj) {
+                    invokeCmd('uploadFile', {
+                        localId: callbackObj.localId,
+                        isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
+                    }, callbackObj);
+                }, //end 'uploadFile' API
+
+                downloadFile: function (callbackObj) {
+                    invokeCmd('downloadFile', {
+                        serverId: callbackObj.serverId,
+                        isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
+                    }, callbackObj);
+                }, //end 'downloadFile' API
 
                 getNetworkType: function (callbackObj) {
                     var parseNetworkResult = function (res) {
-                        var msg = res.errMsg, stype = res.subtype;
+                        var msg = res.errMsg,
+                            stype = res.subtype;
                         delete res.subtype;
                         res.errMsg = 'getNetworkType:ok';
 
                         if (stype) {
                             res.networkType = stype;
-                        }
-                        else {
+                        } else {
                             stype = msg.substring(msg.indexOf(':') + 1);
                             switch (stype) {
                                 case 'wifi':
@@ -647,7 +620,7 @@
                         };
                         return callbackObj;
                     }());
-                },  //end 'getNetworkType' API
+                }, //end 'getNetworkType' API
 
 
 
@@ -660,34 +633,32 @@
                         scale: callbackObj.scale || 28,
                         infoUrl: callbackObj.infoUrl || ''
                     }, callbackObj);
-                },  //end 'openLocation' API
+                }, //end 'openLocation' API
 
 
 
                 getLocation: function (callbackObj) {
                     callbackObj = callbackObj || {};
 
-                    invokeCmd(apiNameMap.getLocation, {
-                        type: callbackObj.type || 'wgs84'
-                    }, function () {
+                    invokeCmd("getLocation", {}, function () {
                         callbackObj._complete = function (res) {
                             delete res.type;
                         };
                         return callbackObj;
                     }());
-                },  //end 'getLocation' API
+                }, //end 'getLocation' API
 
 
 
                 hideOptionMenu: function (callbackObj) {
                     invokeCmd('hideOptionMenu', {}, callbackObj);
-                },  //end 'hideOptionMenu' API
+                }, //end 'hideOptionMenu' API
 
 
 
                 showOptionMenu: function (callbackObj) {
                     invokeCmd('showOptionMenu', {}, callbackObj);
-                },  //end 'showOptionMenu' API
+                }, //end 'showOptionMenu' API
 
 
 
@@ -697,7 +668,7 @@
                     invokeCmd('closeWindow', {
                         immediate_close: callbackObj.immediateClose || 0
                     }, callbackObj);
-                },  //end 'closeWindow' API
+                }, //end 'closeWindow' API
 
 
 
@@ -705,7 +676,7 @@
                     invokeCmd('hideMenuItems', {
                         menuList: callbackObj.menuList
                     }, callbackObj);
-                },  //end 'hideMenuItems' API
+                }, //end 'hideMenuItems' API
 
 
 
@@ -713,21 +684,17 @@
                     invokeCmd('showMenuItems', {
                         menuList: callbackObj.menuList
                     }, callbackObj);
-                },  //end 'showMenuItems' API
+                }, //end 'showMenuItems' API
 
 
 
                 hideAllNonBaseMenuItem: function (callbackObj) {
                     invokeCmd('hideAllNonBaseMenuItem', {}, callbackObj);
-                },  //end 'hideAllNonBaseMenuItem' API
-
-
+                }, //end 'hideAllNonBaseMenuItem' API
 
                 showAllNonBaseMenuItem: function (callbackObj) {
                     invokeCmd('showAllNonBaseMenuItem', {}, callbackObj);
-                },  //end 'showAllNonBaseMenuItem' API
-
-
+                }, //end 'showAllNonBaseMenuItem' API
 
                 scanQRCode: function (callbackObj) {
                     callbackObj = callbackObj || {};
@@ -746,15 +713,38 @@
 
                         return callbackObj;
                     }());
-                },  //end 'scanQRCode' API
+                }, //end 'scanQRCode' API
+
+                selectContract: function (callbackObj) {
+                    invokeCmd("selectContract", {
+                        mode: callbackObj.mode || "single", //single表示单选，multi表示多选
+                        selectedUserIds: callbackObj.selectedUserIds || {},
+                    }, callbackObj)
+                }, //add "选择联系人" API
+
+                getUserInfo: function (callbackObj) {
+                    invokeCmd("getUserInfo", {
+                        userId: callbackObj.userId
+                    }, callbackObj)
+                }, //add "获取用户信息" API
+
+                redirectInApp: function (callbackObj) {
+                    invokeCmd("redirectInApp", {
+                        schema: callbackObj.schema
+                    }, callbackObj);
+                }, //add "应用内跳转信息" API
 
                 openUserChat: function (callbackObj) {
-                    invokeCmd("openUserChat", { userId: callbackObj.userId }, callbackObj);
-                },
+                    invokeCmd("openUserChat", {
+                        userId: callbackObj.userId
+                    }, callbackObj);
+                }, //add "打开用户会话" API
 
                 openGroupChat: function (callbackObj) {
-                    invokeCmd("openGroupChat", { groupId: callbackObj.groupId }, callbackObj);
-                },
+                    invokeCmd("openGroupChat", {
+                        groupId: callbackObj.groupId
+                    }, callbackObj);
+                }, //add "打开群会话" API
 
                 buildAndOpenGroupChat: function (callbackObj) {
                     callbackObj = callbackObj || {};
@@ -763,31 +753,18 @@
                         name: callbackObj.groupName || "未定义群名",
                         userIds: callbackObj.userIds || []
                     }, callbackObj)
-                },
+                }, //add "创建并打开群会话" API
 
                 openAppChat: function (callbackObj) {
-                    invokeCmd("openAppChat", { appId: callbackObj.appId }, callbackObj);
-                },
-
-                getUserInfo: function (callbackObj) {
-                    invokeCmd("getUserInfo", { userId: callbackObj.userId }, callbackObj)
-                },
-
-                redirectInApp: function (callbackObj) {
-                    invokeCmd("redirectInApp",{schema:callbackObj.schema},callbackObj);
-                },
-
-                openProductSpecificView: function (callbackObj) {
-                    invokeCmd(apiNameMap.openProductSpecificView, {
-                        pid: callbackObj.productId,
-                        view_type: callbackObj.viewType || 0
+                    invokeCmd("openAppChat", {
+                        appId: callbackObj.appId
                     }, callbackObj);
-                },  //end 'openProductSpecificView' API
+                }, //add "打开应用会话" API
             };
 
             if (setGlobal)
-                glob.wx = glob.jWeixin = srAPI;
+                glob.sr = srAPI;
 
             return srAPI;
-        }//end api object initialize
-    });  
+        } //end api object initialize
+    });
