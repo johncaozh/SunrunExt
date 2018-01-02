@@ -5,13 +5,13 @@
 }(this,
     function (glob, setGlobal) {
         function invokeCmd(cmd, param, callbackObj) {
-            glob.WeixinJSBridge ? WeixinJSBridge.invoke(cmd, normParameter(param), function (res) {
+            glob.SRJSBridge ? SRJSBridge.invoke(cmd, normParameter(param), function (res) {
                 completeBridgeInteraction(cmd, res, callbackObj);
             }) : debugBridgeInteraction(cmd, callbackObj)
         }
 
         function bindEvent(targetItem, callbackObj, debugCallback) {
-            glob.WeixinJSBridge ? WeixinJSBridge.on(targetItem, function (res) {
+            glob.SRJSBridge ? SRJSBridge.on(targetItem, function (res) {
                 if (debugCallback && debugCallback.trigger)
                     debugCallback.trigger(res);
 
@@ -136,7 +136,7 @@
         }
 
         function reportSDK() {
-            if (!('6.0.2' > wxVer || sdkInfo.systemType < 0)) {
+            if (!('6.0.2' > srVer || sdkInfo.systemType < 0)) {
                 var img = new Image;
 
                 sdkInfo.appId = cfg.appId,
@@ -159,21 +159,21 @@
         }
 
 
-        function regWXReadyFunc(readyFunc) {
-            if (isWXBrowser)
-                glob.WeixinJSBridge ? readyFunc() : doc.addEventListener && doc.addEventListener('WeixinJSBridgeReady', readyFunc, false);
+        function regSRReadyFunc(readyFunc) {
+            if (isSRBrowser)
+                glob.SRJSBridge ? readyFunc() : doc.addEventListener && doc.addEventListener('SRJSBridgeReady', readyFunc, false);
         }
 
 
         function extendBridgeInteraction() {
             if (!srAPI.invoke) {
                 srAPI.invoke = function (cmd, param, callbackFunc) {
-                    if (glob.WeixinJSBridge)
-                        WeixinJSBridge.invoke(cmd, normParameter(param), callbackFunc);
+                    if (glob.SRJSBridge)
+                        SRJSBridge.invoke(cmd, normParameter(param), callbackFunc);
                 };
                 srAPI.on = function (targetItem, callbackFunc) {
-                    if (glob.WeixinJSBridge)
-                        WeixinJSBridge.on(targetItem, callbackFunc);
+                    if (glob.SRJSBridge)
+                        SRJSBridge.on(targetItem, callbackFunc);
                 };
             }
         }
@@ -181,13 +181,13 @@
 
 
         var srAPI; //API object, C
-        var isWXBrowser; //is weixin browser? t
+        var isSRBrowser; //is weixin browser? t
         var isAndroid; //is android browser? u
         var isIOS; //is iphone or ipad browser? v
         var doc; //document object, q
         var title; //document title, r
         var nav; //navigator string, s
-        var wxVer; //weixin version, w
+        var srVer; //weixin version, w
         var timeInfo; //timestamp information, x
         var sdkInfo; //sdk information, y
         var cfg; //config information, z
@@ -199,12 +199,12 @@
             doc = glob.document;
             title = doc.title;
             nav = navigator.userAgent.toLowerCase();
-            // isWXBrowser = (nav.indexOf('micromessenger') != -1);
-            isWXBrowser = true;
+            // isSRBrowser = (nav.indexOf('micromessenger') != -1);
+            isSRBrowser = true;
             isAndroid = (nav.indexOf('android') != -1);
             isIOS = (nav.indexOf('iphone') != -1 || nav.indexOf('ipad') != -1);
 
-            wxVer = function () {
+            srVer = function () {
                 var m = nav.match(/micromessenger\/(\d+\.\d+\.\d+)/) || nav.match(/micromessenger\/(\d+\.\d+)/);
                 return m ? m[1] : ''
             }();
@@ -224,7 +224,7 @@
                 networkType: '',
                 isPreVerifyOk: 1, //OK-0, FAIL-1
                 systemType: isIOS ? 1 : isAndroid ? 2 : -1,
-                clientVersion: wxVer,
+                clientVersion: srVer,
                 url: encodeURIComponent(location.href)
             };
 
@@ -238,7 +238,7 @@
             };
 
 
-            regWXReadyFunc(function () {
+            regSRReadyFunc(function () {
                 timeInfo.initEndTime = getCurrentTimestamp();
             });
 
@@ -251,7 +251,7 @@
                         debugBridgeInteraction('config', paramObj);
                     var preVerifyAPI = (cfg.check === false) ? false : true;
 
-                    regWXReadyFunc(function () {
+                    regSRReadyFunc(function () {
                         //verify API
                         if (preVerifyAPI) {
                             //preform 'preVerifyJSAPI' command
@@ -309,7 +309,7 @@
                         completeFunc();
                     } else {
                         cmdExecCB._completes.push(completeFunc);
-                        if (!isWXBrowser && cfg.debug)
+                        if (!isSRBrowser && cfg.debug)
                             completeFunc();
                     }
                 }, //end 'ready' API
@@ -317,7 +317,7 @@
 
 
                 error: function (errorFunc) {
-                    if (wxVer >= '6.0.2') {
+                    if (srVer >= '6.0.2') {
                         if (stateInfo.state == -1)
                             errorFunc(stateInfo.res);
                         else
