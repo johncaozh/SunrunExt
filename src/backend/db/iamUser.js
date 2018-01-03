@@ -13,6 +13,15 @@ const schema = mongoose.Schema({
         type: String,
         required: false,
     },
+    phone:{
+        type: String,
+        required: false,
+    },
+    //职位
+    title:{
+        type: String,
+        required: false,
+    },
 }, {
     versionKey: false,
     timestamps: {
