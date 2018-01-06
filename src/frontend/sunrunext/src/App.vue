@@ -2,7 +2,8 @@
   <div id="app">
     <el-container>
       <el-header style="padding:0px;height:100%">
-        <custom-header/>
+         <div class="header">
+         </div>
       </el-header>
       <el-main style="padding:0px;">
         <router-view/>
@@ -26,15 +27,9 @@
 </template>
 
 <script>
-import customFooter from "./components/customFooter.vue";
-import customHeader from "./components/customHeader.vue";
 
 export default {
   name: "app",
-  components: {
-    customFooter,
-    customHeader
-  }
 };
 </script>
 
@@ -46,4 +41,16 @@ export default {
   text-align: center;
   color: #2c3e50;
 } */
+
+.header {
+  height: 40px;
+  background-color: #2f5981;
+  color: #a4aebd;
+  z-index: 1000;
+  padding-left: 200px;
+  padding-right: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>
