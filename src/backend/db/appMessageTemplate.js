@@ -5,8 +5,8 @@ const schema = mongoose.Schema({
     //autoReplyRule:该消息模板用于自动回复规则
     usage: {
         type: String,
-        require: true
-    }
+        required: true
+    },
 
     //素材消息类型
     //text：文本消息
@@ -18,7 +18,7 @@ const schema = mongoose.Schema({
     //news：图文消息
     type: {
         type: String,
-        require: true,
+        required: true,
     },
 
     // 消息体内容
@@ -75,7 +75,7 @@ const schema = mongoose.Schema({
     // }
     data: {
         type: Object,
-        require: true
+        required: true
     }
 }, {
     versionKey: false,

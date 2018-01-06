@@ -2,9 +2,9 @@ var log4js = require("log4js");
 
 log4js.configure({
     appenders: {
-        sunrunio: {
+        sunrunExt: {
             type: 'dateFile',
-            filename: 'logs/sunrunio_',
+            filename: 'logs/sunrunExt_',
             pattern: 'yyyy-MM-dd.log',
             alwaysIncludePattern: true
         },
@@ -13,18 +13,18 @@ log4js.configure({
         }
     },
     categories: {
-        sunrunio: {
-            appenders: ['console', 'sunrunio'],
+        sunrunExt: {
+            appenders: ['console', 'sunrunExt'],
             level: 'info'
         },
         default: {
-            appenders: ['console', 'sunrunio'],
+            appenders: ['console', 'sunrunExt'],
             level: 'trace'
         }
     }
 });
 
-var logger = log4js.getLogger('sunrunio');
+var logger = log4js.getLogger('sunrunExt');
 exports.logger = logger;
 
 exports.use = function (app) {

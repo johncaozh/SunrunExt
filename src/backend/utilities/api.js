@@ -18,8 +18,18 @@ function generateUrl(fileTag) {
     return env.serverEndConfig.endpoint + "/" + fileTag;
 }
 
+function catchAsyncErrors(fn) {
+    return (req, res, next) => {
+        const routePromise = fn(req, res, next);
+        if (routePromise.catch) {
+            routePromise.catch(err => next(err));
+        }
+    }
+}
+
 module.exports = {
     attachData2Response,
     attachData2Request,
-    generateUrl
+    generateUrl,
+    catchAsyncErrors
 }

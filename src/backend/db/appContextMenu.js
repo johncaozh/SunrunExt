@@ -3,7 +3,8 @@ var mongoose = require("mongoose");
 const schema = mongoose.Schema({
     name: {
         type: String,
-        require: true,
+        default: null,
+        required: true,
     },
     //click:点击推事件
     //view:跳转URL
@@ -14,21 +15,31 @@ const schema = mongoose.Schema({
     //location_select:弹出地理位置选择器
     type: {
         type: String,
-        require: true,
+        default: null,
+        required: true,
     },
     key: {
         type: String,
-        require: true,
+        default: null,
+        required: true,
     },
     url: {
         type: String,
-        require: false,
+        default: null,
+        required: false,
     },
     //父级菜单的ID(只支持两级菜单)
     parentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'contextMenu',
+        default: null,
         required: false
+    },
+    //关联的应用ID
+    appId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'app',
+        required: true
     }
 }, {
     versionKey: false,
@@ -38,5 +49,5 @@ const schema = mongoose.Schema({
     }
 })
 
-const contextMenuModel = mongoose.model("contextMenu", schema);
-module.exports = contextMenuModel;
+const appContextMenuModel = mongoose.model("appContextMenu", schema);
+module.exports = appContextMenuModel;

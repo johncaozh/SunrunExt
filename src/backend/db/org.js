@@ -1,22 +1,21 @@
 var mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
+    //在IAM平台的组织ID
     iamOrgId: {
-        type: String,
+        type: Number,
+        default: null,
         required: true
     },
     name: {
         type: String,
+        default: null,
         required: true
     },
-    parentId: {
-        type: String,
-        required: null
-    },
-    orgId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'iamOrg',
-        required: true
+    parentIamOrgId: {
+        type: Number,
+        default: null,
+        required: false
     }
 }, {
     versionKey: false,
@@ -26,6 +25,5 @@ const schema = mongoose.Schema({
     }
 });
 
-const iamOrgModel = mongoose.model("iamOrg", schema);
-
-module.exports = iamOrgModel;
+const orgModel = mongoose.model("org", schema);
+module.exports = orgModel;

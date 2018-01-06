@@ -3,63 +3,84 @@ var mongoose = require("mongoose");
 const schema = mongoose.Schema({
     name: {
         type: String,
-        require: true
+        required: true,
+        default: null,
+        unique: true
     },
     desc: {
         type: String,
-        require: false
+        default: null,
+        required: false
     },
     avatar: {
         type: String,
-        require: true
+        default: null,
+        required: true
     },
     enable: {
         type: Boolean,
         default: true,
-        require: false,
+        required: false,
     },
     //在IAM中的产品名（用于SSO）
     iamProjectName: {
         type: String,
-        require: false
+        default: null,
+        required: false
     },
     //是否是群应用
     useInGroup: {
         type: Boolean,
-        require: false,
+        default: false,
+        required: false,
     },
     //是否使用SSO登录
     useIamSSO: {
         type: Boolean,
-        require: false,
+        default: false,
+        required: false,
     },
     //是否在应用列表中显示
     visible: {
         type: Boolean,
         default: true,
-        require: false,
+        required: false,
     },
     //是否上报用户进入应用事件
     isreportenter: {
         type: Boolean,
         default: false,
-        require: false,
+        required: false,
     },
     //进入应用会话时是否上报用户地理位置
     isreportLocation_Session: {
         type: Boolean,
         default: false,
-        require: false,
+        required: false,
     },
     //应用主页地址
     home_url: {
         type: String,
-        require: false,
+        default: null,
+        required: false,
     },
     //接收消息的服务器地址
     receiveMsg_url: {
         type: String,
-        require: false,
+        default: null,
+        required: false,
+    },
+    //关联的用户ID数组
+    iamUserIds: {
+        type: Array,
+        default: null,
+        required: false,
+    },
+    //关联的组织ID数组
+    iamOrgIds: {
+        type: Array,
+        default: null,
+        required: false,
     }
 }, {
     versionKey: false,

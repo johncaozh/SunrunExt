@@ -5,21 +5,13 @@ var favicon = require('serve-favicon');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var env = require("./utilities/env");
-var routerTransfer = require("./routers/transfer");
-var routerProduct = require("./routers/product");
-var routerUser = require("./routers/user");
-var routerFaq = require("./routers/faq");
-var routerDocument = require("./routers/document");
-var routerVersion = require("./routers/version");
-var routerPlatform = require("./routers/platform");
-var routerPackage = require("./routers/package");
-var routerIam = require("./routers/iam");
-var email = require("./utilities/email");
-var im = require("./utilities/im");
 var common = require('./utilities/common');
 var api = require('./utilities/api');
+var iam = require('./utilities/iam');
 var log = require('./utilities/log');
 var logger = require('./utilities/log').logger;
+var v1_router_app = require("./routers/api/v1/app");
+var v1_router_org = require('./routers/api/v1/org');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
@@ -53,11 +45,9 @@ app.use(bodyParser.urlencoded({
     limit: '10mb'
 }));
 
-
-
 //允许跨域访问
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", env.frontEndConfig.endpoint);
+    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
     res.header('Access-Control-Allow-Credentials', true);
@@ -86,20 +76,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    logger.error(`url:${req.url},method:${req.method},error:${err.message}`);
-});
-
-app.use("/", routerTransfer);
-app.use("/", routerProduct);
-app.use("/", routerUser);
-app.use("/", routerFaq);
-app.use("/", routerDocument);
-app.use("/", routerVersion);
-app.use("/", routerPlatform);
-app.use("/", routerPackage);
-app.use("/", routerIam.router);
+app.use("/api/v1/", v1_router_app);
+app.use("/api/v1/", v1_router_org);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
@@ -113,29 +91,23 @@ app.use(function (req, res, next) {
     }
 
     res.status(res.code).json(resData);
+});
 
-    if (res.code == 200) {
-        email.parse(req, res);
-        im.parse(req, res);
+app.use((err, req, res, next) => {
+    logger.error(`url:${req.url},method:${req.method},error:${err.message}`);
+    var resData = {
+        code: err.status || 500,
+        msg: err.message,
+        data: err.data
     }
+
+    res.status(err.status || 500).json(resData);
 });
 
-app.get('/', function (req, res) {
-    res.send('sunrunio');
-});
-
-var server = app.listen(3000, function () {
+var server = app.listen(3000, async function () {
     var host = common.getServerIp();
     var port = server.address().port;
     env.serverEndConfig.endpoint = `http://${host}:${port}`;
     env.serverEndConfig.downloadResUrl = `http://${host}:${port}/download/`;
-    logger.info(`listening at ${env.serverEndConfig.endpoint}`);
-    logger.info("正在同步IAM用户...");
-    routerIam.syncIamUsers()
-        .then(res => {
-            logger.info("同步IAM用户完成。");
-        })
-        .catch(error => {
-            logger.fatal("同步IAM用户失败。");
-        });
+    await iam.syncIamUsers();
 });
