@@ -2,8 +2,8 @@
   <div id="app">
     <el-container>
       <el-header style="padding:0px;height:100%">
-       <div class="header">
-  </div>
+         <div class="header">
+         </div>
       </el-header>
       <el-main style="padding:0px;">
         <router-view/>
@@ -33,18 +33,11 @@ export default {
 };
 </script>
 
-<style>
-/* #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-} */
-
+<style lang="less" scoped>
+// @import '../static/common.less';
 .header {
   height: 40px;
-  background-color: #2f5981;
+  background-color: @color-theme;
   color: #a4aebd;
   z-index: 1000;
   padding-left: 200px;
@@ -54,3 +47,5 @@ export default {
   justify-content: space-between;
 }
 </style>
+
+
