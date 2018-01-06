@@ -1,8 +1,8 @@
 <template>
 <div id="menuItemContainer">
-    <app-send-msg :key="1"/>
-    <app-send-msg :key="2"/>
-    <app-send-msg :key="3"/>
+    <app-send-msg />
+    <app-send-msg />
+    <app-send-msg />
 </div>
 </template>
 
