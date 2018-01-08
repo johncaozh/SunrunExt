@@ -7,7 +7,7 @@
           </el-input>
         </el-header>
         <el-main style="padding:0px;flex:1">
-          <el-tree node-key="iamOrgId" @node-click="orgSelected" :default-expanded-keys="[0]" :default-checked-keys="[0]" :data="orgs"
+          <el-tree node-key="id" @node-click="orgSelected" :default-expanded-keys="[0]" :default-checked-keys="[0]" :data="orgs"
             :props="defaultProps" style="background:transparent"></el-tree>
         </el-main>
       </el-container>
@@ -45,16 +45,13 @@
 
     async mounted() {
       this.sourceData = await api.getOrg();
-      this.orgs.push(this.sourceData.data.data);
+      this.orgs.push(this.sourceData);
     },
 
     components: {},
 
     methods: {
       orgSelected(org, node, el) {
-        // alert(JSON.stringify(org));
-        // alert(JSON.stringify(org.users));
-        // alert(JSON.stringify(org.users.length));
         this.users.length = 0;
         this.getOrgUser(org, this.users);
       },

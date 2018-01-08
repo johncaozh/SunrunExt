@@ -43,7 +43,7 @@ async function syncIamUsers() {
 
     //添加根组织
     await orgModel.create({
-        iamOrgId: 0,
+        id: 0,
         name: defaultDomain.name,
     });
 
@@ -57,18 +57,18 @@ async function syncIamUsers() {
 async function parseDomainOrg(item) {
     if (item.type && item.type === "user") {
         await userModel.create({
-            iamId: item.id,
+            id: item.id,
             name: item.real_name || item.id,
             email: item.email,
             phone: item.mobile,
             rank: item.rank,
-            iamOrgId: item.org_id,
+            parentId: item.org_id,
         });
     } else if (item.type && item.type === "org") {
         await orgModel.create({
-            iamOrgId: item.id,
+            id: item.id,
             name: item.name,
-            parentIamOrgId: item.parent_id
+            parentId: item.parent_id
         });
 
         if (item.children && item.children.length > 0) {
@@ -83,41 +83,41 @@ async function parseDomainOrg(item) {
 //从数据库读取组织架构并生成自己的json格式数据
 async function getDomainOrg() {
     var rootOrg = await orgModel.findOne({
-        iamOrgId: 0
+        id: 0
     }, {
-        iamOrgId: 1,
+        id: 1,
         name: 1,
-        parentIamOrgId: 1
+        parentId: 1
     }).lean().exec();
 
-    var domainOrgTree = await getOrgContent(rootOrg.iamOrgId, rootOrg);
+    var domainOrgTree = await getOrgContent(rootOrg.id, rootOrg);
     return domainOrgTree;
 }
 
 //获取指定组织的组成
 async function getOrgContent(orgId, orgInfo) {
     var subOrgs = await orgModel.find({
-        parentIamOrgId: orgId
+        parentId: orgId
     }, {
-        iamOrgId: 1,
+        id: 1,
         name: 1,
-        parentIamOrgId: 1
+        parentId: 1
     }).lean().exec();
 
     for (let i = 0; i < subOrgs.length; i++) {
         var item = subOrgs[i];
-        await getOrgContent(item.iamOrgId, item);
+        await getOrgContent(item.id, item);
     }
 
     var users = await userModel.find({
-        iamOrgId: orgId
+        parentId: orgId
     }, {
-        iamId: 1,
+        id: 1,
         name: 1,
         email: 1,
         phone: 1,
         rank: 1,
-        iamOrgId: 1,
+        parentId: 1,
     }).sort({
         name: "ascending"
     });
