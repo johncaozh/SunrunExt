@@ -6,8 +6,6 @@ const serverEndConfig = {
     downloadResUrl: "", //下载资源的Url
     mongoDB: "mongodb://localhost:27017/sunrunExt", //mongoDB数据库连接字符串
     staticFileDir: path.resolve(__dirname, "../files"), //用于存放文件的文件夹绝对路径
-    emailEjsFileDir: path.resolve(__dirname, "../static/template/email"), //用于存放Email EJS文件的目录绝对路径
-    imEjsFileDir: path.resolve(__dirname, "../static/template/im"), //用于存放IM EJS文件的目录绝对路径
 }
 
 const iamConfig = {
@@ -17,7 +15,19 @@ const iamConfig = {
     registerProductName: "SunrunExt",
 }
 
+const s3Config = {
+    accessKeyId: 'GKI4XZE9MOUO1FFFL2YQ',
+    secretAccessKey: 'p57mZbR8NZQ9nKBsUbviMrmBEpzTlPNxMWJgNg10',
+    endpoint: "218.107.10.86:28080",
+    sslEnabled: false,
+    s3ForcePathStyle: true,
+    // bucketName: "dfs_develop",
+    bucketName: "czqtesting",
+    path: "/thirdparty",
+}
+
 module.exports = {
     serverEndConfig,
-    iamConfig
+    iamConfig,
+    s3Config
 }

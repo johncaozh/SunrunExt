@@ -4,13 +4,15 @@
     <div id="apps">
       <el-card class="app" v-for="(item, index) in apps" v-bind:key="index" body-style="padding:10px">
         <div style="display:flex;align-items:center">
-          <img style="width:40px;height:40px" />
+          <img style="width:40px;height:40px" :src="item.logoUrl"/>
           <span style="margin-left:10px">{{item.name}}</span>
         </div>
       </el-card>
-      <el-card class="app" body-style="padding:10px">
+      <el-card class="app" body-style="padding:10px" @click.native="$router.push('/createApp')">
         <div style="display:flex;align-items:center">
-          <img style="width:40px;height:40px" />
+          <div style="width:40px;height:40px;border:1px solid #C0C0C0;display:flex;justify-content:center;align-items:center;color:#C0C0C0" >
+            <i class="el-icon-plus" style="font-size:24px"/>
+          </div>
           <span class="name" style="margin-left:10px;color:@color-theme">添加应用</span>
         </div>
       </el-card>
@@ -32,7 +34,10 @@ export default {
   },
   async mounted() {
     var res = await api.getApps();
-    this.apps = res.data.data;
+    res.forEach(app => {
+      app.logoUrl = `${api.fileTransferUrl}/${app.avatar}`;
+    });
+    this.apps = res;
   }
 };
 </script>
@@ -58,6 +63,7 @@ export default {
   padding: 0px;
   margin-right: 20px;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .name {

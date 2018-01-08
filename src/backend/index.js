@@ -10,8 +10,10 @@ var api = require('./utilities/api');
 var iam = require('./utilities/iam');
 var log = require('./utilities/log');
 var logger = require('./utilities/log').logger;
+var s3 = require('./utilities/s3');
 var v1_router_app = require("./routers/api/v1/app");
 var v1_router_org = require('./routers/api/v1/org');
+var v1_router_file = require('./routers/api/v1/file');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
@@ -78,19 +80,26 @@ app.use(function (req, res, next) {
 
 app.use("/api/v1/", v1_router_app);
 app.use("/api/v1/", v1_router_org);
+app.use("/api/v1/", v1_router_file);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
-    if (res.code != 200)
+    if (res.code != 200 || res != 302)
         logger.error(`url:${req.url},error:${res.msg}`)
 
-    var resData = {
-        code: res.code,
-        msg: res.msg,
-        data: res.data
+    if (res.code == 302) {
+        resData = {
+            location: res.data
+        }
+        res.redirect(res.data);
+    } else {
+        var resData = {
+            code: res.code,
+            msg: res.msg,
+            data: res.data
+        };
+        res.status(res.code).json(resData);
     }
-
-    res.status(res.code).json(resData);
 });
 
 app.use((err, req, res, next) => {
@@ -110,4 +119,5 @@ var server = app.listen(3000, async function () {
     env.serverEndConfig.endpoint = `http://${host}:${port}`;
     env.serverEndConfig.downloadResUrl = `http://${host}:${port}/download/`;
     await iam.syncIamUsers();
+    await s3.init();
 });

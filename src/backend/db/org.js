@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
     //在IAM平台的组织ID
-    iamOrgId: {
+    id: {
         type: Number,
         default: null,
         required: true
@@ -12,7 +12,7 @@ const schema = mongoose.Schema({
         default: null,
         required: true
     },
-    parentIamOrgId: {
+    parentId: {
         type: Number,
         default: null,
         required: false
