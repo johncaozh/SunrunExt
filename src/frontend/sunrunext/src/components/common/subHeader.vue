@@ -31,6 +31,7 @@ export default {};
   align-self: center;
   justify-content: center;
   flex: 1;
+  margin-left: -60px;
 }
 </style>
 

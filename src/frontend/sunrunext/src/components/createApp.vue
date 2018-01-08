@@ -88,7 +88,6 @@ export default {
 .creatApp {
   width: 350px;
   margin: 0 auto;
-  padding-left: 60px;
 }
 
 .avatar-container {
