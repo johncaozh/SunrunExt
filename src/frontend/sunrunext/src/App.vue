@@ -34,7 +34,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// @import '../static/common.less';
 .header {
   height: 40px;
   background-color: @color-theme;

@@ -25,5 +25,13 @@ export default {
   async createApp(param) {
     var url = env.serverConfig.appsSegment;
     return axios.post(url, param);
+  },
+  async updateApp(appId, param) {
+    var url = `${env.serverConfig.appsSegment}/${appId}`;
+    return axios.put(url, param);
+  },
+  async getAppDetail(appId) {
+    var url = `${env.serverConfig.appsSegment}/${appId}`;
+    return axios.get(url);
   }
 }

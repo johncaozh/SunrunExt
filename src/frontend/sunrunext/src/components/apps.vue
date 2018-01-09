@@ -2,13 +2,13 @@
   <div id="menuItemContainer">
     <div style="color:#909399;font-size:12px">应用列表</div>
     <div id="apps">
-      <el-card class="app" v-for="(item, index) in apps" v-bind:key="index" body-style="padding:10px">
+      <el-card class="app" v-for="(item, index) in apps" v-bind:key="index" body-style="padding:10px" @click.native="$router.push('/apps/'+item._id+'/detail')">
         <div style="display:flex;align-items:center">
           <img style="width:40px;height:40px" :src="item.logoUrl"/>
           <span style="margin-left:10px">{{item.name}}</span>
         </div>
       </el-card>
-      <el-card class="app" body-style="padding:10px" @click.native="$router.push('/createApp')">
+      <el-card class="app" body-style="padding:10px" @click.native="$router.push('/apps/create')">
         <div style="display:flex;align-items:center">
           <div style="width:40px;height:40px;border:1px solid #C0C0C0;display:flex;justify-content:center;align-items:center;color:#C0C0C0" >
             <i class="el-icon-plus" style="font-size:24px"/>
