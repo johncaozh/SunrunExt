@@ -34,7 +34,7 @@ async function getObjectPresignedUrl(objectKey) {
     var request = {
         Bucket: env.s3Config.bucketName,
         Key: objectKey,
-        Expires: 2147483647,
+        Expires: 86400,
     }
 
     return s3Client.getSignedUrl('getObject', request);

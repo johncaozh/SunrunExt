@@ -23,19 +23,13 @@ const schema = mongoose.Schema({
         required: false,
     },
     //在IAM中的产品名（用于SSO）
-    iamProjectName: {
+    iamProductName: {
         type: String,
         default: null,
         required: false
     },
     //是否是群应用
     useInGroup: {
-        type: Boolean,
-        default: false,
-        required: false,
-    },
-    //是否使用SSO登录
-    useIamSSO: {
         type: Boolean,
         default: false,
         required: false,
