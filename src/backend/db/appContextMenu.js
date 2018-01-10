@@ -8,6 +8,7 @@ const schema = mongoose.Schema({
     },
     //click:点击推事件
     //view:跳转URL
+    //send_message:发送消息
     //scancode:扫码推事件
     //pic_photo:弹出拍照并发图
     //pic_album:弹出相册并发图
