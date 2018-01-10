@@ -57,10 +57,6 @@ export default {
           {
             validator: checkUrl,
             trigger: "blur"
-          },
-          {
-            validator: checkUrl,
-            trigger: "focus"
           }
         ]
       }
