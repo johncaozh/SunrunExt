@@ -29,6 +29,13 @@ const schema = mongoose.Schema({
         default: null,
         required: false,
     },
+    //消息模板的ID
+    messageTemplateId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'appMessageTemplate',
+        default: null,
+        required: false
+    },
     //父级菜单的ID(只支持两级菜单)
     parentId: {
         type: mongoose.Schema.Types.ObjectId,

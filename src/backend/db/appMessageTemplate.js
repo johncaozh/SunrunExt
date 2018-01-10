@@ -1,3 +1,7 @@
+import {
+    fail
+} from "assert";
+
 var mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
@@ -8,7 +12,7 @@ const schema = mongoose.Schema({
         required: true
     },
 
-    //素材消息类型
+    //消息类型
     //text：文本消息
     //image：图片消息
     //voice：语音消息
@@ -76,6 +80,12 @@ const schema = mongoose.Schema({
     data: {
         type: Object,
         required: true
+    },
+    //是否加入素材库
+    showInMaterialLibrary: {
+        type: Boolean,
+        required: false,
+        default: false,
     }
 }, {
     versionKey: false,
@@ -85,5 +95,5 @@ const schema = mongoose.Schema({
     }
 })
 
-const materialMsgModel = mongoose.model("materialMsgModel", schema);
-module.exports = materialMsgModel;
+const appMessageTemplateModel = mongoose.model("appMessageTemplate", schema);
+module.exports = appMessageTemplateModel;
