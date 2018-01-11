@@ -33,5 +33,17 @@ export default {
   async getAppDetail(appId) {
     var url = `${env.serverConfig.appsSegment}/${appId}`;
     return axios.get(url);
-  }
+  },
+  async createAppContextMenu(param) {
+    var url = env.serverConfig.appContextMenusSegment;
+    return axios.post(url, param);
+  },
+  async updateAppContextMenu(contextMenuId, param) {
+    var url = `${env.serverConfig.appContextMenusSegment}/${contextMenuId}`;
+    return axios.put(url, param);
+  },
+  async deleteAppContextMenu(contextMenuId) {
+    var url = `${env.serverConfig.appContextMenusSegment}/${contextMenuId}`;
+    return axios.delete(url);
+  },
 }

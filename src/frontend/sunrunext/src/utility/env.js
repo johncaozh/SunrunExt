@@ -4,6 +4,7 @@ const serverConfig = {
   filesSegment: "files",
   orgsSegment: "orgs",
   appsSegment: "apps",
+  appContextMenusSegment: "appContextMenus",
 }
 
 export default {
