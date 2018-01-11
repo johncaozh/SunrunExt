@@ -14,6 +14,7 @@ var s3 = require('./utilities/s3');
 var v1_router_app = require("./routers/api/v1/app");
 var v1_router_org = require('./routers/api/v1/org');
 var v1_router_file = require('./routers/api/v1/file');
+var v1_router_appContextMenu = require('./routers/api/v1/appContextMenu');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
@@ -81,6 +82,7 @@ app.use(function (req, res, next) {
 app.use("/api/v1/", v1_router_app);
 app.use("/api/v1/", v1_router_org);
 app.use("/api/v1/", v1_router_file);
+app.use("/api/v1/", v1_router_appContextMenu);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {

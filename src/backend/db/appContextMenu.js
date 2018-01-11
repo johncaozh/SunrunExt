@@ -19,11 +19,6 @@ const schema = mongoose.Schema({
         default: null,
         required: true,
     },
-    key: {
-        type: String,
-        default: null,
-        required: true,
-    },
     url: {
         type: String,
         default: null,
