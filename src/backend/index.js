@@ -11,6 +11,7 @@ var iam = require('./utilities/iam');
 var log = require('./utilities/log');
 var logger = require('./utilities/log').logger;
 var s3 = require('./utilities/s3');
+var ffmpeg=require('./utilities/ffmpeg');
 var v1_router_app = require("./routers/api/v1/app");
 var v1_router_org = require('./routers/api/v1/org');
 var v1_router_file = require('./routers/api/v1/file');
@@ -122,4 +123,5 @@ var server = app.listen(3000, async function () {
     env.serverEndConfig.downloadResUrl = `http://${host}:${port}/download/`;
     await iam.syncIamUsers();
     await s3.init();
+    ffmpeg.lauch();
 });

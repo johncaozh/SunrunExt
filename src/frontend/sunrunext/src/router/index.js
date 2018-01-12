@@ -34,6 +34,10 @@ export default new Router({
         path: '/apps/:appId/contextMenu',
         component: resolve => require(['../components/appContextMenu.vue'], resolve)
       },
+      {
+        path: '/test',
+        component: resolve => require(['../components/appAutoReply.vue'], resolve)
+      },
     ]
   }, ],
   // mode: 'history',

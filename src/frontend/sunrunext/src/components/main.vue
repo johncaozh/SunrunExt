@@ -7,7 +7,7 @@
         <el-menu-item index="/apps" class="menuItem">企业应用</el-menu-item>
         <el-menu-item index="/manager" class="menuItem">管理工具</el-menu-item>
         <el-menu-item index="/enterprise" class="menuItem">我的企业</el-menu-item>
-        <el-menu-item index="/apps/233/contextMenu" class="menuItem">测试页面</el-menu-item>
+        <el-menu-item index="/test" class="menuItem">测试页面</el-menu-item>
       </el-menu>
     </div>
     <div id="content" style="margin-top:20px;background:white;width:1080px;min-height:600px;padding:0px;align-self:center;    border-radius: 4px;webkit-box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);">
