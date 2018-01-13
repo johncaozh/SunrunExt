@@ -15,6 +15,7 @@
     "element-ui": "^2.0.10",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "moment": "^2.20.1",
     "style-loader": "^0.19.1",
     "validator": "^9.2.0",
     "vue": "^2.5.2",

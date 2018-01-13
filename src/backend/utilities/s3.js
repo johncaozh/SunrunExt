@@ -12,13 +12,17 @@ async function init() {
     s3Client.endpoint = new aws.Endpoint(config.endpoint);
 }
 
-async function uploadObject(filePath, objectKey) {
+async function uploadObject(filePath, objectKey, mimeType) {
     var fileData = fs.readFileSync(filePath);
     var request = {
         Bucket: env.s3Config.bucketName,
         Key: objectKey,
         Body: new Buffer(fileData),
     };
+
+    if (mimeType)
+        request.ContentType = mimeType;
+
     return await s3Client.putObject(request).promise();
 }
 

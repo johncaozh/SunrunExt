@@ -14,6 +14,7 @@ axios.interceptors.response.use(function (response) {
 
 export default {
   fileTransferUrl: env.serverConfig.serverEndPoint + env.serverConfig.filesSegment,
+  fileTransferUrl_audio: env.serverConfig.serverEndPoint + env.serverConfig.filesSegment_audio,
   async getOrg() {
     var url = env.serverConfig.orgsSegment;
     return axios.get(url);

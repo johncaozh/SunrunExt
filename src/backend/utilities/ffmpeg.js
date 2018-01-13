@@ -1,61 +1,98 @@
+var path = require("path");
 var ffmpeg = require('fluent-ffmpeg');
+var uuid = require('node-uuid');
+ffmpeg.setFfmpegPath(path.resolve("ffmpeg/ffmpeg.exe"));
+ffmpeg.setFfprobePath(path.resolve("ffmpeg/ffprobe.exe"));
 
-ffmpeg.setFfmpegPath('../ffmpeg/ffmpeg.exe');
-ffmpeg.setFfprobePath('../ffmpeg/ffprobe.exe');
+async function getAudioDuration(audioPath) {
+    return new Promise(function (resolve, reject) {
+        ffmpeg(path.resolve(audioPath))
+            .ffprobe(0, function (err, data) {
+                if (err)
+                    reject(err);
+                else {
+                    var duration = data.format.duration.toFixed(0);
+                    resolve(duration);
+                }
+            });
+    });
+}
 
-function lauch() {
-    // ffmpeg('../ffmpeg/test.avi')
-    //     .output('../ffmpeg/test.mp4')
-    //     .on('end', function () {
-    //         console.log('Finished processing');
-    //     })
-    //     .run();
+async function convertAudioToAmr(audioPath) {
+    return new Promise(function (resolve, reject) {
+        try {
+            var destinationFileName = uuid.v4();
+            var destinationFilePath = path.resolve('files', destinationFileName);
+            var command = ffmpeg(path.resolve(audioPath))
+                .format('amr')
+                .audioBitrate('6.7k')
+                .audioChannels(1)
+                .audioFrequency(8000)
+                .save(destinationFilePath);
+            resolve(destinationFilePath);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
 
-    // //make sure you set the correct path to your video file
-    // var proc = new ffmpeg({
-    //     source: 'C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test.avi',
-    //     nolog: true
-    // });
+async function convertVideoToMp4(videoPath) {
+    return new Promise(function (resolve, reject) {
+        try {
+            var destinationFileName = uuid.v4();
+            var destinationFilePath = path.resolve('files', destinationFileName);
+            var command = ffmpeg(path.resolve(videoPath))
+                .format('flv')
+                .videoBitrate('8k')
+                .save(destinationFilePath);
 
-    //Set the path to where FFmpeg is installed
-    //proc.setFfmpegPath("C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\ffmpeg.exe"); //I forgot to include "ffmpeg.exe"
+            resolve(destinationFilePath);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
 
-    // proc
-    //     .output('C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test.mp4')
-    //     .audioCodec('libmp3lame')
-    //     .videoCodec('libx264')
-    //     .size('320x200')
-    //     .run();
+async function resizeVideo(videoPath, width = 640) {
+    return new Promise(function (resolve, reject) {
+        try {
+            var destinationFileName = uuid.v4();
+            var destinationFilePath = path.resolve('files', destinationFileName);
+            var command = ffmpeg(path.resolve(videoPath))
+                .size(`${width}?`)
+                .save(destinationFilePath);
 
-    // Create a command to convert source.avi to MP4
-    var command = ffmpeg('C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test.wav')
-        // .audioCodec('libfaac')
-        // .videoCodec('libx264')
-       
-        .format('amr');
+            resolve(destinationFilePath);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
 
-    command.setFfmpegPath("C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\ffmpeg.exe"); //I forgot to include "ffmpeg.exe"
-
-    command.clone()
-    .audioBitrate('6.7k')
-    .audioChannels(1)
-    .audioFrequency(8000)
-    .save('C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test.amr');
-
-    // Create a clone to save a small resized version
-    // command.clone()
-    //     .size('320x200')
-    //     .save('C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test1.mp4');
-
-    // // Create a clone to save a medium resized version
-    // command.clone()
-    //     .size('640x400')
-    //     .save('C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test2.mp4');
-
-    // // Save a converted version with the original size
-    // command.save('C:\\Workspace\\SunrunExt\\src\\backend\\ffmpeg\\test3.mp4');
-};
+//获取视频封面，默认为第一帧
+async function getVideoSnapshot(videoPath, secondOffset = 0) {
+    return new Promise(function (resolve, reject) {
+        var destinationFileName = uuid.v4();
+        var destinationFilePath = path.resolve('files', destinationFileName);
+        var proc = ffmpeg(path.resolve(videoPath))
+            .on('end', function () {
+                resolve(destinationFilePath);
+            })
+            .on('error', function (err) {
+                reject(err);
+            })
+            .thumbnail({
+                count: 1,
+                timemarks: [secondOffset],
+                size: '320*160',
+                filename: destinationFilePath,
+            }, );
+    });
+}
 
 module.exports = {
-    lauch,
+    getAudioDuration,
+    convertAudioToAmr,
+    convertVideoToMp4,
+    getVideoSnapshot,
 }
