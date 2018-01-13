@@ -121,7 +121,7 @@ var server = app.listen(3000, async function () {
     var port = server.address().port;
     env.serverEndConfig.endpoint = `http://${host}:${port}`;
     env.serverEndConfig.downloadResUrl = `http://${host}:${port}/download/`;
-    await iam.syncIamUsers();
-    await s3.init();
+    //await iam.syncIamUsers();
+    //await s3.init();
     ffmpeg.lauch();
 });
