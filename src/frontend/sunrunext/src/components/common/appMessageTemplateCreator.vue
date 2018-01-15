@@ -80,11 +80,11 @@
         <i class="el-icon-plus icon-plus "></i>
         添加视频
       </div>
-      <el-dialog :close-on-click-modal=false title="编辑视频模板" width="800px" :visible.sync="videoMessageContext.isVideoDialogVisible">
+      <el-dialog :close-on-click-modal=false title="编辑视频模板" width="900px" :visible.sync="videoMessageContext.isVideoDialogVisible">
         <app-message-template-creator_video/>
         <div slot="footer" class="dialog-footer ">
-          <el-button @click="dialogVisible=false" size="small">取消</el-button>
-          <el-button type="primary" size="small" @click="submitForm('urlForm')">提交</el-button>
+          <el-button @click="dialogVisible=false">取消</el-button>
+          <el-button type="primary"  @click="submitForm('urlForm')">保存</el-button>
         </div>
       </el-dialog>
     </el-tab-pane>

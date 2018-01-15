@@ -6,8 +6,13 @@
       </div>
       <div class="editItemContainer">
         <span class="text-font-minor">
-          <el-button type="text" size="small" class="button-link" style="margin-right:10px;">添加视频</el-button>
+          <el-upload  :show-file-list="false" v-loading="isUploading" style="display:inline-block" v-show="!mediaId">
+          <el-button type="text"  class="button-link" style="margin-right:10px;">{{mediaId?"更改":"添加视频"}}</el-button>
+          </el-upload>
+          <span v-show="!mediaId">
           不超过20MB, 文件格式: rm, rmvb, wmv, avi, mpg, mpeg, mp4
+          </span>
+          <img :src="thumbUrl" style="width:100px" v-show="mediaId"/>
         </span>
       </div>
       <div class="editItemContainer">
@@ -21,8 +26,9 @@
       <div class="text-font-normal preview-title" style="line-height:18px">
         {{title}}
       </div>
-      <div class="preview-media">
-        <img>
+      <div class="preview-media" style="position:relative">
+        <img :src="thumbUrl" width="230px" v-show="mediaId">
+        <i class="el-icon-custom-play icon-video-play"/>
       </div>
       <div class="text-font-minor preview-abstract" style="line-height:16px">
         {{abstract}}
@@ -32,83 +38,100 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        mediaId: null,
-        thumbMediaId: null,
-        title: null,
-        abstract: null
-      };
-    }
-  };
-
+export default {
+  data() {
+    return {
+      mediaId: null,
+      thumbMediaId: null,
+      title: null,
+      abstract: null,
+      isUploading,
+      thumbUrl: null
+    };
+  }
+};
 </script>
 
 <style lang="less" scoped>
-  .editContainer {}
+.editContainer {
+}
 
-  .editItemContainer {
-    border-bottom: 1px solid @color-border-level2;
-    padding-top: 30px;
-    padding-bottom: 30px;
-  }
+.editItemContainer {
+  border-bottom: 1px solid @color-border-level2;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
 
-  .previewContainer {
-    border: 1px solid @color-border-level2;
-    padding: 10px;
-    width: 250px;
-    min-height: 125px;
-    margin-left: 20px;
-  }
+.previewContainer {
+  border: 1px solid @color-border-level2;
+  padding: 10px;
+  width: 250px;
+  min-height: 125px;
+  margin-left: 20px;
+}
 
-  .input-title {
-    border: 0px;
-    color: @color-theme;
-    outline: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    font-size: 23px;
-    width: 100%;
-  }
+.input-title {
+  border: 0px;
+  color: @color-theme;
+  outline: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-size: 23px;
+  width: 100%;
+}
 
-  .input-title::-webkit-input-placeholder {
-    color: @color-theme;
-  }
+.input-title::-webkit-input-placeholder {
+  color: @color-theme;
+}
 
-  textarea {
-    border: 0px;
-    background: transparent;
-    resize: none;
-    outline: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    flex: 1;
-    height: 60px;
-    word-wrap: break-word;
-    word-break: break-all;
-    padding-top: 3px;
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-  }
+textarea {
+  border: 0px;
+  background: transparent;
+  resize: none;
+  outline: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex: 1;
+  height: 60px;
+  word-wrap: break-word;
+  word-break: break-all;
+  padding-top: 2px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
 
-  textarea::-webkit-input-placeholder {
-    color: @color-font-placeholder;
-  }
+textarea::-webkit-input-placeholder {
+  color: @color-font-placeholder;
+}
 
-  .preview-title {
-    font-size: 16px;
-    word-wrap: break-word;
-  }
+.preview-title {
+  font-size: 16px;
+  word-wrap: break-word;
+}
 
-  .preview-abstract {
-    word-wrap: break-word;
-  }
+.preview-abstract {
+  word-wrap: break-word;
+}
 
-  .preview-media{ 
-    background: @color-border-level2;
-    min-height: 120px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
+.preview-media {
+  background: @color-border-level2;
+  min-height: 120px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
+.icon-video-play {
+  font-size: 36px;
+  color: @color-font-minor;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.icon-video-play:hover {
+  color: @color-theme;
+  transform-origin: 0.5, 0.5;
+}
 </style>
