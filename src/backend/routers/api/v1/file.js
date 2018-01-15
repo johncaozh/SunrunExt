@@ -48,7 +48,7 @@ async function processUploadFile(filePath, mimeType) {
     return md5;
 }
 
-// 单文件上传
+// 上传语音
 router.post("/files/audio", upload, function (req, res, next) {
     upload(req, res, async function (err) {
         if (err) {
@@ -70,6 +70,35 @@ router.post("/files/audio", upload, function (req, res, next) {
             api.attachData2Response(200, "上传成功", {
                 mediaId: amrMd5,
                 duration: audioDuration,
+            }, res);
+            next();
+        }
+    });
+});
+
+// 上传视频
+router.post("/files/video", upload, function (req, res, next) {
+    upload(req, res, async function (err) {
+        if (err) {
+            api.attachData2Response(500, "上传失败", err, res);
+            next();
+        } else {
+            var presignedUrl;
+            var filePath = req.file.path;
+            var mp4FilePath = await ffmpeg.convertVideoToMp4(filePath);
+            console.log("mp4FilePath:" + mp4FilePath);
+            var resizeMp4FilePath = await ffmpeg.resizeVideo(mp4FilePath);
+            console.log("resizeMp4FilePath:" + resizeMp4FilePath);
+            
+            var videoThumbFilePath = await ffmpeg.getVideoSnapshot(resizeMp4FilePath);
+            console.log("videoThumbFilePath:" + videoThumbFilePath);
+            
+            var resizeMp4FileMd5 = await processUploadFile(resizeMp4FilePath, "video/mp4");
+            var videoThumbFileMd5 = await processUploadFile(videoThumbFilePath, "image/png");
+
+            api.attachData2Response(200, "上传成功", {
+                mediaId: resizeMp4FileMd5,
+                thumbMediaId: videoThumbFileMd5,
             }, res);
             next();
         }

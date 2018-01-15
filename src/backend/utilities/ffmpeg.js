@@ -1,6 +1,7 @@
 var path = require("path");
 var ffmpeg = require('fluent-ffmpeg');
 var uuid = require('node-uuid');
+var fs = require('fs');
 ffmpeg.setFfmpegPath(path.resolve("ffmpeg/ffmpeg.exe"));
 ffmpeg.setFfprobePath(path.resolve("ffmpeg/ffprobe.exe"));
 
@@ -24,12 +25,17 @@ async function convertAudioToAmr(audioPath) {
             var destinationFileName = uuid.v4();
             var destinationFilePath = path.resolve('files', destinationFileName);
             var command = ffmpeg(path.resolve(audioPath))
+                .on('end', function () {
+                    resolve(destinationFilePath);
+                })
+                .on('error', function (err) {
+                    reject(err);
+                })
                 .format('amr')
                 .audioBitrate('6.7k')
                 .audioChannels(1)
                 .audioFrequency(8000)
                 .save(destinationFilePath);
-            resolve(destinationFilePath);
         } catch (err) {
             reject(err);
         }
@@ -42,11 +48,14 @@ async function convertVideoToMp4(videoPath) {
             var destinationFileName = uuid.v4();
             var destinationFilePath = path.resolve('files', destinationFileName);
             var command = ffmpeg(path.resolve(videoPath))
-                .format('flv')
-                .videoBitrate('8k')
+                .on('end', function () {
+                    resolve(destinationFilePath);
+                })
+                .on('error', function (err) {
+                    reject(err);
+                })
+                .format('mp4')
                 .save(destinationFilePath);
-
-            resolve(destinationFilePath);
         } catch (err) {
             reject(err);
         }
@@ -59,10 +68,15 @@ async function resizeVideo(videoPath, width = 640) {
             var destinationFileName = uuid.v4();
             var destinationFilePath = path.resolve('files', destinationFileName);
             var command = ffmpeg(path.resolve(videoPath))
-                .size(`${width}?`)
+                .on('end', function () {
+                    resolve(destinationFilePath);
+                })
+                .on('error', function (err) {
+                    reject(err);
+                })
+                .format('mp4')
+                .size(`${width}x?`)
                 .save(destinationFilePath);
-
-            resolve(destinationFilePath);
         } catch (err) {
             reject(err);
         }
@@ -70,9 +84,9 @@ async function resizeVideo(videoPath, width = 640) {
 }
 
 //获取视频封面，默认为第一帧
-async function getVideoSnapshot(videoPath, secondOffset = 0) {
+async function getVideoSnapshot(videoPath, secondOffset = 1) {
     return new Promise(function (resolve, reject) {
-        var destinationFileName = uuid.v4();
+        var destinationFileName = uuid.v4() + '.png';
         var destinationFilePath = path.resolve('files', destinationFileName);
         var proc = ffmpeg(path.resolve(videoPath))
             .on('end', function () {
@@ -81,10 +95,10 @@ async function getVideoSnapshot(videoPath, secondOffset = 0) {
             .on('error', function (err) {
                 reject(err);
             })
-            .thumbnail({
+            .screenshots({
                 count: 1,
                 timemarks: [secondOffset],
-                size: '320*160',
+                size: '320x?',
                 filename: destinationFilePath,
             }, );
     });
@@ -94,5 +108,6 @@ module.exports = {
     getAudioDuration,
     convertAudioToAmr,
     convertVideoToMp4,
+    resizeVideo,
     getVideoSnapshot,
 }
