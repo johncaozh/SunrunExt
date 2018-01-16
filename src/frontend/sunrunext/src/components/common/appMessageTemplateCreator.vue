@@ -16,10 +16,49 @@
     <el-tab-pane>
       <span slot="label" class="label">
         <i class="el-icon-custom-news icon"></i> 外链图文</span>
-      <div class="flexDiv-v border">
+        <div class="flexDiv-h" v-if="externalLinkNewsMessageContext.news.length>0">
+ <div class="flexDiv-v" style=" margin-left: 20px;" >
+        <div v-for="(item,index) in externalLinkNewsMessageContext.news" :key="index" class="new-container">
+          <div v-if="index==0" class="main-new" >
+            <div class="text-font-normal main-new-title" style="line-height:18px" v-if="externalLinkNewsMessageContext.news.length==1">
+              {{item.title?item.title:'标题'}}
+            </div>
+            <div class="main-new-media" style="position:relative">
+              <div class="main-new-media-placeholder" v-show="!item.mediaId" />
+              <img :src="item.mediaUrl" style="width:250px;height:125px" v-show="item.mediaId">
+              <div class="text-font-normal main-new-title-overConver" v-if="externalLinkNewsMessageContext.news.length>1">
+                {{item.title?item.title:'标题'}}
+              </div>
+            </div>
+            <div class="text-font-minor main-new-abstract" style="line-height:16px" v-if="externalLinkNewsMessageContext.news.length==1">
+              {{item.abstract}}
+            </div>
+          </div>
+          <div class="flexDiv-h minor-new" v-else>
+            <div class="minor-new-title">
+              {{item.title?item.title:'标题'}}
+            </div>
+            <div style="">
+              <div class="main-new-media-placeholder" style="width:40px;height:40px;min-height:40px" v-show="!item.mediaId" />
+              <img :src="item.mediaUrl" style="width:40px;height:40px" v-show="item.mediaId">
+            </div>
+          </div>
+        </div>
+      </div>
+      <el-button type="text" class="button-link" style="margin-left:10px;align-self:flex-end;padding:0px" @click="editExternalLinkNewsTemplate">编辑</el-button>
+        </div>
+      <div class="flexDiv-v border" @click="editExternalLinkNewsTemplate" v-else>
         <i class="el-icon-plus icon-plus "></i>
         添加外链图文
       </div>
+      <el-dialog :close-on-click-modal=false title="编辑外链图文模板" width="900px" :visible.sync="externalLinkNewsMessageContext.isExternalLinkNewsDialogVisible">
+        <app-message-template-creator_news_external-link ref="externalLinkNewsEditor" :news="externalLinkNewsMessageContext.news"
+        />
+        <div slot="footer" class="dialog-footer ">
+          <el-button @click="externalLinkNewsMessageContext.isExternalLinkNewsDialogVisible=false">取消</el-button>
+          <el-button type="primary" @click="saveExternalLinkNewsTemplate">保存</el-button>
+        </div>
+      </el-dialog>
     </el-tab-pane>
     <el-tab-pane>
       <span slot="label" class="label">
@@ -76,14 +115,24 @@
     <el-tab-pane>
       <span slot="label" class="label">
         <i class="el-icon-custom-video icon"></i> 视频</span>
-      <div class="preview-media" style="position:relative" v-if="videoMessageContext.mediaId">
-        <div class="preview-media-placeholder" />
+      <div class="flexDiv-h" style="align-items:flex-end">
+        <div class="flexDiv-v video-preview-container" v-if="videoMessageContext.mediaId">
+          <div class="text-font-normal video-preview-title" style="line-height:18px">
+            {{videoMessageContext.title}}
+          </div>
+          <div class="video-preview-media" style="position:relative">
+            <img :src="videoMessageContext.thumbMediaUrl" style="width:250px">
+          </div>
+          <div class="text-font-minor video-preview-abstract" style="line-height:16px">
+            {{videoMessageContext.abstract}}
+          </div>
+        </div>
+        <div class="flexDiv-v border" @click="editVideoTemplate" v-else>
+          <i class="el-icon-plus icon-plus "></i>
+          添加视频
+        </div>
+        <el-button type="text" class="button-link" style="margin-left:10px;padding:0px" @click="editVideoTemplate" v-show="videoMessageContext.mediaId">编辑</el-button>
       </div>
-      <div class="flexDiv-v border" @click="editVideoTemplate" v-else>
-        <i class="el-icon-plus icon-plus "></i>
-        添加视频
-      </div>
-      <el-button type="text" class="button-link" @click="editVideoTemplate" v-show="videoMessageContext.mediaId">编辑</el-button>
       <el-dialog :close-on-click-modal=false title="编辑视频模板" width="900px" :visible.sync="videoMessageContext.isVideoDialogVisible">
         <app-message-template-creator_video ref="videoEditor" :videoMessageContext="videoMessageContext" />
         <div slot="footer" class="dialog-footer ">
@@ -122,286 +171,387 @@
 </template>
 
 <script>
-  import api from "../../utility/api";
-  import fileIcon from "./fileIcon.vue";
-  import appMessageTemplateCreator_video from "./appMessageTemplateCreator_video";
-  export default {
-    data() {
-      return {
-        photoMessageContext: {
-          isUploading: false,
-          imageUrl: null,
-          mediaId: null
-        },
-        voiceMessageContext: {
-          isUploading: false,
-          mediaId: null, //amr媒体ID
-          duration: 0, //秒为单位
-          fileName: null,
-          mediaUrl: null
-        },
-        fileMessageContext: {
-          isUploading: false,
-          mediaId: null,
-          fileSize: 0, //秒为单位
-          fileName: null,
-          mediaUrl: null
-        },
-        videoMessageContext: {
-          mediaId: null,
-          thumbMediaId: null,
-          title: null,
-          abstract: null,
-          mediaUrl: null,
-          thumbMediaUrl: null,
-          isVideoDialogVisible: false
-        },
-        uploadUrl: api.fileTransferUrl,
-        uploadUrl_audio: api.fileTransferUrl_audio
-      };
+import api from "../../utility/api";
+import fileIcon from "./fileIcon.vue";
+import appMessageTemplateCreator_video from "./appMessageTemplateCreator_video";
+import appMessageTemplateCreator_news_externalLink from "./appMessageTemplateCreator_news_externalLink";
+export default {
+  data() {
+    return {
+      photoMessageContext: {
+        isUploading: false,
+        imageUrl: null,
+        mediaId: null
+      },
+      voiceMessageContext: {
+        isUploading: false,
+        mediaId: null, //amr媒体ID
+        duration: 0, //秒为单位
+        fileName: null,
+        mediaUrl: null
+      },
+      fileMessageContext: {
+        isUploading: false,
+        mediaId: null,
+        fileSize: 0, //秒为单位
+        fileName: null,
+        mediaUrl: null
+      },
+      videoMessageContext: {
+        mediaId: null,
+        thumbMediaId: null,
+        title: null,
+        abstract: null,
+        mediaUrl: null,
+        thumbMediaUrl: null,
+        isVideoDialogVisible: false
+      },
+      externalLinkNewsMessageContext: {
+        news: [],
+        isExternalLinkNewsDialogVisible: false
+      },
+      uploadUrl: api.fileTransferUrl,
+      uploadUrl_audio: api.fileTransferUrl_audio
+    };
+  },
+
+  components: {
+    fileIcon,
+    appMessageTemplateCreator_video,
+    appMessageTemplateCreator_news_externalLink
+  },
+
+  methods: {
+    handlePhotoSuccess(res, file) {
+      this.photoMessageContext.isUploading = false;
+      this.photoMessageContext.mediaId = res.data;
+      this.photoMessageContext.imageUrl = URL.createObjectURL(file.raw);
     },
+    beforePhotoUpload(file) {
+      const isvalidPhoto =
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png" ||
+        file.type === "image/bmp";
 
-    components: {
-      fileIcon,
-      appMessageTemplateCreator_video
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isvalidPhoto) {
+        this.$message.error("上传的图片只能是 JPEG、JPG、PNG、BMP 格式!");
+      } else if (!isLt2M) {
+        this.$message.error("上传的图片大小不能超过 2MB!");
+      }
+
+      var result = isvalidPhoto && isLt2M;
+
+      if (result) this.photoMessageContext.isUploading = true;
+
+      return result;
     },
-
-    methods: {
-      handlePhotoSuccess(res, file) {
-        this.photoMessageContext.isUploading = false;
-        this.photoMessageContext.mediaId = res.data;
-        this.photoMessageContext.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforePhotoUpload(file) {
-        const isvalidPhoto =
-          file.type === "image/jpeg" ||
-          file.type === "image/jpg" ||
-          file.type === "image/png" ||
-          file.type === "image/bmp";
-
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isvalidPhoto) {
-          this.$message.error("上传的图片只能是 JPEG、JPG、PNG、BMP 格式!");
-        } else if (!isLt2M) {
-          this.$message.error("上传的图片大小不能超过 2MB!");
-        }
-
-        var result = isvalidPhoto && isLt2M;
-
-        if (result) this.photoMessageContext.isUploading = true;
-
-        return result;
-      },
-      cleanPhotoMessageContext() {
-        this.photoMessageContext.isUploading = false;
-        this.photoMessageContext.imageUrl = null;
-      },
-      handleVoiceSuccess(res, file) {
-        this.voiceMessageContext.isUploading = false;
-        this.voiceMessageContext.fileName = file.name;
-        this.voiceMessageContext.mediaId = res.data.mediaId;
-        this.voiceMessageContext.duration = res.data.duration;
-        this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${this
+    cleanPhotoMessageContext() {
+      this.photoMessageContext.isUploading = false;
+      this.photoMessageContext.imageUrl = null;
+    },
+    handleVoiceSuccess(res, file) {
+      this.voiceMessageContext.isUploading = false;
+      this.voiceMessageContext.fileName = file.name;
+      this.voiceMessageContext.mediaId = res.data.mediaId;
+      this.voiceMessageContext.duration = res.data.duration;
+      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${this
         .voiceMessageContext.mediaId}`;
-      },
-      handleVoiceError(err, file, fileList) {
-        this.voiceMessageContext.isUploading = false;
+    },
+    handleVoiceError(err, file, fileList) {
+      this.voiceMessageContext.isUploading = false;
 
-        if (err.status == 413) this.$message.error("语音时长不能超过一分钟");
-      },
-      beforeVoiceUpload(file) {
-        const isvalidVoice =
-          file.type === "audio/mp3" ||
-          file.type === "audio/wma" ||
-          file.type === "audio/wav" ||
-          file.type === "audio/amr";
+      if (err.status == 413) this.$message.error("语音时长不能超过一分钟");
+    },
+    beforeVoiceUpload(file) {
+      const isvalidVoice =
+        file.type === "audio/mp3" ||
+        file.type === "audio/wma" ||
+        file.type === "audio/wav" ||
+        file.type === "audio/amr";
 
-        const isLt2M = file.size / 1024 / 1024 < 5;
+      const isLt2M = file.size / 1024 / 1024 < 5;
 
-        if (!isvalidVoice) {
-          this.$message.error("上传的语音只能是 MP3、WMA、WAV、AMR 格式!");
-        } else if (!isLt2M) {
-          this.$message.error("上传的语音大小不能超过 5MB!");
-        }
+      if (!isvalidVoice) {
+        this.$message.error("上传的语音只能是 MP3、WMA、WAV、AMR 格式!");
+      } else if (!isLt2M) {
+        this.$message.error("上传的语音大小不能超过 5MB!");
+      }
 
-        var result = isvalidVoice && isLt2M;
+      var result = isvalidVoice && isLt2M;
 
-        if (result) this.voiceMessageContext.isUploading = true;
+      if (result) this.voiceMessageContext.isUploading = true;
 
-        return result;
-      },
-      cleanVoiceMessageContext() {
-        this.voiceMessageContext.mediaId = null;
-        this.voiceMessageContext.isUploading = false;
-      },
-      playVoice() {
-        var audioPlayer = this.$refs.voicePlayer;
+      return result;
+    },
+    cleanVoiceMessageContext() {
+      this.voiceMessageContext.mediaId = null;
+      this.voiceMessageContext.isUploading = false;
+    },
+    playVoice() {
+      var audioPlayer = this.$refs.voicePlayer;
 
-        if (audioPlayer.paused) {
-          audioPlayer.play();
-        } else {
-          audioPlayer.pause();
-        }
-      },
-      handleFileSuccess(res, file) {
-        this.fileMessageContext.isUploading = false;
-        this.fileMessageContext.fileName = file.name;
-        this.fileMessageContext.mediaId = res.data;
-        this.fileMessageContext.fileSize = file.size;
-        this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${this
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
+    },
+    handleFileSuccess(res, file) {
+      this.fileMessageContext.isUploading = false;
+      this.fileMessageContext.fileName = file.name;
+      this.fileMessageContext.mediaId = res.data;
+      this.fileMessageContext.fileSize = file.size;
+      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${this
         .fileMessageContext.mediaId}`;
-      },
-      handleFileError(err, file, fileList) {
-        this.voiceMessageContext.isUploading = false;
-        this.$message.error("上传文件出错");
-      },
-      beforeFileUpload(file) {
-        const isLt2M = file.size / 1024 / 1024 < 20;
+    },
+    handleFileError(err, file, fileList) {
+      this.voiceMessageContext.isUploading = false;
+      this.$message.error("上传文件出错");
+    },
+    beforeFileUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 20;
 
-        if (!isLt2M) {
-          this.$message.error("上传的文件大小不能超过 20MB!");
-        }
+      if (!isLt2M) {
+        this.$message.error("上传的文件大小不能超过 20MB!");
+      }
 
-        if (isLt2M) this.fileMessageContext.isUploading = true;
-        return isLt2M;
-      },
-      cleanFileMessageContext() {
-        this.fileMessageContext.mediaId = null;
-        this.fileMessageContext.isUploading = false;
-      },
-      downloadFile() {
-        var a = document.createElement("a");
-        a.href = this.fileMessageContext.mediaUrl;
-        a.click();
-      },
-      editVideoTemplate() {
-        this.videoMessageContext.isVideoDialogVisible = true;
-      },
-      saveVideoTemplate() {
-        this.videoMessageContext.mediaId = this.$refs.videoEditor.mediaId;
-        this.videoMessageContext.thumbMediaId = this.$refs.videoEditor.thumbMediaId;
-        this.videoMessageContext.title = this.$refs.videoEditor.title;
-        this.videoMessageContext.abstract = this.$refs.videoEditor.abstract;
-        this.videoMessageContext.mediaUrl = this.$refs.videoEditor.mediaUrl;
-        this.videoMessageContext.thumbMediaUrl = this.$refs.videoEditor.thumbMediaUrl;
-        this.videoMessageContext.isVideoDialogVisible = false;
+      if (isLt2M) this.fileMessageContext.isUploading = true;
+      return isLt2M;
+    },
+    cleanFileMessageContext() {
+      this.fileMessageContext.mediaId = null;
+      this.fileMessageContext.isUploading = false;
+    },
+    downloadFile() {
+      var a = document.createElement("a");
+      a.href = this.fileMessageContext.mediaUrl;
+      a.click();
+    },
+    editVideoTemplate() {
+      this.videoMessageContext.isVideoDialogVisible = true;
+    },
+    saveVideoTemplate() {
+      this.videoMessageContext.mediaId = this.$refs.videoEditor.mediaId;
+      this.videoMessageContext.thumbMediaId = this.$refs.videoEditor.thumbMediaId;
+      this.videoMessageContext.title = this.$refs.videoEditor.title;
+      this.videoMessageContext.abstract = this.$refs.videoEditor.abstract;
+      this.videoMessageContext.mediaUrl = this.$refs.videoEditor.mediaUrl;
+      this.videoMessageContext.thumbMediaUrl = this.$refs.videoEditor.thumbMediaUrl;
+      this.videoMessageContext.isVideoDialogVisible = false;
+    },
+    editExternalLinkNewsTemplate() {
+      this.externalLinkNewsMessageContext.isExternalLinkNewsDialogVisible = true;
+    },
+    saveExternalLinkNewsTemplate() {
+      var pass = this.$refs.externalLinkNewsEditor.checkDataValid();
+
+      if (pass) {
+        this.externalLinkNewsMessageContext.news = [];
+        this.$refs.externalLinkNewsEditor.tempNews.forEach(i => {
+          this.externalLinkNewsMessageContext.news.push(i);
+        });
+        this.externalLinkNewsMessageContext.isExternalLinkNewsDialogVisible = false;
       }
     }
-  };
-
+  }
+};
 </script>
 
 <style lang="less" scoped>
-  .el-tabs {
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 15px;
-    background: #fbfbfb;
-    min-height: 300px;
-  }
+.el-tabs {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  background: #fbfbfb;
+  min-height: 300px;
+}
 
-  .icon {
-    font-size: 14px;
-    color: @color-font-minor;
-  }
+.icon {
+  font-size: 14px;
+  color: @color-font-minor;
+}
 
-  .icon-plus {
-    font-size: 32px;
-    color: @color-theme;
-  }
+.icon-plus {
+  font-size: 32px;
+  color: @color-theme;
+}
 
-  .icon-voiceMessage {
-    font-size: 20px;
-    color: @color-theme;
-  }
+.icon-voiceMessage {
+  font-size: 20px;
+  color: @color-theme;
+}
 
-  .label {
-    font-size: 14px;
-    color: @color-font-minor;
-  }
+.label {
+  font-size: 14px;
+  color: @color-font-minor;
+}
 
-  textarea {
-    border: 0px;
-    background: transparent;
-    font-size: 14px;
-    resize: none;
-    width: 100%;
-    height: 100%;
-    height: 240px;
-    word-break: break-all;
-    color: @color-font-minor;
-    outline: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+textarea {
+  border: 0px;
+  background: transparent;
+  font-size: 14px;
+  resize: none;
+  width: 100%;
+  height: 100%;
+  height: 240px;
+  word-break: break-all;
+  color: @color-font-minor;
+  outline: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  }
+}
 
-  textarea::-webkit-input-placeholder {
-    color: @color-font-placeholder;
-  }
+textarea::-webkit-input-placeholder {
+  color: @color-font-placeholder;
+}
 
-  .border {
-    float: left;
-    border: 1px solid @color-border-level2;
-    border-radius: 5px;
-    padding: 95px;
-    font-size: 14px;
-    background: white;
-    color: @color-theme;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-  }
+.border {
+  float: left;
+  border: 1px solid @color-border-level2;
+  border-radius: 5px;
+  padding: 95px;
+  font-size: 14px;
+  background: white;
+  color: @color-theme;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
 
-  .border:hover {
-    border: 1px solid @color-theme;
-  }
+.border:hover {
+  border: 1px solid @color-theme;
+}
 
-  .upload-prompt {
-    margin-left: 10px;
-    max-width: 300px;
-    word-wrap: break-word;
-    color: @color-font-minor;
-    font-size: 12px;
-  }
+.upload-prompt {
+  margin-left: 10px;
+  max-width: 300px;
+  word-wrap: break-word;
+  color: @color-font-minor;
+  font-size: 12px;
+}
 
-  .avatar-uploader .el-upload {
-    border: 1px solid @color-border-level2;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
+.avatar-uploader .el-upload {
+  border: 1px solid @color-border-level2;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
 
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
 
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 
-  .preview-media {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
+.video-preview-container {
+  border: 1px solid @color-border-level2;
+  padding: 10px;
+  width: 250px;
+  min-height: 125px;
+}
 
-  .preview-media-placeholder {
-    min-height: 120px;
-    background: @color-font-minor;
-  }
+.video-preview-media {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
+.video-preview-title {
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+.video-preview-abstract {
+  word-wrap: break-word;
+}
+
+.new-container {
+  position: relative;
+}
+
+.main-new {
+  border: 1px solid @color-border-level2;
+  padding: 10px;
+  width: 250px;
+  min-height: 125px;
+  cursor: pointer;
+}
+
+.main-new-title {
+  font-size: 16px;
+  word-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.main-new-title-overConver {
+  font-size: 16px;
+  word-wrap: break-word;
+  line-height: 14px;
+  color: white;
+  position: absolute;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 9;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.main-new-abstract {
+  word-wrap: break-word;
+  margin-top: 10px;
+}
+
+.main-new-media {
+  line-height: 0px;
+}
+
+.main-new-media-placeholder {
+  min-height: 125px;
+  background: @color-font-minor;
+}
+
+.minor-new {
+  border: 1px solid @color-border-level2;
+  border-top: 0px;
+  padding: 10px;
+  align-items: center;
+  line-height: 0px;
+  cursor: pointer;
+}
+
+.minor-new-title {
+  font-size: 13px;
+  max-height: 40px;
+  flex: 1;
+  line-height: 20px;
+  width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  height: auto;
+  word-wrap: break-word;
+  word-break: break-word;
+}
 </style>

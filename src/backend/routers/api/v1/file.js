@@ -17,6 +17,7 @@ var upload = multer({
 async function processUploadFile(filePath, mimeType) {
     var md5 = await s3.getFileMd5(filePath);
     var existed = await s3.checkObjectExist(md5);
+    var presignedUrl = null;
     if (!existed) {
         await s3.uploadObject(filePath, md5, mimeType);
         presignedUrl = await s3.getObjectPresignedUrl(md5);
@@ -89,10 +90,10 @@ router.post("/files/video", upload, function (req, res, next) {
             console.log("mp4FilePath:" + mp4FilePath);
             var resizeMp4FilePath = await ffmpeg.resizeVideo(mp4FilePath);
             console.log("resizeMp4FilePath:" + resizeMp4FilePath);
-            
+
             var videoThumbFilePath = await ffmpeg.getVideoSnapshot(resizeMp4FilePath);
             console.log("videoThumbFilePath:" + videoThumbFilePath);
-            
+
             var resizeMp4FileMd5 = await processUploadFile(resizeMp4FilePath, "video/mp4");
             var videoThumbFileMd5 = await processUploadFile(videoThumbFilePath, "image/png");
 
@@ -114,7 +115,7 @@ router.post("/files", upload, function (req, res, next) {
         } else {
             var presignedUrl;
             var filePath = req.file.path;
-            var md5 = await processUploadFile(filePath);
+            var md5 = await processUploadFile(filePath, req.file.mimetype);
             api.attachData2Response(200, "上传成功", md5, res);
             next();
         }

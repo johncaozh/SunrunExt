@@ -12,19 +12,32 @@ import filter from './utility/filter'
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 
-Array.prototype.removeByValue = function(val) {
-  for(var i=0; i<this.length; i++) {
-    if(this[i] == val) {
+Array.prototype.removeByValue = function (val) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == val) {
       this.splice(i, 1);
       break;
     }
   }
 }
 
+Array.prototype.move = function (old_index, new_index) {
+  if (new_index >= this.length) {
+    var k = new_index - this.length;
+    while ((k--) + 1) {
+      this.push(undefined);
+    }
+  }
+  this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+  return this; // for testing purposes
+};
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: {
+    App
+  }
 })

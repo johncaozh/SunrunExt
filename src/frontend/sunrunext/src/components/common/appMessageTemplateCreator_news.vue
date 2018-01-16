@@ -90,7 +90,7 @@ export default {
       this.thumbMediaId = this.videoMessageContext.thumbMediaId;
       this.title = this.videoMessageContext.title;
       this.abstract = this.videoMessageContext.abstract;
-      this.mediaUrl = this.videoMessageContext.mediaUrl;
+      this.mediaUrl = this.videoMessageContext.mediaUrl
       this.thumbMediaUrl = this.videoMessageContext.thumbMediaUrl;
       this.isUploading = false;
       this.playerOptions.sources[0].src = this.mediaUrl;
@@ -150,7 +150,6 @@ export default {
   width: 250px;
   min-height: 125px;
   margin-left: 20px;
-  line-height: 0px;
 }
 
 .input-title {
@@ -190,20 +189,19 @@ textarea::-webkit-input-placeholder {
 .preview-title {
   font-size: 16px;
   word-wrap: break-word;
-  margin-bottom: 10px;
 }
 
 .preview-abstract {
   word-wrap: break-word;
-  margin-top: 10px;
 }
 
 .preview-media {
-  line-height: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .preview-media-placeholder {
-  min-height: 125px;
+  min-height: 120px;
   background: @color-font-minor;
 }
 
