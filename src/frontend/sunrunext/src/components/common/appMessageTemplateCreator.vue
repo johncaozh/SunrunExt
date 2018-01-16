@@ -76,15 +76,19 @@
     <el-tab-pane>
       <span slot="label" class="label">
         <i class="el-icon-custom-video icon"></i> 视频</span>
-      <div class="flexDiv-v border" @click="editVideoTemplate">
+      <div class="preview-media" style="position:relative" v-if="videoMessageContext.mediaId">
+        <div class="preview-media-placeholder" />
+      </div>
+      <div class="flexDiv-v border" @click="editVideoTemplate" v-else>
         <i class="el-icon-plus icon-plus "></i>
         添加视频
       </div>
+      <el-button type="text" class="button-link" @click="editVideoTemplate" v-show="videoMessageContext.mediaId">编辑</el-button>
       <el-dialog :close-on-click-modal=false title="编辑视频模板" width="900px" :visible.sync="videoMessageContext.isVideoDialogVisible">
-        <app-message-template-creator_video/>
+        <app-message-template-creator_video ref="videoEditor" :videoMessageContext="videoMessageContext" />
         <div slot="footer" class="dialog-footer ">
-          <el-button @click="dialogVisible=false">取消</el-button>
-          <el-button type="primary"  @click="submitForm('urlForm')">保存</el-button>
+          <el-button @click="videoMessageContext.isVideoDialogVisible=false">取消</el-button>
+          <el-button type="primary" @click="saveVideoTemplate">保存</el-button>
         </div>
       </el-dialog>
     </el-tab-pane>
@@ -148,6 +152,8 @@
           thumbMediaId: null,
           title: null,
           abstract: null,
+          mediaUrl: null,
+          thumbMediaUrl: null,
           isVideoDialogVisible: false
         },
         uploadUrl: api.fileTransferUrl,
@@ -271,6 +277,15 @@
       },
       editVideoTemplate() {
         this.videoMessageContext.isVideoDialogVisible = true;
+      },
+      saveVideoTemplate() {
+        this.videoMessageContext.mediaId = this.$refs.videoEditor.mediaId;
+        this.videoMessageContext.thumbMediaId = this.$refs.videoEditor.thumbMediaId;
+        this.videoMessageContext.title = this.$refs.videoEditor.title;
+        this.videoMessageContext.abstract = this.$refs.videoEditor.abstract;
+        this.videoMessageContext.mediaUrl = this.$refs.videoEditor.mediaUrl;
+        this.videoMessageContext.thumbMediaUrl = this.$refs.videoEditor.thumbMediaUrl;
+        this.videoMessageContext.isVideoDialogVisible = false;
       }
     }
   };
@@ -319,7 +334,8 @@
     outline: none;
     overflow-x: hidden;
     overflow-y: auto;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   }
 
   textarea::-webkit-input-placeholder {
@@ -376,6 +392,16 @@
     width: 178px;
     height: 178px;
     display: block;
+  }
+
+  .preview-media {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .preview-media-placeholder {
+    min-height: 120px;
+    background: @color-font-minor;
   }
 
 </style>
