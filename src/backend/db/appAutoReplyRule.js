@@ -48,5 +48,5 @@ const schema = mongoose.Schema({
     }
 })
 
-const appAutoReplyRuleModel = mongoose.module("appAutoReplyRule", schema);
+const appAutoReplyRuleModel = mongoose.model("appAutoReplyRule", schema);
 module.exports = appAutoReplyRuleModel;

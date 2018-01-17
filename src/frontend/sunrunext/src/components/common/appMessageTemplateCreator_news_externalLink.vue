@@ -7,8 +7,7 @@
       <div class="editItemContainer">
         <span class="text-font-minor">
           <img :src="editingNew.mediaUrl" style="width:120px;height:60px;" v-show="editingNew.mediaId" />
-          <el-upload :show-file-list="false" :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload" v-loading="isUploading"
-            style="display:inline-block" :action="uploadUrl">
+          <el-upload :show-file-list="false" :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl">
             <el-button type="text" class="button-link" style="margin-right:10px;">{{editingNew.mediaId?"更改":"添加封面图"}}</el-button>
           </el-upload>
           <span v-show="!editingNew.mediaId">
@@ -30,10 +29,10 @@
       </div>
     </div>
     <div class="flexDiv-v" style=" margin-left: 20px;" v-show="tempNews.length>0">
-      <div v-for="(item,index) in tempNews" :key="index" class="new-container" @click="editNew(item)" >
+      <div v-for="(item,index) in tempNews" :key="index" class="new-container" @click="editNew(item)">
         <div v-if="index==0" class="main-new" :style="{ border:item==editingNew?'1px solid #2f5981':'' }">
           <div class="text-font-normal main-new-title" style="line-height:18px" v-if="tempNews.length==1">
-             {{item.title?item.title:'标题'}}
+            {{item.title?item.title:'标题'}}
           </div>
           <div class="main-new-media" style="position:relative">
             <div class="main-new-media-placeholder" v-show="!item.mediaId" />
@@ -56,10 +55,10 @@
           </div>
         </div>
         <div class="flexDiv-h new-tool">
-          <i class="el-icon-arrow-up icon-tool" v-if="index>0" style="margin-right:10px;" @click.stop="moveNew(index,index-1)"/>
-          <i class="el-icon-arrow-down icon-tool" style="flex:1" v-show="index<tempNews.length-1" @click.stop="moveNew(index,index+1)"/>
-          <div style="flex:1"/>
-          <i class="el-icon-delete icon-tool" @click.stop="removeNew(item)"/>
+          <i class="el-icon-arrow-up icon-tool" v-if="index>0" style="margin-right:10px;" @click.stop="moveNew(index,index-1)" />
+          <i class="el-icon-arrow-down icon-tool" style="flex:1" v-show="index<tempNews.length-1" @click.stop="moveNew(index,index+1)" />
+          <div style="flex:1" />
+          <i class="el-icon-delete icon-tool" @click.stop="removeNew(item)" />
         </div>
       </div>
       <div class="flexDiv-h new-add" @click="addNew" v-show="tempNews.length<8">

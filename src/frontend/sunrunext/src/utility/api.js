@@ -48,4 +48,28 @@ export default {
     var url = `${env.serverConfig.appContextMenusSegment}/${contextMenuId}`;
     return axios.delete(url);
   },
+  async createAppMessageTemplate(param) {
+    var url = env.serverConfig.appMessageTemplatesSegment;
+    return axios.post(url, param);
+  },
+  async updateAppMessageTemplate(id, param) {
+    var url = `${env.serverConfig.appMessageTemplatesSegment}/${id}`;
+    return axios.put(url, param);
+  },
+  async deleteAppMessageTemplate(id) {
+    var url = `${env.serverConfig.appMessageTemplatesSegment}/${id}`;
+    return axios.delete(url);
+  },
+  async createAppAutoReplyRule(param) {
+    var url = env.serverConfig.appAutoReplyRulesSegment;
+    return axios.post(url, param);
+  },
+  async updateAppAutoReplyRule(id, param) {
+    var url = `${env.serverConfig.appAutoReplyRulesSegment}/${id}`;
+    return axios.put(url, param);
+  },
+  async deleteAppAutoReplyRule(id) {
+    var url = `${env.serverConfig.appAutoReplyRulesSegment}/${id}`;
+    return axios.delete(url);
+  },
 }

@@ -1,25 +1,14 @@
-import {
-    fail
-} from "assert";
-
 var mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
-    //msg:该消息模板用于发送消息给用户
-    //autoReplyRule:该消息模板用于自动回复规则
-    usage: {
-        type: String,
-        required: true
-    },
-
     //消息类型
     //text：文本消息
-    //image：图片消息
+    //photo：图片消息
     //voice：语音消息
     //video：视频消息
     //file：文件消息
-    //textcard：文本卡片消息
     //news：图文消息
+    //externalLinkNews：外链图文消息
     type: {
         type: String,
         required: true,
@@ -33,26 +22,33 @@ const schema = mongoose.Schema({
 
     // type为image时的结构:
     // {
-    //   "media_id" : "文件id"
+    //   "mediaId" : "文件id"
     // }
 
     // type为voice时的结构:
     // {
-    //   "media_id" : "文件id"
+    //   "mediaId" : "文件id"
+    //   "duration" : "语音时长"
     // }
 
     // type为video时的结构:
     // {
-    //   "media_id" : "文件id"
-    //   "title" : "Title"
-    //   "description" : "Description"
+    //   "mediaId" : "视频文件id"
+    //   "mediaUrl" : "视频文件Url"
+    //   "thumbMediaId" : "视频封面文件id"
+    //   "title" : "标题"
+    //   "abstract" : "摘要"
     // }
 
     // type为file时的结构:
     // {
-    //   "media_id" : "文件id"
+    //   "mediaId" : "文件id"
+    //   "name" : "文件名"
+    //   "size" : "文件大小"
+    //   "mediaUrl" : "文件Url"
     // }
 
+    //[暂时不支持]
     // type为textcard时的结构:
     // {
     //   "title" : "Title"
@@ -65,14 +61,36 @@ const schema = mongoose.Schema({
 
     // type为news时的结构:
     // {
-    //   "articles" : [
+    //   "news" : [
     //       {
-    //          "title" : "Title"
-    //          "thumb_media_id" : "封面图片的ID"
-    //          "description" : "Description"
-    //          "clickAction" : "htmlCode/url"
-    //          "htmlCode":"html代码"   
-    //          "url" : "网页地址"
+    //          "title" : "标题"
+    //          "mediaId" : "封面图片的ID"
+    //          "mediaUrl" : "封面图片的URL"
+    //          "abstract" : "摘要"
+    //          "html":"html代码"   
+    //          "link" : "原文链接地址"
+    //          "author" : "作者"
+    //          "files" : [
+    //             {
+    //                mediaId:'附件Id',
+    //                name:'附件名',
+    //                size:'附件大小',
+    //             }
+    //           ]
+    //          "btntxt" : "按钮文字"
+    //       }
+    //   ]
+    // }
+
+    // type为externalLinkNews时的结构:
+    // {
+    //   "news" : [
+    //       {
+    //          "title" : "标题"
+    //          "mediaId" : "封面图片的ID"
+    //          "mediaUrl" : "封面图片的URL"
+    //          "abstract" : "摘要"
+    //          "link" : "外链地址"
     //          "btntxt" : "按钮文字"
     //       }
     //   ]

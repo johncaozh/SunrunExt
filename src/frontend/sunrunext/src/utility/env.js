@@ -7,6 +7,8 @@ const serverConfig = {
   orgsSegment: "orgs",
   appsSegment: "apps",
   appContextMenusSegment: "appContextMenus",
+  appMessageTemplatesSegment: "appMessageTemplates",
+  appAutoReplyRulesSegment: "appAutoReplyRules",
 }
 
 const constants = {

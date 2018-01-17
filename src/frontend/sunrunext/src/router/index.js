@@ -35,8 +35,16 @@ export default new Router({
         component: resolve => require(['../components/appContextMenu.vue'], resolve)
       },
       {
-        path: '/test',
+        path: '/apps/:appId/autoReply',
         component: resolve => require(['../components/appAutoReply.vue'], resolve)
+      },
+      {
+        path: '/apps/:appId/autoReply/new',
+        component: resolve => require(['../components/appAutoReply_new.vue'], resolve)
+      },
+      {
+        path: '/apps/:appId/autoReply/newKeyword',
+        component: resolve => require(['../components/appAutoReply_new_keyword.vue'], resolve)
       },
     ]
   }, ],

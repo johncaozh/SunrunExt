@@ -30,7 +30,7 @@
           <app-context-menu v-show="!appDetail.useInGroup" :appId="appDetail._id" :contextMenu="appDetail.contextMenu"/>
           <app-send-msg v-show="!appDetail.useInGroup"/>
           <app-receive-msg v-show="!appDetail.useInGroup"/>
-          <app-auto-reply v-show="!appDetail.useInGroup"/>
+          <app-auto-reply v-show="!appDetail.useInGroup" :appId="appDetail._id"/>
           <app-s-s-o @iamProductNameChanged="appIamProductNameChanged" :iamProductName="appDetail.iamProductName"/>
         </div>
         <el-button type="text" style="margin-top:30px;color:red;align-self:flex-start">删除应用</el-button>
