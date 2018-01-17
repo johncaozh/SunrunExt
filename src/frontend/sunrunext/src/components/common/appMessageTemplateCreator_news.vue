@@ -2,136 +2,246 @@
   <div class="flexDiv-h " style="align-items:flex-start">
     <div class="flexDiv-v editContainer" style="flex:1">
       <div class="editItemContainer" style="padding-top:0px">
-        <input type="text" v-model="title" placeholder="在此输入标题" class="input-title" />
+        <input type="text" v-model="editingNew.title" placeholder="在此输入标题" class="input-title" />
       </div>
+      <quill-editor style="height:300px;border:0px;margin-bottom:80px;"/>
       <div class="editItemContainer">
         <span class="text-font-minor">
-          <img :src="thumbMediaUrl" style="width:100px" v-show="mediaId" />
-          <el-upload :show-file-list="false" :on-success="handleVideoSuccess" :before-upload="beforeVideoUpload" v-loading="isUploading"
+          <img :src="editingNew.mediaUrl" style="width:120px;height:60px;" v-show="editingNew.mediaId" />
+          <el-upload :show-file-list="false" :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload" v-loading="isUploading"
             style="display:inline-block" :action="uploadUrl">
-            <el-button type="text" class="button-link" style="margin-right:10px;">{{mediaId?"更改":"添加视频"}}</el-button>
+            <el-button type="text" class="button-link" style="margin-right:10px;">{{editingNew.mediaId?"更改":"添加封面图"}}</el-button>
           </el-upload>
-          <span v-show="!mediaId">
-            不超过20MB, 文件格式: rm, rmvb, wmv, avi, mpg, mpeg, mp4
+          <span v-show="!editingNew.mediaId">
+            建议尺寸:1068*534
           </span>
         </span>
       </div>
       <div class="editItemContainer">
         <div class="flexDiv-h">
           摘要：
-          <textarea v-model="abstract" placeholder="选填" />
+          <textarea v-model="editingNew.abstract" placeholder="选填" />
+        </div>
+      </div>
+      <div class="editItemContainer">
+        <div class="flexDiv-h">
+          原文链接：
+          <input type="text" v-model="editingNew.link" placeholder="选填（带http/https协议头的合法URL）" style="flex:1" />
+        </div>
+      </div>
+       <div class="editItemContainer">
+        <div class="flexDiv-h">
+          作者：
+          <input type="text" v-model="editingNew.author" placeholder="选填" style="flex:1" />
         </div>
       </div>
     </div>
-    <div class="flexDiv-v previewContainer">
-      <div class="text-font-normal preview-title" style="line-height:18px">
-        {{title}}
+    <div class="flexDiv-v" style=" margin-left: 20px;" v-show="tempNews.length>0">
+      <div v-for="(item,index) in tempNews" :key="index" class="new-container" @click="editNew(item)" >
+        <div v-if="index==0" class="main-new" :style="{ border:item==editingNew?'1px solid #2f5981':'' }">
+          <div class="text-font-normal main-new-title" style="line-height:18px" v-if="tempNews.length==1">
+             {{item.title?item.title:'标题'}}
+          </div>
+          <div class="main-new-media" style="position:relative">
+            <div class="main-new-media-placeholder" v-show="!item.mediaId" />
+            <img :src="item.mediaUrl" style="width:250px;height:125px" v-show="item.mediaId">
+            <div class="text-font-normal main-new-title-overConver" v-if="tempNews.length>1">
+              {{item.title?item.title:'标题'}}
+            </div>
+          </div>
+          <div class="text-font-minor main-new-abstract" style="line-height:16px" v-if="tempNews.length==1">
+            {{item.abstract}}
+          </div>
+        </div>
+        <div class="flexDiv-h minor-new" v-else :style="{ border:item==editingNew?'1px solid #2f5981':'' }">
+          <div class="minor-new-title">
+            {{item.title?item.title:'标题'}}
+          </div>
+          <div style="">
+            <div class="main-new-media-placeholder" style="width:40px;height:40px;min-height:40px" v-show="!item.mediaId" />
+            <img :src="item.mediaUrl" style="width:40px;height:40px" v-show="item.mediaId">
+          </div>
+        </div>
+        <div class="flexDiv-h new-tool">
+          <i class="el-icon-arrow-up icon-tool" v-if="index>0" style="margin-right:10px;" @click.stop="moveNew(index,index-1)"/>
+          <i class="el-icon-arrow-down icon-tool" style="flex:1" v-show="index<tempNews.length-1" @click.stop="moveNew(index,index+1)"/>
+          <div style="flex:1"/>
+          <i class="el-icon-delete icon-tool" @click.stop="removeNew(item)"/>
+        </div>
       </div>
-      <div class="preview-media" style="position:relative">
-        <div class="preview-media-placeholder" v-show="!mediaId" />
-        <img :src="thumbMediaUrl" style="width:250px" v-show="mediaId">
-        <i class="el-icon-custom-play icon-video-play" @click="showingPlayer=true" v-show="mediaId" />
-      </div>
-      <div class="text-font-minor preview-abstract" style="line-height:16px">
-        {{abstract}}
+      <div class="flexDiv-h new-add" @click="addNew" v-show="tempNews.length<8">
+        <i class="el-icon-plus icon-add" />
       </div>
     </div>
-    <el-dialog :visible.sync="showingPlayer" width="680px" append-to-body >
-      <video-player class="video-player-box" ref="videoPlayer" :options="playerOptions" :playsinline="true">
-      </video-player>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import api from "../../utility/api";
-import { videoPlayer } from "vue-video-player";
-import "../../assets/custom-theme.css";
-import "../../assets/video-js.css";
+import helper from "../../utility/helper";
+import '../../assets/quill/quill.core.css'
+import '../../assets/quill/quill.snow.css'
+import '../../assets/quill/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 export default {
   data() {
     return {
-      mediaId: null,
-      thumbMediaId: null,
-      title: null,
-      abstract: null,
-      isUploading: false,
-      mediaUrl: null,
-      thumbMediaUrl: null,
-      uploadUrl: api.fileTransferUrl_video,
-      showingPlayer: false,
-      playerOptions: {
-        width: "640px",
-        language: "zh-CN",
-        playbackRates: [0.7, 1.0, 1.5, 2.0],
-        sources: [
-          {
-            type: "video/mp4",
-            src: ""
-          }
-        ],
-        poster: "",
-        autoplay: true
-      }
+      editingNew: {
+        mediaId: null,
+        mediaUrl: null,
+        title: null,
+        abstract: null,
+        link: null,
+        authod: null,
+        files: [],
+        html: null
+      },
+      uploadUrl: api.fileTransferUrl,
+      tempNews: [],
+      isUploading: false
     };
   },
   components: {
-    videoPlayer
+    quillEditor
   },
   props: {
-    x: {
-      type: Object,
-      required: true
+    news: {
+      type: Array,
+      required: true,
+      default: null
     }
   },
+  mounted() {
+    this.addNew();
+  },
   watch: {
-    videoMessageContext() {
-      this.mediaId = this.videoMessageContext.mediaId;
-      this.thumbMediaId = this.videoMessageContext.thumbMediaId;
-      this.title = this.videoMessageContext.title;
-      this.abstract = this.videoMessageContext.abstract;
-      this.mediaUrl = this.videoMessageContext.mediaUrl
-      this.thumbMediaUrl = this.videoMessageContext.thumbMediaUrl;
-      this.isUploading = false;
-      this.playerOptions.sources[0].src = this.mediaUrl;
-      this.playerOptions.poster = this.thumbMediaUrl;
+    news() {
+      this.tempNews = [];
+      this.news.forEach(i => {
+        var cloneNew = JSON.parse(JSON.stringify(i));
+        this.tempNews.push(cloneNew);
+      });
+
+      if (this.tempNews.length == 0) {
+        this.addNew();
+      }
     }
   },
   methods: {
-    handleVideoSuccess(res, file) {
-      this.isUploading = false;
-      this.mediaId = res.data.mediaId;
-      this.thumbMediaId = res.data.thumbMediaId;
-      this.mediaUrl = `${api.fileTransferUrl}/${this.mediaId}`;
-      this.thumbMediaUrl = `${api.fileTransferUrl}/${this.thumbMediaId}`;
-      this.playerOptions.sources[0].src = this.mediaUrl;
-      this.playerOptions.poster = this.thumbMediaUrl;
+    createNew() {
+      return {
+        title: null,
+        abstract: null,
+        mediaId: null,
+        link: null,
+        author: null,
+        files: [],
+        html: null
+      };
     },
-    beforeVideoUpload(file) {
+    createFile(name, size, mediaId) {
+      return {
+        name: name,
+        size: size,
+        mediaId: mediaId
+      };
+    },
+    handleCoverSuccess(res, file) {
+      this.isUploading = false;
+      this.editingNew.mediaId = res.data;
+      this.editingNew.mediaUrl = `${api.fileTransferUrl}/${this.editingNew
+        .mediaId}`;
+    },
+    beforeCoverUpload(file) {
       console.log(file.type);
-      const isvalidVideo =
-        file.type === "video/rm" ||
-        file.type === "video/rmvb" ||
-        file.type === "video/wmv" ||
-        file.type === "video/x-ms-wmv" ||
-        file.type === "video/avi" ||
-        file.type === "video/mpg" ||
-        file.type === "video/mpeg" ||
-        file.type === "video/mp4";
+      const isvalidImage =
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png" ||
+        file.type === "image/bmp";
 
-      const isLt20M = file.size / 1024 / 1024 < 20;
+      const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isvalidVideo) {
-        this.$message.error("上传的视频只能是 RM、RMVB、WMV、AVI、MPG、MPEG、MP4 格式!");
-      } else if (!isLt20M) {
-        this.$message.error("上传的视频大小不能超过 20MB!");
+      if (!isvalidImage) {
+        this.$message.error("上传的封面只能是 JPEG、JPG、PNG、BMP");
+      } else if (!isLt2M) {
+        this.$message.error("上传的封面大小不能超过 2MB!");
       }
 
-      var result = isvalidVideo && isLt20M;
+      var result = isvalidImage && isLt2M;
 
       if (result) this.isUploading = true;
 
       return result;
+    },
+    addNew() {
+      this.editingNew = this.createNew();
+      this.tempNews.push(this.editingNew);
+    },
+    removeNew(targetNew) {
+      this.$confirm("确定删除此消息？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.tempNews.removeByValue(targetNew);
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          // this.$message({
+          //   type: "info",
+          //   message: "已取消删除"
+          // });
+        });
+    },
+    moveNew(old_index, new_index) {
+      this.tempNews.move(old_index, new_index);
+    },
+    editNew(targetNew) {
+      this.editingNew = targetNew;
+    },
+    checkDataValid() {
+      if (!this.editingNew.title) {
+        this.$message.error("请填写标题");
+        return false;
+      }
+
+      if (!this.editingNew.mediaId) {
+        this.$message.error("请添加封面图");
+        return false;
+      }
+
+      if (!helper.isUrl(this.editingNew.link)) {
+        this.$message.error("外链请填写带http或https协议头的合法URL");
+        return false;
+      }
+
+      for (let i = 0; i < this.tempNews.length; i++) {
+        var currentNew = this.tempNews[i];
+        if (!currentNew.title) {
+          this.editingNew = currentNew;
+          this.$message.error("请填写标题");
+          return false;
+        }
+
+        if (!currentNew.mediaId) {
+          this.editingNew = currentNew;
+          this.$message.error("请添加封面图");
+          return false;
+        }
+
+        if (!helper.isUrl(currentNew.link)) {
+          this.editingNew = currentNew;
+          this.$message.error("外链请填写带http或https协议头的合法URL");
+          return false;
+        }
+      }
+
+      return true;
     }
   }
 };
@@ -140,26 +250,21 @@ export default {
 <style lang="less" scoped>
 .editItemContainer {
   border-bottom: 1px solid @color-border-level2;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
-.previewContainer {
-  border: 1px solid @color-border-level2;
-  padding: 10px;
-  width: 250px;
-  min-height: 125px;
-  margin-left: 20px;
-}
-
-.input-title {
-  border: 0px;
-  color: @color-theme;
+input {
   outline: none;
   overflow-x: hidden;
   overflow-y: auto;
-  font-size: 23px;
   width: 100%;
+  border: 0px;
+}
+
+.input-title {
+  color: @color-theme;
+  font-size: 23px;
 }
 
 .input-title::-webkit-input-placeholder {
@@ -186,48 +291,118 @@ textarea::-webkit-input-placeholder {
   color: @color-font-placeholder;
 }
 
-.preview-title {
+.new-container {
+  position: relative;
+}
+
+.main-new {
+  border: 1px solid @color-border-level2;
+  padding: 10px;
+  width: 250px;
+  min-height: 125px;
+  cursor: pointer;
+}
+
+.main-new-title {
   font-size: 16px;
   word-wrap: break-word;
-}
-
-.preview-abstract {
-  word-wrap: break-word;
-}
-
-.preview-media {
-  margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.preview-media-placeholder {
-  min-height: 120px;
+.main-new-title-overConver {
+  font-size: 16px;
+  word-wrap: break-word;
+  line-height: 14px;
+  color: white;
+  position: absolute;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 9;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.main-new-abstract {
+  word-wrap: break-word;
+  margin-top: 10px;
+}
+
+.main-new-media {
+  line-height: 0px;
+}
+
+.main-new-media-placeholder {
+  min-height: 125px;
   background: @color-font-minor;
 }
 
-.icon-video-play {
-  font-size: 36px;
-  color: white;
+.minor-new {
+  border: 1px solid @color-border-level2;
+  border-top: 0px;
+  padding: 10px;
+  align-items: center;
+  line-height: 0px;
   cursor: pointer;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
-.icon-video-play:hover {
-  color: @color-theme;
-  transform-origin: 0.5, 0.5;
+.minor-new-title {
+  font-size: 13px;
+  max-height: 40px;
+  flex: 1;
+  line-height: 20px;
+  width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  height: auto;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
-.div-video-play {
-  z-index: 999;
-  width: 1920px;
-  height: 900px;
+.new-tool {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #000;
+  opacity: 0.5;
+  bottom: 1px;
+  left: 1px;
+  width: 250px;
   position: absolute;
-  top: 0px;
-  left: 0px;
+  justify-content: flex-end;
+  display: none;
+}
+
+.new-container:hover .new-tool {
+  display: flex;
+}
+
+.icon-tool {
+  font-size: 18px;
+  color: @color-font-placeholder;
+  cursor: pointer;
+}
+
+.icon-tool:hover {
+  color: white;
+}
+
+.new-add {
+  border: 1px solid @color-border-level2;
+  border-top: 0px;
   justify-content: center;
   align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.icon-add {
+  font-size: 24px;
+  color: @color-theme;
 }
 </style>

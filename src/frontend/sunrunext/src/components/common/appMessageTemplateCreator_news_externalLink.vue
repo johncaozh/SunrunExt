@@ -224,8 +224,8 @@ export default {
 <style lang="less" scoped>
 .editItemContainer {
   border-bottom: 1px solid @color-border-level2;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 input {
