@@ -2,6 +2,8 @@ var express = require("express");
 var api = require("../../../utilities/api");
 var appModel = require("../../../db/app");
 var appContextMenuModel = require('../../../db/appContextMenu');
+var appAutoReplyRuleModel = require('../../../db/appAutoReplyRule');
+var appMessageTemplateModel = require('../../../db/appMessageTemplate');
 var router = express.Router();
 
 router.get("/apps", api.catchAsyncErrors(async function (req, res, next) {
@@ -22,9 +24,9 @@ router.get("/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
 
     if (gotData != null) {
         gotData.contextMenus = await getAppContextMenu(id);
+        gotData.autoReplyRules = await getAppAutoReplyRule(id);
         api.attachData2Response(200, "获取成功", gotData, res);
-    }
-    else
+    } else
         api.attachData2Response(404, "不存在", gotData, res);
 
     next();
@@ -47,14 +49,60 @@ router.delete("/apps/:id", api.catchAsyncErrors(async function (req, res, next) 
 
 async function getAppContextMenu(appId) {
     //获取第一级菜单项列表
-    var rootMenuItems = await appContextMenuModel.find({ appId: appId, parentId: null }).lean().exec();
+    var rootMenuItems = await appContextMenuModel.find({
+        appId: appId,
+        parentId: null
+    }).lean().exec();
 
     for (let i = 0; i < rootMenuItems.length; i++) {
         var rootMenu = rootMenuItems[i];
-        rootMenu.subMenuItems = await appContextMenuModel.find({ appId: appId, parentId: rootMenu._id }).lean().exec();
+        rootMenu.subMenuItems = await appContextMenuModel.find({
+            appId: appId,
+            parentId: rootMenu._id
+        }).lean().exec();
     }
 
     return rootMenuItems;
+};
+
+async function getAppAutoReplyRule(appId) {
+    var defaultRule = await appAutoReplyRuleModel
+        .findOne({
+            name: null,
+            type: null,
+            appId: appId
+        })
+        .populate('appMessageTemplateId')
+        .lean()
+        .exec();
+
+    var keywordRules = await appAutoReplyRuleModel.find({
+            name: {
+                $ne: null
+            },
+            type: {
+                $ne: null
+            },
+            appId: appId
+        })
+        .populate('appMessageTemplateId')
+        .aggregate(
+            [{
+                $group: {
+                    name: "$name",
+                    rules: {
+                        $push: "$$ROOT"
+                    }
+                }
+            }]
+        )
+        .lean()
+        .exec();
+
+    return {
+        defaultRule,
+        keywordRules,
+    }
 };
 
 module.exports = router;
