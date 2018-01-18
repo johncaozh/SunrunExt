@@ -1,7 +1,7 @@
 <template>
     <div class="flexDiv-h div-item-container">
-        <div class="flexDiv-h div-item">
-            <span class="span-icon" style="background-position: -97px -386px;">
+        <div class="flexDiv-h div-item" @click="$router.push('./contractSync')">
+            <span class="item-icon" style="background-position: -97px -386px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
                 <span class="item-header">通讯录同步</span>
@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="flexDiv-h div-item">
-            <span class="span-icon" style="background-position: -551px -210px;">
+            <span class="item-icon" style="background-position: -551px -210px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
                 <span class="item-header">消息群发</span>
@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="flexDiv-h div-item">
-            <span class="span-icon" style="background-position: -420px -463px;">
+            <span class="item-icon" style="background-position: -420px -463px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
                 <span class="item-header">用户消息</span>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="flexDiv-h div-item">
-            <span class="span-icon" style="background-position:-140px -463px;">
+            <span class="item-icon" style="background-position:-140px -463px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
                 <span class="item-header">素材库</span>
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="flexDiv-h div-item">
-            <span class="span-icon" style="background-position: -551px -140px;">
+            <span class="item-icon" style="background-position: -551px -140px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
                 <span class="item-header">使用分析</span>
@@ -77,15 +77,6 @@ export default {};
 
 .item-desc {
   margin-top: 5px;
-}
-
-.span-icon {
-  background-image: url("../assets/img/background.png");
-  background-size: 943px 924px;
-  margin-right: 12px;
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
 }
 </style>
 

@@ -46,6 +46,10 @@ export default new Router({
         path: '/apps/:appId/autoReply/newKeyword',
         component: resolve => require(['../components/appAutoReply_new_keyword.vue'], resolve)
       },
+      {
+        path: '/contractSync',
+        component: resolve => require(['../components/contractSync.vue'], resolve)
+      },
     ]
   }, ],
   // mode: 'history',

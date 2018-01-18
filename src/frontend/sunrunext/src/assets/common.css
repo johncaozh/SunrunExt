@@ -38,3 +38,18 @@
 .button-link {
   color: #2f5981;
 }
+
+.editItemContainer {
+  border-bottom: 1px solid #E4E7ED;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.item-icon {
+  background-image: url("./img/background.png");
+  background-size: 943px 924px;
+  margin-right: 12px;
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+}
