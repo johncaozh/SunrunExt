@@ -78,13 +78,13 @@ export default {
     videoPlayer
   },
   props: {
-    x: {
+    videoMessageContext: {
       type: Object,
       required: true
     }
   },
-  watch: {
-    videoMessageContext() {
+  mounted() {
+    if (this.videoMessageContext) {
       this.mediaId = this.videoMessageContext.mediaId;
       this.thumbMediaId = this.videoMessageContext.thumbMediaId;
       this.title = this.videoMessageContext.title;
@@ -121,7 +121,9 @@ export default {
       const isLt20M = file.size / 1024 / 1024 < 20;
 
       if (!isvalidVideo) {
-        this.$message.error("上传的视频只能是 RM、RMVB、WMV、AVI、MPG、MPEG、MP4 格式!");
+        this.$message.error(
+          "上传的视频只能是 RM、RMVB、WMV、AVI、MPG、MPEG、MP4 格式!"
+        );
       } else if (!isLt20M) {
         this.$message.error("上传的视频大小不能超过 20MB!");
       }
@@ -142,7 +144,7 @@ export default {
         this.$message.error("请输入标题");
         return false;
       }
-      
+
       return true;
     }
   }

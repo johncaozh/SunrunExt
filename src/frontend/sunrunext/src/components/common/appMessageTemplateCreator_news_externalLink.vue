@@ -95,20 +95,17 @@ export default {
     }
   },
   mounted() {
-    this.addNew();
-  },
-  watch: {
-    news() {
-      this.tempNews = [];
-      this.news.forEach(i => {
-        var cloneNew = JSON.parse(JSON.stringify(i));
-        this.tempNews.push(cloneNew);
-      });
+    this.tempNews = [];
+    this.news.forEach(i => {
+      var cloneNew = JSON.parse(JSON.stringify(i));
+      this.tempNews.push(cloneNew);
+    });
 
-      if (this.tempNews.length == 0) {
-        this.addNew();
-      }
+    if (this.tempNews.length == 0) {
+      this.addNew();
     }
+
+    this.editingNew = this.tempNews[0];
   },
   methods: {
     createNew() {
@@ -122,8 +119,9 @@ export default {
     handleCoverSuccess(res, file) {
       this.isUploading = false;
       this.editingNew.mediaId = res.data;
-      this.editingNew.mediaUrl = `${api.fileTransferUrl}/${this.editingNew
-        .mediaId}`;
+      this.editingNew.mediaUrl = `${api.fileTransferUrl}/${
+        this.editingNew.mediaId
+      }`;
     },
     beforeCoverUpload(file) {
       console.log(file.type);

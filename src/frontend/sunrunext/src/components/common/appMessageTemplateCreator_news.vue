@@ -134,7 +134,6 @@ export default {
     }
   },
   mounted() {
-    this.addNew();
     // 为图片ICON绑定事件  getModule 为编辑器的内部属性
     this.$refs.editor.quill
       .getModule("toolbar")
@@ -142,19 +141,18 @@ export default {
     this.$refs.editor.quill
       .getModule("toolbar")
       .addHandler("video", this.videoHandler); // 为视频ICON绑定事件
-  },
-  watch: {
-    news() {
-      this.tempNews = [];
-      this.news.forEach(i => {
-        var cloneNew = JSON.parse(JSON.stringify(i));
-        this.tempNews.push(cloneNew);
-      });
 
-      if (this.tempNews.length == 0) {
-        this.addNew();
-      }
+    this.tempNews = [];
+    this.news.forEach(i => {
+      var cloneNew = JSON.parse(JSON.stringify(i));
+      this.tempNews.push(cloneNew);
+    });
+
+    if (this.tempNews.length == 0) {
+      this.addNew();
     }
+
+    this.editingNew = this.tempNews[0];
   },
   methods: {
     createNew() {
@@ -178,8 +176,9 @@ export default {
     handleCoverSuccess(res, file) {
       this.isUploading = false;
       this.editingNew.mediaId = res.data;
-      this.editingNew.mediaUrl = `${api.fileTransferUrl}/${this.editingNew
-        .mediaId}`;
+      this.editingNew.mediaUrl = `${api.fileTransferUrl}/${
+        this.editingNew.mediaId
+      }`;
     },
     beforeCoverUpload(file) {
       console.log(file.type);
@@ -300,7 +299,9 @@ export default {
       const isLt20M = file.size / 1024 / 1024 < 20;
 
       if (!isvalidVideo) {
-        this.$message.error("上传的视频只能是 RM、RMVB、WMV、AVI、MPG、MPEG、MP4 格式!");
+        this.$message.error(
+          "上传的视频只能是 RM、RMVB、WMV、AVI、MPG、MPEG、MP4 格式!"
+        );
       } else if (!isLt20M) {
         this.$message.error("上传的视频大小不能超过 20MB!");
       }
