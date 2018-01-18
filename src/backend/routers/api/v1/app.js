@@ -1,6 +1,7 @@
 var express = require("express");
 var api = require("../../../utilities/api");
 var appModel = require("../../../db/app");
+var ObjectId = require('mongoose').Types.ObjectId;
 var appContextMenuModel = require('../../../db/appContextMenu');
 var appAutoReplyRuleModel = require('../../../db/appAutoReplyRule');
 var appMessageTemplateModel = require('../../../db/appMessageTemplate');
@@ -70,38 +71,49 @@ async function getAppAutoReplyRule(appId) {
         .findOne({
             name: null,
             type: null,
-            appId: appId
+            appId: new ObjectId(appId)
         })
         .populate('appMessageTemplateId')
         .lean()
         .exec();
 
-    var keywordRules = await appAutoReplyRuleModel.find({
+    var filtedRules = await appAutoReplyRuleModel.find({
             name: {
                 $ne: null
             },
             type: {
                 $ne: null
             },
-            appId: appId
+            appId: new ObjectId(appId)
         })
         .populate('appMessageTemplateId')
-        .aggregate(
-            [{
-                $group: {
-                    name: "$name",
-                    rules: {
-                        $push: "$$ROOT"
-                    }
-                }
-            }]
-        )
         .lean()
-        .exec();
+        .exec();;
+
+    var tempRules = {};
+    for (let i = 0; i < filtedRules.length; i++) {
+        var rule = filtedRules[i];
+        tempRules[rule.name] = tempRules[rule.name] || [];
+        tempRules[rule.name].push(rule);
+    }
+
+    var keywordRules = [];
+    for (var name in tempRules) {
+        var appMessageTemplate = tempRules[name][0].appMessageTemplateId;
+        tempRules[name].forEach(i => {
+            delete i.appMessageTemplateId;
+        });
+
+        keywordRules.push({
+            name: name,
+            rules: tempRules[name],
+            appMessageTemplate: appMessageTemplate
+        });
+    }
 
     return {
-        defaultRule,
-        keywordRules,
+        defaultRule: defaultRule,
+        keywordRules: keywordRules,
     }
 };
 

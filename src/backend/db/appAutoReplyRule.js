@@ -16,7 +16,7 @@ const schema = mongoose.Schema({
         required: false,
     },
     //匹配的关键词，默认回复时该字段为空
-    keywork: {
+    keyword: {
         type: String,
         default: null,
         required: false

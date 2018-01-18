@@ -1,5 +1,5 @@
 <template>
-  <el-tabs class="el-tabs">
+  <el-tabs class="el-tabs" v-model="activeName">
     <el-tab-pane name="text">
       <span slot="label" class="label">
         <i class="el-icon-custom-text icon"></i> 文字</span>
@@ -9,7 +9,7 @@
       <span slot="label" class="label">
         <i class="el-icon-custom-news icon"></i> 图文</span>
       <div class="flexDiv-h" v-if="newsMessageContext.news.length>0">
-        <div class="flexDiv-v" style=" margin-left: 20px;">
+        <div class="flexDiv-v">
           <div v-for="(item,index) in newsMessageContext.news" :key="index" class="new-container">
             <div v-if="index==0" class="main-new">
               <div class="text-font-normal main-new-title" style="line-height:18px" v-if="newsMessageContext.news.length==1">
@@ -55,7 +55,7 @@
       <span slot="label" class="label">
         <i class="el-icon-custom-news icon"></i> 外链图文</span>
       <div class="flexDiv-h" v-if="externalLinkNewsMessageContext.news.length>0">
-        <div class="flexDiv-v" style=" margin-left: 20px;">
+        <div class="flexDiv-v">
           <div v-for="(item,index) in externalLinkNewsMessageContext.news" :key="index" class="new-container">
             <div v-if="index==0" class="main-new">
               <div class="text-font-normal main-new-title" style="line-height:18px" v-if="externalLinkNewsMessageContext.news.length==1">
@@ -265,11 +265,54 @@ export default {
     appMessageTemplateCreator_news
   },
 
+  props: {
+    template: {
+      type: Object,
+      required: false,
+      default: null
+    }
+  },
+  mounted() {
+    if (this.template) {
+      this.activeName = this.template.type;
+
+      if (this.activeName == "text") {
+        this.textMessageContext.content = this.template.data.content;
+      } else if (this.activeName == "news") {
+        this.newsMessageContext.news = this.template.data.news;
+      } else if (this.activeName == "externalLinkNews") {
+        this.externalLinkNewsMessageContext.news = this.template.data.news;
+      } else if (this.activeName == "photo") {
+        this.photoMessageContext.mediaId = this.template.data.mediaId;
+        this.photoMessageContext.imageUrl = this.template.data.imageUrl;
+      } else if (this.activeName == "voice") {
+        this.voiceMessageContext.mediaId = this.template.data.mediaId;
+        this.voiceMessageContext.mediaUrl = this.template.data.mediaUrl;
+        this.voiceMessageContext.fileName = this.template.data.fileName;
+        this.voiceMessageContext.duration = this.template.data.duration;
+      } else if (this.activeName == "video") {
+        this.videoMessageContext.mediaId = this.template.data.mediaId;
+        this.videoMessageContext.thumbMediaId = this.template.data.thumbMediaId;
+        this.videoMessageContext.title = this.template.data.title;
+        this.videoMessageContext.abstract = this.template.data.abstract;
+        this.videoMessageContext.mediaUrl = this.template.data.mediaUrl;
+        this.videoMessageContext.thumbMediaUrl = this.template.data.thumbMediaUrl;
+      } else if (this.activeName == "file") {
+        this.videoMessageContext.mediaId = this.template.data.mediaId;
+        this.videoMessageContext.fileSize = this.template.data.fileSize;
+        this.videoMessageContext.fileName = this.template.data.fileName;
+        this.videoMessageContext.mediaUrl = this.template.data.mediaUrl;
+      }
+    }
+  },
+
   methods: {
     handlePhotoSuccess(res, file) {
       this.photoMessageContext.isUploading = false;
       this.photoMessageContext.mediaId = res.data;
-      this.photoMessageContext.imageUrl = URL.createObjectURL(file.raw);
+      this.photoMessageContext.imageUrl = `${api.fileTransferUrl}/${
+        this.photoMessageContext.mediaId
+      }`;
     },
     beforePhotoUpload(file) {
       const isvalidPhoto =
@@ -301,8 +344,9 @@ export default {
       this.voiceMessageContext.fileName = file.name;
       this.voiceMessageContext.mediaId = res.data.mediaId;
       this.voiceMessageContext.duration = res.data.duration;
-      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${this
-        .voiceMessageContext.mediaId}`;
+      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${
+        this.voiceMessageContext.mediaId
+      }`;
     },
     handleVoiceError(err, file, fileList) {
       this.voiceMessageContext.isUploading = false;
@@ -348,8 +392,9 @@ export default {
       this.fileMessageContext.fileName = file.name;
       this.fileMessageContext.mediaId = res.data;
       this.fileMessageContext.fileSize = file.size;
-      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${this
-        .fileMessageContext.mediaId}`;
+      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${
+        this.fileMessageContext.mediaId
+      }`;
     },
     handleFileError(err, file, fileList) {
       this.voiceMessageContext.isUploading = false;
