@@ -3,12 +3,12 @@
         <div class="flexDiv-h div-item" @click="$router.push('./contractSync')">
             <span class="item-icon" style="background-position: -97px -386px;">
             </span>
-            <div class="flexDiv-v" style="flex:1">
+            <div class="flexDiv-v" style="flex:1" >
                 <span class="item-header">通讯录同步</span>
                 <span class="text-font-minor item-desc">可通过API接口管理通讯录，同时可设置查看或编辑权限，管理更加方便</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item">
+        <div class="flexDiv-h div-item" @click="$router.push('./message')">
             <span class="item-icon" style="background-position: -551px -210px;">
             </span>
             <div class="flexDiv-v" style="flex:1">

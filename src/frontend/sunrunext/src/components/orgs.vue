@@ -3,11 +3,11 @@
     <el-aside width="260px">
       <el-container style="background:#F9FAFC;height:100%;border-right: 1px dotted #DCE1E6;">
         <el-header style="padding:10px;height:auto">
-          <el-input placeholder="搜索成员、部分" prefix-icon="el-icon-search" size="mini">
+          <el-input placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini">
           </el-input>
         </el-header>
         <el-main style="padding:0px;flex:1">
-          <el-tree node-key="id" @node-click="orgSelected" :default-expanded-keys="[0]" :default-checked-keys="[0]" :data="orgs"
+          <el-tree node-key="id" :highlight-current="true" @node-click="orgSelected" :default-expanded-keys="[0]" :default-checked-keys="[0]" :data="orgs"
             :props="defaultProps" style="background:transparent"></el-tree>
         </el-main>
       </el-container>

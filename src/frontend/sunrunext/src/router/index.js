@@ -49,6 +49,9 @@ export default new Router({
       {
         path: '/contractSync',
         component: resolve => require(['../components/contractSync.vue'], resolve)
+      }, {
+        path: '/message',
+        component: resolve => require(['../components/message.vue'], resolve)
       },
     ]
   }, ],
