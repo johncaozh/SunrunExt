@@ -1,3 +1,6 @@
+/*   [class^="el-icon-custom"],[class*="el-icon-custom"]   
+*/
+
 .el-header {
   padding: 0px;
   height: 100%;
@@ -52,4 +55,35 @@
   width: 60px;
   height: 60px;
   border-radius: 4px;
+}
+
+.customScroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.customScroll::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+.customScroll::-webkit-scrollbar {
+  width: 8px;
+  height: 10px;
+}
+
+.customScroll::-webkit-scrollbar-track {
+  background: 0 0;
+}
+
+.input-borderless {
+  border: 0px;
+  flex: 1;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 13px;
+  outline: none;
+}
+
+.input-borderless::-webkit-input-placeholder {
+  color: #C0C4CC;
 }

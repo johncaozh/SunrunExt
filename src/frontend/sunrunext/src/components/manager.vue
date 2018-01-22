@@ -3,7 +3,7 @@
         <div class="flexDiv-h div-item" @click="$router.push('./contractSync')">
             <span class="item-icon" style="background-position: -97px -386px;">
             </span>
-            <div class="flexDiv-v" style="flex:1" >
+            <div class="flexDiv-v" style="flex:1">
                 <span class="item-header">通讯录同步</span>
                 <span class="text-font-minor item-desc">可通过API接口管理通讯录，同时可设置查看或编辑权限，管理更加方便</span>
             </div>
@@ -16,7 +16,7 @@
                 <span class="text-font-minor item-desc">可通过自定义的消息型应用给成员群发消息</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item">
+        <div class="flexDiv-h div-item" @click="$router.push('./userMessage')">
             <span class="item-icon" style="background-position: -420px -463px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -24,7 +24,7 @@
                 <span class="text-font-minor item-desc">可查看成员通过应用发送的消息，并进行回复</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item">
+        <div class="flexDiv-h div-item" @click="$router.push('./message?tabIndex=3')">
             <span class="item-icon" style="background-position:-140px -463px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -32,7 +32,7 @@
                 <span class="text-font-minor item-desc">可将重要常用的素材存放在此，方便管理员发送消息</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item">
+        <div class="flexDiv-h div-item" @click="$router.push('./usageAnalysis')">
             <span class="item-icon" style="background-position: -551px -140px;">
             </span>
             <div class="flexDiv-v" style="flex:1">

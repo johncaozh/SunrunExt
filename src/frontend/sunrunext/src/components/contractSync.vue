@@ -11,15 +11,15 @@
             </div>
             <div class="flexDiv-h editItemContainer" style="align-items:center">
                 <span class="text-font-normal item-header">IAM地址</span>
-                <input type="text" placeholder="在此输入IAM服务器地址" />
+                <input class="input-borderless" type="text" placeholder="在此输入IAM服务器地址" />
             </div>
             <div class="flexDiv-h editItemContainer" style="align-items:center">
                 <span class="text-font-normal item-header">AppKey</span>
-                <input type="text" placeholder="在此输入同步接口的AppKey" />
+                <input class="input-borderless" type="text" placeholder="在此输入同步接口的AppKey" />
             </div>
             <div class="flexDiv-h editItemContainer" style="align-items:center">
                 <span class="text-font-normal item-header">AppSecret</span>
-                <input type="text" placeholder="在此输入同步接口的AppSecret" />
+                <input class="input-borderless" type="text" placeholder="在此输入同步接口的AppSecret" />
             </div>
             <el-button type="primary" style="margin-top:20px;align-self:flex-start">同步</el-button>
         </div>
@@ -44,23 +44,6 @@ export default {
 .item-header {
   font-size: 13px;
   width: 75px;
-}
-
-input {
-  border: 0px;
-  flex: 1;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  font-size: 13px;
-  outline: none;
-}
-
-input::-webkit-input-placeholder {
-  color: @color-theme;
-}
-
-input::-webkit-input-placeholder {
-  color: @color-font-minor;
 }
 </style>
 
