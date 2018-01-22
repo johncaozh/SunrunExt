@@ -17,10 +17,29 @@ export default new Router({
         component: resolve => require(['../components/apps.vue'], resolve)
       }, {
         path: '/manager',
-        component: resolve => require(['../components/manager.vue'], resolve)
+        component: resolve => require(['../components/manager.vue'], resolve),
       }, {
         path: '/enterprise',
-        component: resolve => require(['../components/enterprise.vue'], resolve)
+        component: resolve => require(['../components/enterprise.vue'], resolve),
+        children: [{
+          path: '/enterprise/enterpriseInfo',
+          component: resolve => require(['../components/common/enterpriseInfo.vue'], resolve),
+        }, {
+          path: '/enterprise/admin',
+          component: resolve => require(['../components/common/adminManage.vue'], resolve),
+        }, {
+          path: '/enterprise/chatSession',
+          component: resolve => require(['../components/common/chatSessionManage.vue'], resolve),
+        }, {
+          path: '/enterprise/contract',
+          component: resolve => require(['../components/common/contractManage.vue'], resolve),
+        }, {
+          path: '/enterprise/security',
+          component: resolve => require(['../components/common/securityManage.vue'], resolve),
+        }, {
+          path: '/enterprise/client',
+          component: resolve => require(['../components/common/clientManage.vue'], resolve),
+        }]
       },
       {
         path: '/apps/create',
@@ -52,6 +71,12 @@ export default new Router({
       }, {
         path: '/message',
         component: resolve => require(['../components/message.vue'], resolve)
+      }, {
+        path: '/userMessage',
+        component: resolve => require(['../components/userMessageHistory.vue'], resolve)
+      }, {
+        path: '/usageAnalysis',
+        component: resolve => require(['../components/usageAnalysis.vue'], resolve)
       },
     ]
   }, ],

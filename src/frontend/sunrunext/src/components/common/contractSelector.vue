@@ -1,9 +1,15 @@
 <template>
   <div class="flexDiv-h" style="align-items:center">
     <span v-if="selectedOrgs.length>0" class="text-font-normal">应用范围：</span>
-    <div class="flexDiv-h div-app-selected" v-if="selectedOrgs.length>0">
-      <!-- <img :src="selectedApp.logoUrl" class="app-logo-selected" />
-      <span class="app-name-selected">{{selectedApp.name}}</span> -->
+    <div class="flexDiv-h " v-if="selectedOrgs.length>0">
+      <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in selectedOrgs" :key="index">
+        <i class="el-icon-custom-group icon-org" v-show="item.type=='org'" style="margin-top:3px">
+        </i>
+        <i class="el-icon-custom-people icon-org" v-show="item.type=='user'"  style="margin-top:3px">
+        </i>
+        <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
+        <i class="el-icon-close" style="font-size:14px;cursor:pointe;margin-left:5px;" @click="removeOrgFromSelectedOrgs(item)" />
+      </div>
     </div>
     <el-button class="button-link" type="text" @click="showDialog">{{selectedOrgs.length>0?"修改":emptyLabel}}</el-button>
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px">
@@ -11,20 +17,20 @@
         <div class="flexDiv-v">
           <el-input :disabled="selectAllOrgs" placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini" v-model="filterText">
           </el-input>
-          <el-tree :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="false" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree"></el-tree>
+          <el-tree :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="false" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
         </div>
         <div class="flexDiv-v div-tempSelectedOrg">
           <div class="text-font-normal" style="margin-top:3px;margin-bottom:12px">
             已选择部分或成员
           </div>
-          <div style="height:400px;overflow-y:auto">
-            <div v-for="(item,index) in tempSelectedOrgs" :key="index" style="align-items:center;margin-bottom:3px;" class="flexDiv-h">
+          <div style="height:400px;overflow-y:auto" class="customScroll">
+            <div v-for="(item,index) in tempSelectedOrgs" :style="{opacity:item.disabled?0.3:1}" :key="index" style="align-items:center;margin-bottom:3px;" class="flexDiv-h">
               <i class="el-icon-custom-group icon-org" v-show="item.type=='org'">
               </i>
               <i class="el-icon-custom-people icon-org" v-show="item.type=='user'">
               </i>
               <span style="flex:1">{{item.name}}</span>
-              <i class="el-icon-close" style="font-size:16px;cursor:pointer" @click="removeOrg(item)" />
+              <i class="el-icon-close" style="font-size:16px;cursor:pointer" :style="{cursor:item.disabled?'none':'pointer'}" @click="removeOrg(item)" />
             </div>
           </div>
         </div>
@@ -49,6 +55,7 @@ export default {
   data() {
     return {
       sourceOrgs: null,
+      orgArr: [], //一维的组织架构
       orgs: [],
       selectedOrgs: [],
       tempSelectedOrgs: [],
@@ -68,15 +75,46 @@ export default {
       type: String,
       default: "选择发送范围",
       required: false
+    },
+    preSelectedOrgs: {
+      type: Array,
+      default: [],
+      required: false
+    },
+    disabledOrgs: {
+      type: Array,
+      default: [],
+      required: false
     }
   },
   async mounted() {
     await this.getOrgs();
     this.processOrgs(this.orgs[0]);
+    this.getOrgArr(this.orgs[0]);
+
+    if (this.disabledOrgs) {
+      this.disabledOrgs.forEach(i => {
+        var target = this.getTarget(i.id);
+        if (target) target.disabled = true;
+      });
+    }
+
+    if (this.preSelectedOrgs) {
+      this.preSelectedOrgs.forEach(i => {
+        var target = this.getTarget(i.id);
+        if (target) {
+          target.selected = true;
+          this.selectedOrgs.push(target);
+        }
+      });
+    }
   },
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val);
+    },
+    selectAllOrgs() {
+      this.sourceOrgs.disabled = this.selectAllOrgs;
     }
   },
   methods: {
@@ -104,15 +142,38 @@ export default {
     async getOrgs() {
       if (this.loading) return;
       this.sourceOrgs = await api.getOrg();
+      this.sourceOrgs.disabled = this.selectAllOrgs;
       this.orgs.push(this.sourceOrgs);
       this.loading = false;
     },
+    getOrgArr(org) {
+      this.orgArr = this.orgArr || [];
+      orgs.forEach(i => {
+        i.users.forEach(u => {
+          this.orgArr.push(u);
+        });
+        i.subOrgs.forEach(j => {
+          this.orgArr.push(j);
+          this.getOrgArr(j);
+        });
+      });
+    },
+    getTarget(id) {
+      var target = this.orgArr.find(i => {
+        i.id === id;
+      });
+
+      return target;
+    },
     async showDialog() {
-      this.tempSelectedApp = this.selectedApp;
+      this.tempSelectedOrgs = [];
+      this.selectedOrgs.forEach(i => {
+        this.tempSelectedOrgs.push(i);
+      });
       this.dialogVisible = true;
     },
     confirmDialog() {
-      this.selectedApp = this.tempSelectedApp;
+      this.selectedOrgs = this.tempSelectedOrgs;
       this.dialogVisible = false;
     },
     nodeClick(data, node, component) {
@@ -141,12 +202,17 @@ export default {
       );
     },
     removeOrg(item) {
+      if (item.disabled) return;
+
       item.selected = false;
       this.tempSelectedOrgs.removeByValue(item);
 
-      if (this.selectedOrgs) {
+      if (this.selectAllOrgs) {
         this.switchSelectAllState();
       }
+    },
+    removeOrgFromSelectedOrgs(item) {
+      this.selectedOrgs.removeByValue(item);
     },
     filterNode(value, data) {
       if (!value) return true;
@@ -208,7 +274,7 @@ export default {
   margin-right: 10px;
 }
 
-.div-app-selected {
+.div-org-selected {
   border: 1px solid @color-border-level2;
   align-items: center;
   margin-right: 10px;
@@ -262,24 +328,6 @@ export default {
   position: absolute;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: 0 0;
-}
-
 .tree {
   background: transparent;
   height: 400px;
@@ -308,6 +356,16 @@ export default {
   align-items: center;
   justify-content: flex-start;
   text-align: left;
+}
+
+.contract-name-selected {
+  font-size: 14px;
+  color: @color-theme;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
 }
 </style>
 

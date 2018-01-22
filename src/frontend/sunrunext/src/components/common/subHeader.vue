@@ -1,7 +1,7 @@
 <template>
     <div class="subHeader">
-        <span style="padding:0 10px;font-size:14px;cursor:pointer" class="subHeader" @click="$router.go(-1)">
-            <i class="el-icon-d-arrow-left" style="font-size:16px;line-height:30px;"/>
+        <span style="padding:0 10px;font-size:14px;cursor:pointer;border:0px" class="subHeader" @click="$router.go(-1)">
+            <i class="el-icon-d-arrow-left" style="font-size:16px;"/>
             后退
         </span> 
         <div class="title">
