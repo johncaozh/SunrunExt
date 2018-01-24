@@ -18,11 +18,11 @@ router.post("/appSentMessageRecords", api.catchAsyncErrors(async function (req, 
     var createdData = await appSentMessageHistoryModel.create(req.body);
     api.attachData2Response(200, "创建成功", createdData, res);
 
-    if (createdData.status == 'timing') {
+    if (createdData.type == 'timing') {
         appSentMessageScheduler.addJob(createdData)
-    } else if (createdData.status == 'sent') {
+    } else if (createdData.type == 'sent') {
         appSentMessageScheduler.sendMessageJob(createdData);
-    } else if (createdData.status == "draft") {
+    } else if (createdData.type == "draft") {
         //草稿类型不需要任何处理
     }
 
@@ -55,10 +55,12 @@ router.put("/appSentMessageRecords/:id", api.catchAsyncErrors(async function (re
         var updatedData = await appSentMessageHistoryModel.findByIdAndUpdate(id, req.body)
         api.attachData2Response(200, "更新成功", updatedData, res);
 
-        if (targetData.status == "draft" && updatedData.status == "timing") {
+        if (targetData.type == "draft" && updatedData.type == "timing") {
             appSentMessageScheduler.addJob(updatedData);
-        } else if (targetData.status == "timing" && updatedData.status == "draft") {
+        } else if (targetData.type == "timing" && updatedData.type == "draft") {
             appSentMessageScheduler.cancelJob(id);
+        } else if (targetData.type == 'timing' && updatedData.type == 'timing' && targetData.schedulerDate != updatedData.schedulerDate) {
+            appSentMessageScheduler.rescheduleJob(updatedData._id, updatedData.schedulerDate);
         }
     } else {
         api.attachData2Response(404, "不存在", gotData, res);
@@ -70,7 +72,7 @@ router.delete("/appSentMessageRecords/:id", api.catchAsyncErrors(async function 
     var id = req.params.id;
     var deletedData = await appSentMessageHistoryModel.findByIdAndRemove(id, req.body)
     await appMessageTemplateModel.findByIdAndRemove(id);
-    if (deletedData.status == 'timing')
+    if (deletedData.type == 'timing')
         appSentMessageScheduler.cancelJob(id);
     api.attachData2Response(200, "移除成功。", deletedData, res);
     next();
