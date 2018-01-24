@@ -31,7 +31,7 @@ Vue.filter('appMessageTemplateTypeConverter', function (type) {
     return "视频";
   else if (type == "file")
     return "文件";
-  else return "文字"
+  else return "文字" 
 });
 
 Vue.filter('appMessageTemplateToStringConverter', function (template) {
