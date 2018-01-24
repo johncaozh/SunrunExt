@@ -4,7 +4,7 @@ var appMessageTemplateModel = require("../../../db/appMessageTemplate");
 var router = express.Router();
 
 router.get("/appMessageTemplates", api.catchAsyncErrors(async function (req, res, next) {
-    var foundData = await appMessageTemplateModel.find();
+    var foundData = await appMessageTemplateModel.find(req.query);
     api.attachData2Response(200, "获取成功", foundData, res);
     next();
 }));

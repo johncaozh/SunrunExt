@@ -44,7 +44,7 @@
           <i class="el-icon-plus icon-plus "></i>
           添加图文
         </div>
-        <el-dialog :close-on-click-modal=false title="编辑图文模板" width="1070px" :visible.sync="newsMessageContext.isDialogVisible">
+        <el-dialog append-to-body :close-on-click-modal=false title="编辑图文模板" width="1070px" :visible.sync="newsMessageContext.isDialogVisible">
           <app-message-template-creator_news ref="newsEditor" :news="newsMessageContext.news" />
           <div slot="footer" class="dialog-footer ">
             <el-button @click="newsMessageContext.isDialogVisible=false">取消</el-button>
@@ -90,7 +90,7 @@
           <i class="el-icon-plus icon-plus "></i>
           添加外链图文
         </div>
-        <el-dialog :close-on-click-modal=false title="编辑外链图文模板" width="900px" :visible.sync="externalLinkNewsMessageContext.isDialogVisible">
+        <el-dialog append-to-body :close-on-click-modal=false title="编辑外链图文模板" width="900px" :visible.sync="externalLinkNewsMessageContext.isDialogVisible">
           <app-message-template-creator_news_external-link ref="externalLinkNewsEditor" :news="externalLinkNewsMessageContext.news" />
           <div slot="footer" class="dialog-footer ">
             <el-button @click="externalLinkNewsMessageContext.isDialogVisible=false">取消</el-button>
@@ -169,7 +169,7 @@
           </div>
           <el-button type="text" class="button-link" style="margin-left:10px;padding:0px" @click="editVideoTemplate" v-show="videoMessageContext.mediaId">编辑</el-button>
         </div>
-        <el-dialog :close-on-click-modal=false title="编辑视频模板" width="900px" :visible.sync="videoMessageContext.isDialogVisible">
+        <el-dialog append-to-body :close-on-click-modal=false title="编辑视频模板" width="900px" :visible.sync="videoMessageContext.isDialogVisible">
           <app-message-template-creator_video ref="videoEditor" :videoMessageContext="videoMessageContext" />
           <div slot="footer" class="dialog-footer ">
             <el-button @click="videoMessageContext.isDialogVisible=false">取消</el-button>
@@ -203,8 +203,8 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <el-button class="button-link el-button-material" type="text" @click="messageTemplateMaterialContext.isDialogVisible=true">素材库</el-button>
-    <el-dialog :close-on-click-modal=false title="从素材库中选择" width="1000px" :visible.sync="messageTemplateMaterialContext.isDialogVisible">
+    <el-button v-if="canOpenMaterial" class="button-link el-button-material" type="text" @click="messageTemplateMaterialContext.isDialogVisible=true">素材库</el-button>
+    <el-dialog v-if="canOpenMaterial" append-to-body :close-on-click-modal=false title="从素材库中选择" width="1000px" :visible.sync="messageTemplateMaterialContext.isDialogVisible">
       <app-message-template-material ref="messageTemplateMaterial" />
       <div slot="footer" class="dialog-footer ">
         <el-button @click="messageTemplateMaterialContext.isDialogVisible=false">取消</el-button>
@@ -285,6 +285,23 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    canOpenMaterial: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    templateType: {
+      required: false,
+      type: String,
+      default: null
+    }
+  },
+  watch: {
+    templateType() {
+      if (this.templateType) {
+        this.activeName = this.templateType;
+      }
     }
   },
   mounted() {
@@ -407,7 +424,7 @@ export default {
       this.fileMessageContext.fileName = file.name;
       this.fileMessageContext.mediaId = res.data;
       this.fileMessageContext.fileSize = file.size;
-      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${
+      this.fileMessageContext.mediaUrl = `${api.fileTransferUrl}/${
         this.fileMessageContext.mediaId
       }`;
     },
@@ -517,8 +534,8 @@ export default {
         if (!result) return null;
         data = this.videoMessageContext;
       } else if (this.activeName == "file") {
-        if (!this.videoMessageContext.mediaId) {
-          this.$message.error("请上传视频");
+        if (!this.fileMessageContext.mediaId) {
+          this.$message.error("请上传文件");
           return null;
         }
 
@@ -530,9 +547,41 @@ export default {
         data: data
       };
     },
-    gotFromMessageTemplateMaterial(){
+    gotFromMessageTemplateMaterial() {
+      var selectedTemplate = this.$refs.messageTemplateMaterial
+        .selectedTemplate;
 
-    },
+      this.activeName = selectedTemplate.type;
+      if (this.activeName == "text") {
+        this.textMessageContext.content = selectedTemplate.data.content;
+      } else if (this.activeName == "news") {
+        this.newsMessageContext.news = selectedTemplate.data.news;
+      } else if (this.activeName == "externalLinkNews") {
+        this.externalLinkNewsMessageContext.news = this.template.data.news;
+      } else if (this.activeName == "photo") {
+        this.photoMessageContext.mediaId = selectedTemplate.data.mediaId;
+        this.photoMessageContext.imageUrl = selectedTemplate.data.imageUrl;
+      } else if (this.activeName == "voice") {
+        this.voiceMessageContext.mediaId = selectedTemplate.data.mediaId;
+        this.voiceMessageContext.mediaUrl = selectedTemplate.data.mediaUrl;
+        this.voiceMessageContext.fileName = selectedTemplate.data.fileName;
+        this.voiceMessageContext.duration = selectedTemplate.data.duration;
+      } else if (this.activeName == "video") {
+        this.videoMessageContext.mediaId = selectedTemplate.data.mediaId;
+        this.videoMessageContext.thumbMediaId = selectedTemplate.data.thumbMediaId;
+        this.videoMessageContext.title = selectedTemplate.data.title;
+        this.videoMessageContext.abstract = selectedTemplate.data.abstract;
+        this.videoMessageContext.mediaUrl = selectedTemplate.data.mediaUrl;
+        this.videoMessageContext.thumbMediaUrl = selectedTemplate.data.thumbMediaUrl;
+      } else if (this.activeName == "file") {
+        this.videoMessageContext.mediaId = selectedTemplate.data.mediaId;
+        this.videoMessageContext.fileSize = selectedTemplate.data.fileSize;
+        this.videoMessageContext.fileName = selectedTemplate.data.fileName;
+        this.videoMessageContext.mediaUrl = this.template.data.mediaUrl;
+      }
+
+      this.messageTemplateMaterialContext.isDialogVisible = false;
+    }
   }
 };
 </script>

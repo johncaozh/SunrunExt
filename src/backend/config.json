@@ -1,0 +1,13 @@
+{
+    "enterpriseLogoMediaId": "",
+    "enterpriseName": "",
+    "enterprisePhone": "",
+    "enterpriseAddress": "",
+    "gotResponseWhenFriendReadMsg": false,
+    "autoBuildEnterpriseIMGroup": false,
+    "autoBuildDepartmentIMGroup": false,
+    "showWatermarkerInGroupSession": false,
+    "showWatermarkerInAdressBook": false,
+    "appsLayoutMode": 1,
+    "sendEmailOrSNS": false
+}

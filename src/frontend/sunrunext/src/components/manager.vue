@@ -40,6 +40,14 @@
                 <span class="text-font-minor item-desc">可通过使用分析查看成员、管理员和应用的使用情况</span>
             </div>
         </div>
+        <div class="flexDiv-h div-item" @click="$router.push('./openApi')">
+            <span class="item-icon" style="background-position: -481px -70px;">
+            </span>
+            <div class="flexDiv-v" style="flex:1">
+                <span class="item-header">开放API接口</span>
+                <span class="text-font-minor item-desc">可通过使用平台提供的API接口，轻松实现消息推送、文件上传、文件预览等功能</span>
+            </div>
+        </div>
     </div>
 </template>
 

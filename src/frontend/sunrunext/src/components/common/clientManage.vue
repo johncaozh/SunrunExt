@@ -39,7 +39,7 @@
             <span class="text-font-normal item-header">未使用成员提醒</span>
             <div class="flexDiv-v">
                 <el-checkbox class="button-link">开启</el-checkbox>
-                <span class="text-font-minor" style="margin-top:10px">未使用企业微信的成员收到聊天消息和应用消息，通过短信或邮件提醒他们</span>
+                <span class="text-font-minor" style="margin-top:10px">未使用融合客户端的成员收到聊天消息和应用消息，通过短信或邮件提醒他们</span>
             </div>
         </div>
     </div>

@@ -1,39 +1,39 @@
 <template>
   <div class="flexDiv-v">
-      <sub-header>测试应用</sub-header>
+    <sub-header>测试应用</sub-header>
     <div class="flexDiv-v app-main">
       <div class="flexDiv-v">
         <div class="flexDiv-h app-basic">
-          <img style="width:60px;height:60px" :src="appDetail.logoUrl"/>
+          <img style="width:60px;height:60px" :src="appDetail.logoUrl" />
           <div class="flexDiv-v" style="margin-left:10px;justify-content:space-around;align-self:stretch">
             <div style="font-size:22px;">{{appDetail.name}}</div>
             <div class="text-font-normal">{{appDetail.desc}}</div>
           </div>
           <div class="flexDiv-v" style="flex:1;align-items:flex-end;justify-content:space-around;align-self:stretch">
-            <el-checkbox  v-model="appDetail.enable" @change="appEnableChanged" >启用</el-checkbox>
+            <el-checkbox v-model="appDetail.enable" @change="appEnableChanged">启用</el-checkbox>
             <el-checkbox v-model="appDetail.useInGroup" @change="appUseInGroupChanged">设为群应用</el-checkbox>
           </div>
         </div>
-        <div class="flexDiv-v text-font-normal" >
-          <el-row  style="padding-top:20px;padding-bottom:20px" >
-              <el-col :span="3">应用ID</el-col>
-              <el-col :span="10">{{appDetail._id}}</el-col>
+        <div class="flexDiv-v text-font-normal">
+          <el-row style="padding-top:20px;padding-bottom:20px">
+            <el-col :span="3">应用ID</el-col>
+            <el-col :span="10">{{appDetail._id}}</el-col>
           </el-row>
-           <el-row v-show="!appDetail.useInGroup">
-              <el-col :span="3">可见范围</el-col>
-              <el-col :span="10">曹忠乾</el-col>
+          <el-row v-show="!appDetail.useInGroup">
+            <el-col :span="3">可见范围</el-col>
+            <el-col :span="10">曹忠乾</el-col>
           </el-row>
         </div>
-        <div class="flexDiv-h app-menu" >
-          <app-visible v-show="!appDetail.useInGroup" :visible="appDetail.visible" @visibleChanged="appVisibleChanged"/>
-          <app-home-url :homeUrl="appDetail.home_url" @urlChanged="appUrlChanged"/>
-          <app-context-menu v-show="!appDetail.useInGroup" :appId="appDetail._id" :contextMenu="appDetail.contextMenu"/>
-          <app-send-msg v-show="!appDetail.useInGroup"/>
-          <app-receive-msg v-show="!appDetail.useInGroup"/>
-          <app-auto-reply v-show="!appDetail.useInGroup" :appId="appDetail._id"/>
-          <app-s-s-o @iamProductNameChanged="appIamProductNameChanged" :iamProductName="appDetail.iamProductName"/>
+        <div class="flexDiv-h app-menu">
+          <app-visible v-show="!appDetail.useInGroup" :visible="appDetail.visible" @visibleChanged="appVisibleChanged" />
+          <app-home-url :homeUrl="appDetail.home_url" @urlChanged="appUrlChanged" />
+          <app-context-menu v-show="!appDetail.useInGroup" :appId="appDetail._id" :contextMenu="appDetail.contextMenu" />
+          <app-send-msg v-show="!appDetail.useInGroup" />
+          <app-receive-msg v-show="!appDetail.useInGroup" />
+          <app-auto-reply v-show="!appDetail.useInGroup" :appId="appDetail._id" />
+          <app-s-s-o @iamProductNameChanged="appIamProductNameChanged" :iamProductName="appDetail.iamProductName" />
         </div>
-        <el-button type="text" style="margin-top:30px;color:red;align-self:flex-start">删除应用</el-button>
+        <el-button type="text" style="margin-top:30px;color:red;align-self:flex-start" @click="deleteApp">删除应用</el-button>
       </div>
     </div>
   </div>
@@ -87,20 +87,25 @@ export default {
     },
     async refreshAppDetail() {
       this.appDetail = await api.getAppDetail(this.appId);
-      this.appDetail.logoUrl = `${api.fileTransferUrl}/${this.appDetail
-        .avatar}`;
+      this.appDetail.logoUrl = `${api.fileTransferUrl}/${
+        this.appDetail.avatar
+      }`;
     },
     async appEnableChanged(value) {
       if (!value) {
         try {
-          await this.$confirm("应用停用后，该应用在客户端中的消息将被删除", "提示", {
-            confirmButtonText: "停用",
-            cancelButtonText: "取消",
-            type: "warning"
-          });
+          await this.$confirm(
+            "应用停用后，该应用在客户端中的消息将被删除",
+            "提示",
+            {
+              confirmButtonText: "停用",
+              cancelButtonText: "取消",
+              type: "warning"
+            }
+          );
 
           await this.updateApp(this.appDetail, "已停用", "停用出错");
-          this.$router.go() - 1;
+          this.$router.go(-1);
         } catch (err) {
           this.$message({
             type: "info",
@@ -126,7 +131,11 @@ export default {
             }
           );
 
-          await this.updateApp(this.appDetail, "已设置为群应用", "设置为群应用出错");
+          await this.updateApp(
+            this.appDetail,
+            "已设置为群应用",
+            "设置为群应用出错"
+          );
           this.refreshAppDetail();
         } catch (err) {
           this.$message({
@@ -136,7 +145,11 @@ export default {
           this.appDetail.useInGroup = false;
         }
       } else {
-        await this.updateApp(this.appDetail, "已设置为普通应用", "设置为普通应用出错");
+        await this.updateApp(
+          this.appDetail,
+          "已设置为普通应用",
+          "设置为普通应用出错"
+        );
         this.refreshAppDetail();
       }
     },
@@ -154,6 +167,27 @@ export default {
       this.appDetail.iamProductName = name;
       await this.updateApp(this.appDetail);
       this.refreshAppDetail();
+    },
+    async deleteApp() {
+      try {
+        await this.$confirm(
+          "应用删除后，该应用的历史消息将被删除且不可恢复",
+          "提示",
+          {
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        );
+
+        await api.deleteApp(this.appDetail._id);
+        this.$router.go(-1);
+      } catch (err) {
+        this.$message({
+          type: "info",
+          message: "已取消操作"
+        });
+      }
     }
   }
 };

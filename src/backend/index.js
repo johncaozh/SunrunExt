@@ -11,13 +11,15 @@ var iam = require('./utilities/iam');
 var log = require('./utilities/log');
 var logger = require('./utilities/log').logger;
 var s3 = require('./utilities/s3');
-var ffmpeg=require('./utilities/ffmpeg');
+var appSentMessageScheduler = require('./utilities/appSentMessageScheduler');
+var ffmpeg = require('./utilities/ffmpeg');
 var v1_router_app = require("./routers/api/v1/app");
 var v1_router_org = require('./routers/api/v1/org');
 var v1_router_file = require('./routers/api/v1/file');
 var v1_router_appContextMenu = require('./routers/api/v1/appContextMenu');
 var v1_router_appMessageTemplate = require('./routers/api/v1/appMessageTemplate');
 var v1_router_appAutoReplyRule = require('./routers/api/v1/appAutoReplyRule');
+var v1_router_appSentMessageRecord = require('./routers/api/v1/appSentMessageRecord');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
@@ -88,6 +90,7 @@ app.use("/api/v1/", v1_router_file);
 app.use("/api/v1/", v1_router_appContextMenu);
 app.use("/api/v1/", v1_router_appMessageTemplate);
 app.use("/api/v1/", v1_router_appAutoReplyRule);
+app.use("/api/v1/", v1_router_appSentMessageRecord);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
@@ -127,4 +130,5 @@ var server = app.listen(3000, async function () {
     env.serverEndConfig.downloadResUrl = `http://${host}:${port}/download/`;
     await iam.syncIamUsers();
     await s3.init();
+    await appSentMessageScheduler.loadAllTimingSentMessageJobs();
 });
