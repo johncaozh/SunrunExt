@@ -8,9 +8,17 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './assets/iconfont.css';
 import './assets/common.css';
 import filter from './utility/filter'
+import VueLazyload from 'vue-lazyload'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: './assets/img/broken-image.png',
+  loading: './assets/img/loading-image.svg',
+  attempt: 3
+})
 
 Array.prototype.removeByValue = function (val) {
   for (var i = 0; i < this.length; i++) {

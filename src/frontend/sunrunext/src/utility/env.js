@@ -10,6 +10,7 @@ const serverConfig = {
   appMessageTemplatesSegment: "appMessageTemplates",
   appAutoReplyRulesSegment: "appAutoReplyRules",
   appSentMessageRecordsSegment: "appSentMessageRecords",
+  configSegment: "config",
 }
 
 const constants = {

@@ -117,4 +117,12 @@ export default {
     var url = `${env.serverConfig.appSentMessageRecordsSegment}/${id}`;
     return axios.delete(url);
   },
+  async getConfig() {
+    var url = env.serverConfig.configSegment;
+    return axios.get(url);
+  },
+  async updateConfig(param) {
+    var url = env.serverConfig.configSegment;
+    return axios.put(url, param);
+  },
 }

@@ -6,6 +6,7 @@
     "gotResponseWhenFriendReadMsg": false,
     "autoBuildEnterpriseIMGroup": false,
     "autoBuildDepartmentIMGroup": false,
+    "autoGotoVisiualModeInGroupSession": false,
     "showWatermarkerInGroupSession": false,
     "showWatermarkerInAdressBook": false,
     "appsLayoutMode": 1,
