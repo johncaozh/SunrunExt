@@ -1,7 +1,7 @@
 <template>
   <div class="flexDiv-v customScroll div-app-container">
-    <div v-for="(item,index) in apps" :key="index" class="flexDiv-h div-app" @click="selectApp(item)" :style="{background:item==selectedApp?'#2f5981':'transparency'}">
-      <span v-if="item.id==-1" class="item-icon app-all-message"></span>
+    <div v-for="(item,index) in apps" :key="index" class="flexDiv-h div-app" @click="selectApp(item)" :style="{background:item==selectedApp?'#2f5981':'transparent'}">
+      <span v-if="item.id==-1" class="item-icon app-logo" style="background-position: -152px -794px;"></span>
       <img :src="item.logoUrl" class="app-logo" v-else/>
       <span class="app-name" :style="{color:item==selectedApp?'white':'black'}">{{item.name}}</span>
     </div>
@@ -34,7 +34,7 @@ export default {
         if (this.showAllAppOption) {
           this.apps.push({
             name: "全部消息",
-            id: -1
+            _id: "-1"
           });
         }
 

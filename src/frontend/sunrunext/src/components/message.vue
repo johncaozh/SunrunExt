@@ -8,8 +8,8 @@
       </el-radio-group>
     </sub-header>
     <message-sender style="padding-left:100px;padding-right:100px" v-show="tab=='发消息'" />
-    <send-message-history  v-show="tab=='已发送'" />
-    <message-template-material v-show="tab=='素材库'" />
+    <send-message-history v-show="tab=='已发送'" />
+    <message-template-material :canEdit="true" v-show="tab=='素材库'" />
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
     subHeader,
     messageSender,
     sendMessageHistory,
-    messageTemplateMaterial,
+    messageTemplateMaterial
   },
   mounted() {
     var tab = this.$route.query.tabIndex;

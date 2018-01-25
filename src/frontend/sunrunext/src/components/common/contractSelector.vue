@@ -1,17 +1,17 @@
 <template>
   <div class="flexDiv-h" style="align-items:center">
-    <span v-if="selectedOrgs.length>0" class="text-font-normal">应用范围：</span>
-    <div class="flexDiv-h " v-if="selectedOrgs.length>0">
+    <span v-if="selectedOrgs.length>0&&notEmptyLabel" class="text-font-normal" style="line-height:20px">应用范围：</span>
+    <div class="flexDiv-h " style="flex:1;flex-wrap:wrap">
       <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in selectedOrgs" :key="index">
         <i class="el-icon-custom-group icon-org" v-show="item.type=='org'" style="margin-top:3px">
         </i>
-        <i class="el-icon-custom-people icon-org" v-show="item.type=='user'"  style="margin-top:3px">
+        <i class="el-icon-custom-people icon-org" v-show="item.type=='user'" style="margin-top:3px">
         </i>
         <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
-        <i class="el-icon-close" style="font-size:14px;cursor:pointe;margin-left:5px;" @click="removeOrgFromSelectedOrgs(item)" />
+        <i class="el-icon-close" style="font-size:14px;cursor:pointer;margin-left:5px;" @click="removeOrgFromSelectedOrgs(item)" />
       </div>
+      <el-button class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?"修改":emptyLabel}}</el-button>
     </div>
-    <el-button class="button-link" type="text" @click="showDialog">{{selectedOrgs.length>0?"修改":emptyLabel}}</el-button>
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px">
       <div class="flexDiv-h ">
         <div class="flexDiv-v">
@@ -70,20 +70,42 @@ export default {
       tempSelectedOrgs_beforeSelectAll: []
     };
   },
+  computed: {
+    selectedUserIds: function() {
+      return this.selectedOrgs.filter(i => i.type == "user").map(j => {
+        return j.id;
+      });
+    },
+    selectedOrgIds: function() {
+      return this.selectedOrgs.filter(i => i.type == "org").map(j => {
+        return j.id;
+      });
+    },
+    allSelectedOrgIds: function() {
+      return this.selectedOrgs.map(j => {
+        return j.id;
+      });
+    }
+  },
   props: {
     emptyLabel: {
       type: String,
       default: "选择发送范围",
       required: false
     },
+    notEmptyLabel: {
+      type: String,
+      default: "应用范围：",
+      required: false
+    },
     preSelectedOrgs: {
       type: Array,
-      default: [],
+      default: null,
       required: false
     },
     disabledOrgs: {
       type: Array,
-      default: [],
+      default: null,
       required: false
     }
   },
@@ -278,6 +300,7 @@ export default {
   border: 1px solid @color-border-level2;
   align-items: center;
   margin-right: 10px;
+  margin-bottom: 5px;
 }
 
 .app-name {
@@ -360,6 +383,7 @@ export default {
 
 .contract-name-selected {
   font-size: 14px;
+  width: 60px;
   color: @color-theme;
   line-height: 16px;
   white-space: nowrap;

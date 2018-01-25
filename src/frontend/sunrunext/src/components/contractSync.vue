@@ -43,7 +43,7 @@ export default {
 
 .item-header {
   font-size: 13px;
-  width: 75px;
+  width: 120px;
 }
 </style>
 

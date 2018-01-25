@@ -69,6 +69,9 @@ export default new Router({
         path: '/contractSync',
         component: resolve => require(['../components/contractSync.vue'], resolve)
       }, {
+        path: '/openApi',
+        component: resolve => require(['../components/openApi.vue'], resolve)
+      }, {
         path: '/message',
         component: resolve => require(['../components/message.vue'], resolve)
       }, {

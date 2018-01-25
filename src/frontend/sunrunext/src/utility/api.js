@@ -32,6 +32,10 @@ export default {
     var url = `${env.serverConfig.appsSegment}/${appId}`;
     return axios.put(url, param);
   },
+  async deleteApp(id) {
+    var url = `${env.serverConfig.appsSegment}/${id}`;
+    return axios.delete(url);
+  },
   async getAppDetail(appId) {
     var url = `${env.serverConfig.appsSegment}/${appId}`;
     return axios.get(url);
@@ -47,6 +51,18 @@ export default {
   async deleteAppContextMenu(contextMenuId) {
     var url = `${env.serverConfig.appContextMenusSegment}/${contextMenuId}`;
     return axios.delete(url);
+  },
+  async getAppMessageTemplates(type = null, showInMaterialLibrary = false) {
+    var url = env.serverConfig.appMessageTemplatesSegment;
+
+    if (type)
+      url += `?type=${type}`;
+
+    if (showInMaterialLibrary) {
+      var connectChar = type ? "&" : "?";
+      url += `${connectChar}showInMaterialLibrary=${showInMaterialLibrary}`;
+    }
+    return axios.get(url);
   },
   async createAppMessageTemplate(param) {
     var url = env.serverConfig.appMessageTemplatesSegment;
@@ -70,6 +86,35 @@ export default {
   },
   async deleteAppAutoReplyRule(id) {
     var url = `${env.serverConfig.appAutoReplyRulesSegment}/${id}`;
+    return axios.delete(url);
+  },
+  async getAppSentMessageRecords(type, appId) {
+    var url = env.serverConfig.appSentMessageRecordsSegment;
+
+    if (type)
+      url += `?type=${type}`;
+
+    if (appId) {
+      var connectChar = type ? "&" : "?";
+      url += `${connectChar}app=${appId}`;
+    }
+
+    return axios.get(url);
+  },
+  async createAppSentMessageRecord(param) {
+    var url = env.serverConfig.appSentMessageRecordsSegment;
+    return axios.post(url, param);
+  },
+  async getAppSentMessageRecord(id) {
+    var url = `${env.serverConfig.appSentMessageRecordsSegment}/${id}`;
+    return axios.get(url);
+  },
+  async updateAppSentMessageRecord(id, param) {
+    var url = `${env.serverConfig.appSentMessageRecordsSegment}/${id}`;
+    return axios.put(url, param);
+  },
+  async deleteAppSentMessageRecord(id) {
+    var url = `${env.serverConfig.appSentMessageRecordsSegment}/${id}`;
     return axios.delete(url);
   },
 }

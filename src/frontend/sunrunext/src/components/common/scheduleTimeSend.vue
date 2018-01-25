@@ -41,7 +41,7 @@ export default {
   methods: {
     showDialog() {
       if (this.presetDate) {
-        this.selectedDate = presetDate;
+        this.selectedDate = this.presetDate;
       } else {
         this.selectedDate = moment()
           .add(1, "hours")
