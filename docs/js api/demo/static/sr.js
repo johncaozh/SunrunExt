@@ -5,13 +5,21 @@
 }(this,
     function (glob, setGlobal) {
         function invokeCmd(cmd, param, callbackObj) {
-            glob.SRJSBridge ? SRJSBridge.invoke(cmd, normParameter(param), function (res) {
+            glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, normParameter(param), function (res) {
                 completeBridgeInteraction(cmd, res, callbackObj);
             }) : debugBridgeInteraction(cmd, callbackObj)
         }
 
         function bindEvent(targetItem, callbackObj, debugCallback) {
-            glob.SRJSBridge ? SRJSBridge.on(targetItem, function (res) {
+            alert("测试ON接口");
+
+            if (glob.SRJSBridge) {
+                alert("检查到SRJSBridge全局对象");
+            } else {
+                alert("没有检查到SRJSBridge全局对象");
+            }
+
+            glob.SRJSBridge ? SRJSBridge.ON(targetItem, function (res) {
                 if (debugCallback && debugCallback.trigger)
                     debugCallback.trigger(res);
 
@@ -169,11 +177,11 @@
             if (!srAPI.invoke) {
                 srAPI.invoke = function (cmd, param, callbackFunc) {
                     if (glob.SRJSBridge)
-                        SRJSBridge.invoke(cmd, normParameter(param), callbackFunc);
+                        SRJSBridge.INVOKE(cmd, normParameter(param), callbackFunc);
                 };
                 srAPI.on = function (targetItem, callbackFunc) {
                     if (glob.SRJSBridge)
-                        SRJSBridge.on(targetItem, callbackFunc);
+                        SRJSBridge.ON(targetItem, callbackFunc);
                 };
             }
         }
@@ -193,7 +201,6 @@
         var cfg; //config information, z
         var cmdExecCB; //command execution callback, A
         var stateInfo; //state information, B
-
 
         if (!glob.jWeixin) {
             doc = glob.document;
@@ -304,7 +311,8 @@
 
 
                 ready: function (completeFunc) {
-                    if (stateInfo.state != 0) {
+                    // if (stateInfo.state != 0) {
+                    if (true) {
                         //api-call already finished
                         completeFunc();
                     } else {
