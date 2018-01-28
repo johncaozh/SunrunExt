@@ -1,14 +1,16 @@
 {
-    "enterpriseLogoMediaId": "",
-    "enterpriseName": "",
-    "enterprisePhone": "",
-    "enterpriseAddress": "",
-    "gotResponseWhenFriendReadMsg": false,
-    "autoBuildEnterpriseIMGroup": false,
-    "autoBuildDepartmentIMGroup": false,
-    "autoGotoVisiualModeInGroupSession": false,
-    "showWatermarkerInGroupSession": false,
-    "showWatermarkerInAdressBook": false,
-    "appsLayoutMode": 1,
-    "sendEmailOrSNS": false
+  "enterpriseLogoMediaId": "",
+  "enterpriseName": "广州尚融",
+  "enterprisePhone": "02038288446",
+  "enterpriseAddress": "广州市萝岗区科学大道科学城182号创新大厦C3区701单元",
+  "clientSplashScreenMediaId": "",
+  "clientSplashScreenMode": "1",
+  "gotResponseWhenFriendReadMsg": true,
+  "autoBuildEnterpriseIMGroup": true,
+  "autoBuildDepartmentIMGroup": true,
+  "autoGotoVisiualModeInGroupSession": true,
+  "showWatermarkerInGroupSession": true,
+  "showWatermarkerInAdressBook": true,
+  "appsLayoutMode": "1",
+  "sendEmailOrSNS": false
 }

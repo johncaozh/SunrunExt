@@ -1,15 +1,19 @@
 var fs = require('fs');
+var api = require('../../../utilities/api');
 var express = require("express");
 var router = express.Router();
+var path = require("path");
+
+const configPath = path.resolve('config.json');
 
 async function loadConfig() {
-    var json = await fs.readFileSync('../../../config.json').toString();
+    var json = await fs.readFileSync(configPath).toString();
     return JSON.parse(json);
 }
 
 async function saveConfig(config) {
-    var json = JSON.stringify(config);
-    await fs.writeFileSync('../../../config.json', json);
+    var json = JSON.stringify(config, null, 2);
+    await fs.writeFileSync(configPath, json);
 }
 
 router.get("/config", api.catchAsyncErrors(async function (req, res, next) {
@@ -21,7 +25,7 @@ router.get("/config", api.catchAsyncErrors(async function (req, res, next) {
 router.put("/config", api.catchAsyncErrors(async function (req, res, next) {
     var config = await loadConfig();
     for (var p in req.body) {
-        if (!config[p] || typeof (config[p]) !== typeof (req.body[p])) {
+        if (!config.hasOwnProperty(p) || typeof config[p] !== typeof req.body[p]) {
             api.attachData2Response(400, "无效的请求数据", config, res);
             next();
             return;

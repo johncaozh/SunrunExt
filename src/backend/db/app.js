@@ -75,14 +75,21 @@ const schema = mongoose.Schema({
         type: Array,
         default: null,
         required: false,
+    },
+    //该APP所属的组(只能属于一个组)
+    groupId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'appGroup',
+        default: null,
+        required: false
     }
 }, {
-    versionKey: false,
-    timestamps: {
-        createdAt: 'createdTime',
-        updatedAt: 'updatedTime'
-    }
-});
+        versionKey: false,
+        timestamps: {
+            createdAt: 'createdTime',
+            updatedAt: 'updatedTime'
+        }
+    });
 
 const appModel = mongoose.model("app", schema);
 module.exports = appModel;

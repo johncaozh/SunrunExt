@@ -20,14 +20,16 @@ var v1_router_appContextMenu = require('./routers/api/v1/appContextMenu');
 var v1_router_appMessageTemplate = require('./routers/api/v1/appMessageTemplate');
 var v1_router_appAutoReplyRule = require('./routers/api/v1/appAutoReplyRule');
 var v1_router_appSentMessageRecord = require('./routers/api/v1/appSentMessageRecord');
+var v1_router_config = require('./routers/api/v1/config');
+var v1_router_managerGroup = require('./routers/api/v1/managerGroup');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
 });
 
 promise.then(db => {
-        logger.info("连接数据库成功。");
-    })
+    logger.info("连接数据库成功。");
+})
     .catch(error => {
         logger.fatal("连接数据库失败：" + error);
     });
@@ -91,6 +93,8 @@ app.use("/api/v1/", v1_router_appContextMenu);
 app.use("/api/v1/", v1_router_appMessageTemplate);
 app.use("/api/v1/", v1_router_appAutoReplyRule);
 app.use("/api/v1/", v1_router_appSentMessageRecord);
+app.use("/api/v1/", v1_router_config);
+app.use("/api/v1/", v1_router_managerGroup.router);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
@@ -131,4 +135,5 @@ var server = app.listen(3000, async function () {
     await iam.syncIamUsers();
     await s3.init();
     await appSentMessageScheduler.loadAllTimingSentMessageJobs();
+    await v1_router_managerGroup.createSuperGroup();
 });

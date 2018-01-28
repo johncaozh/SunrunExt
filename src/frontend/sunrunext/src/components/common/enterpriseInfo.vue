@@ -1,5 +1,5 @@
 <template>
-    <div class="flexDiv-v">
+    <div class="flexDiv-v" v-if="config">
         <div class="flexDiv-v editItemContainer">
             <div class="flexDiv-h" style="align-items:center">
                 <span class="text-font-normal item-header">企业Logo</span>
@@ -13,33 +13,68 @@
             </div>
             <div class="flexDiv-h" style="align-items:center;margin-top:20px">
                 <span class="text-font-normal item-header">企业简称</span>
-                <input class="input-borderless" type="text" placeholder="在此输入IAM服务器地址" />
+                <input class="input-borderless" type="text" v-model="config.enterpriseName" placeholder="在此输入企业简称" />
             </div>
         </div>
         <div class="flexDiv-v editItemContainer">
             <div class="flexDiv-h" style="align-items:center">
                 <span class="text-font-normal item-header">企业成员</span>
-                <input class="input-borderless" type="text" placeholder="在此输入同步接口的AppKey" />
+                <input class="input-borderless" type="text" placeholder="当前没有企业成员" readonly="readonly" />
             </div>
             <div class="flexDiv-h" style="align-items:center;margin-top:20px">
                 <span class="text-font-normal item-header">企业部门</span>
-                <input class="input-borderless" type="text" placeholder="在此输入IAM服务器地址" />
+                <input class="input-borderless" type="text" placeholder="当前没有企业部门" readonly="readonly" />
             </div>
         </div>
         <div class="flexDiv-v editItemContainer">
             <div class="flexDiv-h" style="align-items:center">
                 <span class="text-font-normal item-header">企业电话</span>
-                <input class="input-borderless" type="text" placeholder="在此输入同步接口的AppKey" />
+                <input class="input-borderless" type="text" v-model="config.enterprisePhone" placeholder="在此输入企业电话" />
             </div>
             <div class="flexDiv-h" style="align-items:center;margin-top:20px">
                 <span class="text-font-normal item-header">企业地址</span>
-                <input class="input-borderless" type="text" placeholder="在此输入IAM服务器地址" />
+                <input class="input-borderless" type="text" v-model="config.enterpriseAddress" placeholder="在此输入企业地址" />
             </div>
         </div>
+        <span style="margin-top:20px">
+            <el-button type="normal" @click="getConfig">取消</el-button>
+            <el-button type="primary" @click="updateConfig(config)">保存</el-button>
+        </span>
     </div>
 </template>
 <script>
-export default {};
+import platformConfig from "../mixin/platformConfig";
+export default {
+  mixins: [platformConfig],
+  data() {
+    return {
+      logoUrl: null
+    };
+  },
+  methods: {
+    async valueChanged(value) {
+      await api.updateConfig(this.config);
+      await api.getConfig();
+    },
+    handleAvatarSuccess(res, file) {
+      this.logoUrl = `${api.fileTransferUrl}/${res.data}`;
+      this.config.enterpriseLogoMediaId = res.data;
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传的Logo图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传的Logo图片大小不能超过 2MB!");
+      }
+
+      return isJPG && isLt2M;
+    }
+  }
+};
 </script>
 <style lang="less" scoped>
 .item-header {
