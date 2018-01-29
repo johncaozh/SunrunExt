@@ -50,10 +50,11 @@ router.delete("/managerGroups/:id", api.catchAsyncErrors(async function (req, re
 
 async function deleteGroup(id) {
     var subGroups = await managerGroupModel.find({ parentId: id });
-    subGroups.forEach(i => {
-        await managerGroupModel.remove(i);
-        await deleteGroup(i._id);
-    });
+    for (var i = 0; i < subGroups.length; i++) {
+        var subGroup = subGroups[i];
+        await managerGroupModel.remove(subGroup);
+        await deleteGroup(subGroup._id);
+    }
 
     return await managerGroupModel.findByIdAndRemove(id);
 }

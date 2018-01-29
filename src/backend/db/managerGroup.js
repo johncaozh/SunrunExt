@@ -10,19 +10,22 @@ const schema = mongoose.Schema({
     parentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'managerGroup',
-        required: null
+        required: false
     },
     users: {
         type: Array,
         required: false,
+        default: [],
     },
     apps: {
         type: Array,
         required: false,
+        default: [],
     },
     orgs: {
         type: Array,
         required: false,
+        default: [],
     }
 }, {
         versionKey: false,
