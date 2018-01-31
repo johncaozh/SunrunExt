@@ -3,7 +3,7 @@
         <div class="flexDiv-v editItemContainer">
             <div class="flexDiv-h" style="align-items:center">
                 <span class="text-font-normal item-header">企业Logo</span>
-                <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
                     <div class="flexDiv-v div-uploader">
                         <img v-if="logoUrl" :src="logoUrl" class="avatar">
                         <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
@@ -51,16 +51,22 @@ export default {
       logoUrl: null
     };
   },
+  watch: {
+    config() {
+      if (this.config && this.config.enterpriseLogoMediaId)
+        this.logoUrl = `${api.fileTransferUrl}/${this.enterpriseLogoMediaId}`;
+    }
+  },
   methods: {
     async valueChanged(value) {
       await api.updateConfig(this.config);
       await api.getConfig();
     },
-    handleAvatarSuccess(res, file) {
+    handleLogoSuccess(res, file) {
       this.logoUrl = `${api.fileTransferUrl}/${res.data}`;
       this.config.enterpriseLogoMediaId = res.data;
     },
-    beforeAvatarUpload(file) {
+    beforeLogoUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
 
