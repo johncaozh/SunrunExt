@@ -6,7 +6,11 @@
                 <div class="flexDiv-h">
                     <el-popover ref="popover1" placement="bottom-start" trigger="click">
                         <iphone>
-                            <div style="background:white;" />
+                            <div class="flexDiv-v" style="align-items:center">
+                                <img v-if="logoUrl" :src="logoUrl" class="img-log" style="margin-top:80px">
+                                <div class="div-enterpriseName">{{config.enterpriseName}}</div>
+                                <div class="div-client">融合客户端</div>
+                            </div>
                         </iphone>
                     </el-popover>
                     <el-radio @change="valueChanged" v-model="config.clientSplashScreenMode" label="1">默认</el-radio>
@@ -14,14 +18,19 @@
                 </div>
                 <div class="flexDiv-h" style="margin-top:20px;align-items:center">
                     <el-radio @change="valueChanged" v-model="config.clientSplashScreenMode" label="2">自定义</el-radio>
-                    <!-- <el-upload :action="uploadUrl" style="margin-left:10px" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <el-upload style="margin-left:20px" :action="uploadUrl" :show-file-list="false" :on-success="handleSplashSuccess" :before-upload="beforeSplashUpload">
                         <div class="flexDiv-v div-uploader">
-                            <img v-if="logoUrl" :src="logoUrl" class="avatar">
+                            <img v-if="splashScreenUrl" :src="splashScreenUrl" class="img-splash">
                             <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
                         </div>
-                        <div slot="tip" class="text-font-minor">推荐尺寸702*180</div>
-                    </el-upload> -->
-                    <el-button size="small" type="text" class="button-link" style="padding:0px;margin-left:10px">预览</el-button>
+                        <div slot="tip" class="text-font-minor">推荐尺寸450*800</div>
+                    </el-upload>
+                    <el-popover ref="popover2" placement="bottom-start" trigger="click">
+                        <iphone>
+                            <img :src="splashScreenUrl" class="img-splash-preview" />
+                        </iphone>
+                    </el-popover>
+                    <el-button v-popover:popover2 size="small" type="text" class="button-link" style="padding:0px;margin-left:10px">预览</el-button>
                 </div>
                 <el-popover ref="popover1" placement="top-start" title="标题" width="200" trigger="hover" content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
                 </el-popover>
@@ -61,13 +70,61 @@ import api from "../../utility/api";
 import iphone from "./iphone";
 export default {
   mixins: [platformConfig],
+  data() {
+    return {
+      logoUrl: null,
+      splashScreenUrl: null,
+      uploadUrl: api.fileTransferUrl
+    };
+  },
   components: {
     iphone
+  },
+  watch: {
+    config() {
+      if (this.config)
+        if (this.config.enterpriseLogoMediaId) {
+          this.logoUrl = `${api.fileTransferUrl}/${
+            this.config.enterpriseLogoMediaId
+          }`;
+          if (this.config.clientSplashScreenMediaId) {
+            this.splashScreenUrl = `${api.fileTransferUrl}/${
+              this.config.clientSplashScreenMediaId
+            }`;
+          }
+        }
+    }
   },
   methods: {
     async valueChanged(value) {
       await api.updateConfig(this.config);
       await api.getConfig();
+    },
+    async handleSplashSuccess(res, file) {
+      this.splashScreenUrl = `${api.fileTransferUrl}/${res.data}`;
+      this.config.clientSplashScreenMediaId = res.data;
+      await api.updateConfig(this.config);
+    },
+    beforeSplashUpload(file) {
+      const isvalidImage =
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png" ||
+        file.type === "image/bmp";
+
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isvalidImage) {
+        this.$message.error("上传的Logo只能是 JPEG、JPG、PNG、BMP");
+      } else if (!isLt2M) {
+        this.$message.error("上传的Logo大小不能超过 2MB!");
+      }
+
+      var result = isvalidImage && isLt2M;
+
+      if (result) this.isUploading = true;
+
+      return result;
     }
   }
 };
@@ -84,5 +141,43 @@ export default {
   align-items: center;
   justify-content: center;
   border: 1px solid @color-border-level2;
+}
+
+.img-log {
+  width: 150px;
+  height: 40px;
+}
+
+.div-enterpriseName {
+  font-size: 16px;
+  border-top: 1px solid @color-border-level2;
+  margin-top: 10px;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.div-client {
+  font-size: 14px;
+  color: @color-font-placeholder;
+  margin-top: 200px;
+}
+
+.div-uploader {
+  height: 160px;
+  width: 90px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid @color-border-level2;
+}
+
+.img-splash {
+  height: 160px;
+  width: 90px;
+}
+
+.img-splash-preview {
+  height: 390px;
+  width: 220px;
 }
 </style>

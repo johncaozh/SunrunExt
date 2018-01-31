@@ -11,9 +11,7 @@
       </el-menu>
     </div>
     <div id="content" style="margin-top:20px;background:white;width:1080px;min-height:600px;padding:0px;align-self:center;    border-radius: 4px;webkit-box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);">
-      <keep-alive>
         <router-view></router-view>
-      </keep-alive>
     </div>
   </div>
 </template>

@@ -18,8 +18,15 @@ router.post("/orgs", api.catchAsyncErrors(async function (req, res, next) {
 }));
 
 router.get("/orgs/special", api.catchAsyncErrors(async function (req, res, next) {
-    var foundData = await specialOrgOrUserModel.find(req.query);
-    api.attachData2Response(200, "获取成功", foundData, res);
+    var foundData = await specialOrgOrUserModel.find(req.query).lean().exec();
+    for (let i = 0; i < foundData.length; i++) {
+        var target = foundData[i];
+        target.detail = await iam.getOrgOrUser(target.id);
+    }
+
+    var filted = foundData.filter(i => i.detail);
+
+    api.attachData2Response(200, "获取成功", filted, res);
     next();
 }));
 
@@ -31,14 +38,18 @@ router.post("/orgs/special", api.catchAsyncErrors(async function (req, res, next
 
 router.delete("/orgs/special/:orgOrUserId", api.catchAsyncErrors(async function (req, res, next) {
     var id = req.param.orgOrUserId;
-    var foundData = await specialOrgOrUserModel.remove({ id });
+    var foundData = await specialOrgOrUserModel.remove({
+        id
+    });
     api.attachData2Response(200, "删除成功", foundData, res);
     next();
 }));
 
 router.get("/orgs/special/:orgOrUserId/whiteList", api.catchAsyncErrors(async function (req, res, next) {
     var id = req.param.orgOrUserId;
-    var foundData = await whiteListOrgOrUserModel.find({ id });
+    var foundData = await whiteListOrgOrUserModel.find({
+        id
+    });
     api.attachData2Response(200, "获取成功", foundData, res);
     next();
 }));

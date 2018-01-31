@@ -117,6 +117,32 @@ export default {
     var url = `${env.serverConfig.appSentMessageRecordsSegment}/${id}`;
     return axios.delete(url);
   },
+  async getOrgSpecials(type, ruleId, id) {
+    var url = env.serverConfig.orgsSpecialSegment;
+
+    if (type)
+      url += `?type=${type}`;
+
+    if (ruleId) {
+      var connectChar = type ? "&" : "?";
+      url += `${connectChar}ruleId=${ruleId}`;
+    }
+
+    if (id) {
+      var connectChar = (type || ruleId) ? "&" : "?";
+      url += `${connectChar}id=${id}`;
+    }
+
+    return axios.get(url);
+  },
+  async createOrgSpecial(param) {
+    var url = env.serverConfig.orgsSpecialSegment;
+    return axios.post(url, param);
+  },
+  async deleteOrgSpecial(id) {
+    var url = `${env.serverConfig.orgsSpecialSegment}/${id}`;
+    return axios.delete(url);
+  },
   async getConfig() {
     var url = env.serverConfig.configSegment;
     return axios.get(url);

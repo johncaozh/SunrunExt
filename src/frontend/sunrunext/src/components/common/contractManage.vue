@@ -12,7 +12,7 @@
         </div>
         <div class="flexDiv-h editItemContainer">
             <span class="text-font-normal item-header">限制查看所有人</span>
-            <el-button class="button-link" type="text" style="padding:0px">添加</el-button>
+            <el-button class="button-link" type="text" style="padding:0px" @click="$router.push('/enterprise/contract/hideAddressBook')">添加</el-button>
             <span class="text-font-minor" style="margin-left:10px">被限制的部门或者成员，不能看到企业所有通讯录</span>
         </div>
     </div>

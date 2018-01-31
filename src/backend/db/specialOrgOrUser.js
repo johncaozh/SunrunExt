@@ -12,18 +12,23 @@ const schema = mongoose.Schema({
     },
     //用户或者部门UID
     id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        type: String,
+        default: null,
+        required: true
+    },
+    //规则，用于分组
+    ruleId: {
+        type: String,
         default: null,
         required: true
     }
 }, {
-        versionKey: false,
-        timestamps: {
-            createdAt: 'createdTime',
-            updatedAt: 'updatedTime'
-        }
-    })
+    versionKey: false,
+    timestamps: {
+        createdAt: 'createdTime',
+        updatedAt: 'updatedTime'
+    }
+})
 
 const specialOrgOrUserModel = mongoose.model("specialOrgOrUser", schema);
 module.exports = specialOrgOrUserModel;

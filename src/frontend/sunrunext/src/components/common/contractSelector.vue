@@ -10,7 +10,7 @@
         <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
         <i class="el-icon-close" style="font-size:14px;cursor:pointer;margin-left:5px;" @click="removeOrgFromSelectedOrgs(item)" />
       </div>
-      <el-button class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?"修改":emptyLabel}}</el-button>
+      <el-button class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
     </div>
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px">
       <div class="flexDiv-h ">
@@ -98,6 +98,11 @@ export default {
       default: "应用范围：",
       required: false
     },
+    editLabel: {
+      type: String,
+      default: "修改",
+      required: false
+    },
     preSelectedOrgs: {
       type: Array,
       default: null,
@@ -105,6 +110,11 @@ export default {
     },
     disabledOrgs: {
       type: Array,
+      default: null,
+      required: false
+    },
+    selectValidate: {
+      type: Function,
       default: null,
       required: false
     }
@@ -198,10 +208,15 @@ export default {
       this.selectedOrgs = this.tempSelectedOrgs;
       this.dialogVisible = false;
     },
-    nodeClick(data, node, component) {
+    async nodeClick(data, node, component) {
       if (data.selected) {
         this.tempSelectedOrgs.removeByValue(data);
       } else {
+        if (this.selectValidate) {
+          var result = await this.selectValidate(data);
+          if (!result) return;
+        }
+
         this.tempSelectedOrgs.push(data);
       }
 

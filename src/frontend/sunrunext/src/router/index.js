@@ -37,6 +37,9 @@ export default new Router({
           path: '/enterprise/security',
           component: resolve => require(['../components/common/securityManage.vue'], resolve),
         }, {
+          path: '/enterprise/contract/hideAddressBook',
+          component: resolve => require(['../components/common/contractManage_hideAddressBook.vue'], resolve),
+        }, {
           path: '/enterprise/client',
           component: resolve => require(['../components/common/clientManage.vue'], resolve),
         }]

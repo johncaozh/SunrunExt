@@ -5,6 +5,7 @@ const serverConfig = {
   filesSegment_audio: "files/audio",
   filesSegment_video: "files/video",
   orgsSegment: "orgs",
+  orgsSpecialSegment: "orgs/special",
   appsSegment: "apps",
   appContextMenusSegment: "appContextMenus",
   appMessageTemplatesSegment: "appMessageTemplates",

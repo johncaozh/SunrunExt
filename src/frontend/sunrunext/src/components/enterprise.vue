@@ -43,6 +43,7 @@ export default {
 <style lang="less" scoped>
 .el-menu-vertical {
   width: 170px;
+  min-height: 600px;
 }
 </style>
 

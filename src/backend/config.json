@@ -1,10 +1,10 @@
 {
-  "enterpriseLogoMediaId": "",
+  "enterpriseLogoMediaId": "CC7A6E15D6D7F5E96626466AC1235453",
   "enterpriseName": "广州尚融",
   "enterprisePhone": "02038288446",
   "enterpriseAddress": "广州市萝岗区科学大道科学城182号创新大厦C3区701单元",
-  "clientSplashScreenMediaId": "",
-  "clientSplashScreenMode": "1",
+  "clientSplashScreenMediaId": "8376FC29544516D79C609726EF8C7556",
+  "clientSplashScreenMode": "2",
   "gotResponseWhenFriendReadMsg": true,
   "autoBuildEnterpriseIMGroup": true,
   "autoBuildDepartmentIMGroup": true,

@@ -127,8 +127,23 @@ async function getOrgContent(orgId, orgInfo) {
     return orgInfo;
 };
 
+async function getOrgOrUser(id) {
+    var data = await orgModel.find({
+        id
+    });
+
+    if (!data) {
+        data = await userModel.find({
+            id
+        });
+    }
+
+    return data;
+}
+
 module.exports = {
     router,
     syncIamUsers,
     getDomainOrg,
+    getOrgOrUser
 };

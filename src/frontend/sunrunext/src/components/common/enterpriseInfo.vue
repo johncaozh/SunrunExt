@@ -5,7 +5,7 @@
                 <span class="text-font-normal item-header">企业Logo</span>
                 <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
                     <div class="flexDiv-v div-uploader">
-                        <img v-if="logoUrl" :src="logoUrl" class="avatar">
+                        <img v-if="logoUrl" :src="logoUrl" class="img-log">
                         <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
                     </div>
                     <div slot="tip" class="text-font-minor">推荐尺寸702*180</div>
@@ -36,25 +36,27 @@
                 <input class="input-borderless" type="text" v-model="config.enterpriseAddress" placeholder="在此输入企业地址" />
             </div>
         </div>
-        <span style="margin-top:20px">
-            <el-button type="normal" @click="getConfig">取消</el-button>
-            <el-button type="primary" @click="updateConfig(config)">保存</el-button>
+        <span style="margin-top:20px;margin-bottom:20px">
+            <el-button type="normal" size="small" @click="getConfig">取消</el-button>
+            <el-button type="primary" size="small" @click="updateConfig(config)">保存</el-button>
         </span>
     </div>
 </template>
 <script>
 import platformConfig from "../mixin/platformConfig";
+import api from "../../utility/api";
 export default {
   mixins: [platformConfig],
   data() {
     return {
-      logoUrl: null
+      logoUrl: null,
+      uploadUrl: api.fileTransferUrl
     };
   },
   watch: {
     config() {
       if (this.config && this.config.enterpriseLogoMediaId)
-        this.logoUrl = `${api.fileTransferUrl}/${this.enterpriseLogoMediaId}`;
+        this.logoUrl = `${api.fileTransferUrl}/${this.config.enterpriseLogoMediaId}`;
     }
   },
   methods: {
@@ -67,17 +69,25 @@ export default {
       this.config.enterpriseLogoMediaId = res.data;
     },
     beforeLogoUpload(file) {
-      const isJPG = file.type === "image/jpeg";
+      const isvalidImage =
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png" ||
+        file.type === "image/bmp";
+
       const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        this.$message.error("上传的Logo图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传的Logo图片大小不能超过 2MB!");
+      if (!isvalidImage) {
+        this.$message.error("上传的Logo只能是 JPEG、JPG、PNG、BMP");
+      } else if (!isLt2M) {
+        this.$message.error("上传的Logo大小不能超过 2MB!");
       }
 
-      return isJPG && isLt2M;
+      var result = isvalidImage && isLt2M;
+
+      if (result) this.isUploading = true;
+
+      return result;
     }
   }
 };
@@ -94,5 +104,10 @@ export default {
   align-items: center;
   justify-content: center;
   border: 1px solid @color-border-level2;
+}
+
+.img-log{
+    width: 236px;
+    height: 62px;
 }
 </style>
