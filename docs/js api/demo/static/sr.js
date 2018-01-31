@@ -5,26 +5,49 @@
 }(this,
     function (glob, setGlobal) {
         function invokeCmd(cmd, param, callbackObj) {
-            glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, normParameter(param), function (res) {
-                completeBridgeInteraction(cmd, res, callbackObj);
-            }) : debugBridgeInteraction(cmd, callbackObj)
+
+            if (isAndroid) {
+                glob.invokeCallback = function (res) {
+                    completeBridgeInteraction(cmd, res, callbackObj);
+                };
+
+                var params = JSON.stringify(normParameter(param));
+
+                glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, params, "invokeCallback") : debugBridgeInteraction(cmd, callbackObj)
+            } else {
+                glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, normParameter(param), function (res) {
+                    completeBridgeInteraction(cmd, res, callbackObj);
+                }) : debugBridgeInteraction(cmd, callbackObj)
+            }
         }
 
         function bindEvent(targetItem, callbackObj, debugCallback) {
-            alert("测试ON接口");
+            // alert("测试ON接口");
 
-            if (glob.SRJSBridge) {
-                alert("检查到SRJSBridge全局对象");
+            // if (glob.SRJSBridge) {
+            //     alert("检查到SRJSBridge全局对象");
+            // } else {
+            //     alert("没有检查到SRJSBridge全局对象");
+            // }
+
+            if (isAndroid) {
+                var callbackName = targetItem + "Callback";
+                glob[callbackName] = function (res) {
+                    if (debugCallback && debugCallback.trigger)
+                        debugCallback.trigger(res);
+
+                    completeBridgeInteraction(targetItem, res, callbackObj);
+                };
+
+                glob.SRJSBridge ? SRJSBridge.ON(targetItem, callbackName) : debugCallback ? debugBridgeInteraction(targetItem, debugCallback) : debugBridgeInteraction(targetItem, callbackObj);
             } else {
-                alert("没有检查到SRJSBridge全局对象");
+                glob.SRJSBridge ? SRJSBridge.ON(targetItem, function (res) {
+                    if (debugCallback && debugCallback.trigger)
+                        debugCallback.trigger(res);
+
+                    completeBridgeInteraction(targetItem, res, callbackObj);
+                }) : debugCallback ? debugBridgeInteraction(targetItem, debugCallback) : debugBridgeInteraction(targetItem, callbackObj);
             }
-
-            glob.SRJSBridge ? SRJSBridge.ON(targetItem, function (res) {
-                if (debugCallback && debugCallback.trigger)
-                    debugCallback.trigger(res);
-
-                completeBridgeInteraction(targetItem, res, callbackObj);
-            }) : debugCallback ? debugBridgeInteraction(targetItem, debugCallback) : debugBridgeInteraction(targetItem, callbackObj);
         }
 
         function normParameter(param) {
