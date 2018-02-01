@@ -147,6 +147,15 @@ export default {
     },
     selectAllOrgs() {
       this.sourceOrgs.disabled = this.selectAllOrgs;
+    },
+    preSelectedOrgs(){
+       this.preSelectedOrgs.forEach(i => {
+        var target = this.getTarget(i.id);
+        if (target) {
+          target.selected = true;
+          this.selectedOrgs.push(target);
+        }
+      });
     }
   },
   methods: {
@@ -180,7 +189,7 @@ export default {
     },
     getOrgArr(org) {
       this.orgArr = this.orgArr || [];
-      orgs.forEach(i => {
+      this.orgs.forEach(i => {
         i.users.forEach(u => {
           this.orgArr.push(u);
         });

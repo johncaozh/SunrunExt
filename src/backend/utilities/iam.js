@@ -85,10 +85,10 @@ async function getDomainOrg() {
     var rootOrg = await orgModel.findOne({
         id: 0
     }, {
-        id: 1,
-        name: 1,
-        parentId: 1
-    }).lean().exec();
+            id: 1,
+            name: 1,
+            parentId: 1
+        }).lean().exec();
 
     var domainOrgTree = await getOrgContent(rootOrg.id, rootOrg);
     return domainOrgTree;
@@ -99,10 +99,10 @@ async function getOrgContent(orgId, orgInfo) {
     var subOrgs = await orgModel.find({
         parentId: orgId
     }, {
-        id: 1,
-        name: 1,
-        parentId: 1
-    }).lean().exec();
+            id: 1,
+            name: 1,
+            parentId: 1
+        }).lean().exec();
 
     for (let i = 0; i < subOrgs.length; i++) {
         var item = subOrgs[i];
@@ -112,15 +112,15 @@ async function getOrgContent(orgId, orgInfo) {
     var users = await userModel.find({
         parentId: orgId
     }, {
-        id: 1,
-        name: 1,
-        email: 1,
-        phone: 1,
-        rank: 1,
-        parentId: 1,
-    }).sort({
-        name: "ascending"
-    });
+            id: 1,
+            name: 1,
+            email: 1,
+            phone: 1,
+            rank: 1,
+            parentId: 1,
+        }).sort({
+            name: "ascending"
+        });
 
     orgInfo.subOrgs = subOrgs;
     orgInfo.users = users;
@@ -128,14 +128,20 @@ async function getOrgContent(orgId, orgInfo) {
 };
 
 async function getOrgOrUser(id) {
-    var data = await orgModel.find({
+    var data = await orgModel.findOne({
         id
-    });
+    }).lean().exec();
 
     if (!data) {
-        data = await userModel.find({
+        data = await userModel.findOne({
             id
-        });
+        }).lean().exec();
+
+        if (data)
+            data.type = "user";
+    }
+    else {
+        data.type = "org";
     }
 
     return data;

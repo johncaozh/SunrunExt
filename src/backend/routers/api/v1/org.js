@@ -31,6 +31,17 @@ router.get("/orgs/special", api.catchAsyncErrors(async function (req, res, next)
 }));
 
 router.post("/orgs/special", api.catchAsyncErrors(async function (req, res, next) {
+    var exitedData = await specialOrgOrUserModel.find({
+        id: req.body.id,
+        type: req.body.type
+    });
+
+    if (exitedData) {
+        api.attachData2Response(409, "已存在相同的项目", foundData, res);
+        next();
+        return;
+    }
+
     var foundData = await specialOrgOrUserModel.create(req.body);
     api.attachData2Response(200, "添加成功", foundData, res);
     next();

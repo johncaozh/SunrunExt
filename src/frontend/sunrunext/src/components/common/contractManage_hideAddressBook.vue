@@ -1,16 +1,16 @@
 <template>
-    <div class="flexDiv-v">
-        <div class="div-title">限制查看所有人</div>
-        <div class="div-content">
-            <div class="div-container-selector">
-                <contract-selector ref="contractSelector" emptyLabel="添加" notEmptyLabel="" editLabel="编辑" :selectValidate="checkValidate" :preSelectedOrgs="selectedOrgs" />
-            </div>
-        </div>
-        <div style="padding-top:20px;padding-bottom:20px">
-            <el-button size="small" @click="$router.go(-1)">取消</el-button>
-            <el-button type="primary" @click="save" size="small">保存</el-button>
-        </div>
+  <div class="flexDiv-v">
+    <div class="div-title">限制查看所有人</div>
+    <div class="div-content">
+      <div class="div-container-selector">
+        <contract-selector v-if="selectedOrgs.length>0" ref="contractSelector" emptyLabel="添加" notEmptyLabel="" editLabel="编辑" :selectValidate="checkValidate" :preSelectedOrgs="selectedOrgs" />
+      </div>
     </div>
+    <div style="padding-top:20px;padding-bottom:20px">
+      <el-button size="small" @click="$router.go(-1)">取消</el-button>
+      <el-button type="primary" @click="save" size="small">保存</el-button>
+    </div>
+  </div>
 </template>
 <script>
 import contractSelector from "./contractSelector";
@@ -26,11 +26,13 @@ export default {
   async mounted() {
     this.ruleId = this.$route.query.ruleId;
     if (this.ruleId) {
-      this.selectedOrgs = await api
-        .getOrgSpecials(this.type, this.ruleId, null)
-        .map(i => {
-          i.id;
-        });
+      var arr=[];
+    var temp= await api.getOrgSpecials(this.type, this.ruleId, null)
+      temp.forEach(i => {
+        arr.push(i.detail);
+      });
+
+      this.selectedOrgs = arr;
     }
   },
   components: {
