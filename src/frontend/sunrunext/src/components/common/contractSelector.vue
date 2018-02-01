@@ -1,6 +1,6 @@
 <template>
-  <div class="flexDiv-h" style="align-items:center">
-    <span v-if="selectedOrgs.length>0&&notEmptyLabel" class="text-font-normal" style="line-height:20px">应用范围：</span>
+  <div style="align-items:flex-start" :class="{'flexDiv-v':direction=='v','flexDiv-h':direction=='h'}">
+    <span v-if="selectedOrgs.length>0&&notEmptyLabel" class="text-font-normal" style="line-height:20px">{{notEmptyLabel}}</span>
     <div class="flexDiv-h " style="flex:1;flex-wrap:wrap">
       <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in selectedOrgs" :key="index">
         <i class="el-icon-custom-group icon-org" v-show="item.type=='org'" style="margin-top:3px">
@@ -8,7 +8,7 @@
         <i class="el-icon-custom-people icon-org" v-show="item.type=='user'" style="margin-top:3px">
         </i>
         <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
-        <i class="el-icon-close" style="font-size:14px;cursor:pointer;margin-left:5px;" @click="removeOrgFromSelectedOrgs(item)" />
+        <i class="el-icon-close" style="font-size:14px;cursor:pointer;" @click="removeOrgFromSelectedOrgs(item)" />
       </div>
       <el-button class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
     </div>
@@ -117,6 +117,11 @@ export default {
       type: Function,
       default: null,
       required: false
+    },
+    direction: {
+      type: String,
+      default: "h",
+      required: false
     }
   },
   async mounted() {
@@ -126,14 +131,14 @@ export default {
 
     if (this.disabledOrgs) {
       this.disabledOrgs.forEach(i => {
-        var target = this.getTarget(i.id);
+        var target = this.getTarget(i.id, i.type);
         if (target) target.disabled = true;
       });
     }
 
     if (this.preSelectedOrgs) {
       this.preSelectedOrgs.forEach(i => {
-        var target = this.getTarget(i.id);
+        var target = this.getTarget(i.id, i.type);
         if (target) {
           target.selected = true;
           this.selectedOrgs.push(target);
@@ -148,9 +153,9 @@ export default {
     selectAllOrgs() {
       this.sourceOrgs.disabled = this.selectAllOrgs;
     },
-    preSelectedOrgs(){
-       this.preSelectedOrgs.forEach(i => {
-        var target = this.getTarget(i.id);
+    preSelectedOrgs() {
+      this.preSelectedOrgs.forEach(i => {
+        var target = this.getTarget(i.id, i.type);
         if (target) {
           target.selected = true;
           this.selectedOrgs.push(target);
@@ -189,21 +194,16 @@ export default {
     },
     getOrgArr(org) {
       this.orgArr = this.orgArr || [];
-      this.orgs.forEach(i => {
-        i.users.forEach(u => {
-          this.orgArr.push(u);
-        });
-        i.subOrgs.forEach(j => {
-          this.orgArr.push(j);
-          this.getOrgArr(j);
-        });
+      org.users.forEach(u => {
+        this.orgArr.push(u);
+      });
+      org.subOrgs.forEach(j => {
+        this.orgArr.push(j);
+        this.getOrgArr(j);
       });
     },
-    getTarget(id) {
-      var target = this.orgArr.find(i => {
-        i.id === id;
-      });
-
+    getTarget(id, type) {
+      var target = this.orgArr.find(i => i.id === id && i.type == type);
       return target;
     },
     async showDialog() {
@@ -232,7 +232,6 @@ export default {
       data.selected = !data.selected;
     },
     renderTreaNode(h, { node, data, store }) {
-      console.log("-----------");
       var iconClass =
         data.type == "org" ? "el-icon-custom-group" : "el-icon-custom-people";
       var selectedIconStyle = data.selected ? "display:block" : "display:none";
@@ -407,7 +406,8 @@ export default {
 
 .contract-name-selected {
   font-size: 14px;
-  width: 60px;
+  min-width: 30px;
+  max-width: 60px;
   color: @color-theme;
   line-height: 16px;
   white-space: nowrap;

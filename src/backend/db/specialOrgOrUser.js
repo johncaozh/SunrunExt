@@ -16,6 +16,12 @@ const schema = mongoose.Schema({
         default: null,
         required: true
     },
+    //用户类型 org/user
+    orgType: {
+        type: String,
+        default: null,
+        required: true
+    },
     //规则，用于分组
     ruleId: {
         type: String,

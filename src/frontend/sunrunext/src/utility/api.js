@@ -117,7 +117,7 @@ export default {
     var url = `${env.serverConfig.appSentMessageRecordsSegment}/${id}`;
     return axios.delete(url);
   },
-  async getOrgSpecials(type, ruleId, id) {
+  async getOrgSpecials(type, ruleId, id, orgType) {
     var url = env.serverConfig.orgsSpecialSegment;
 
     if (type)
@@ -133,6 +133,11 @@ export default {
       url += `${connectChar}id=${id}`;
     }
 
+    if (orgType) {
+      var connectChar = (type || ruleId || id) ? "&" : "?";
+      url += `${connectChar}orgType=${orgType}`;
+    }
+
     return axios.get(url);
   },
   async createOrgSpecial(param) {
@@ -141,6 +146,22 @@ export default {
   },
   async deleteOrgSpecial(id) {
     var url = `${env.serverConfig.orgsSpecialSegment}/${id}`;
+    return axios.delete(url);
+  },
+  async getOrgSpecialWhiteList(ruleId) {
+    var url = env.serverConfig.orgsSpecialWhiteListSegment;
+
+    if (ruleId)
+      url += `?ruleId=${ruleId}`;
+
+    return axios.get(url);
+  },
+  async createOrgSpecialWhiteList(param) {
+    var url = env.serverConfig.orgsSpecialWhiteListSegment;
+    return axios.post(url, param);
+  },
+  async deleteOrgSpecialWhiteList(id) {
+    var url = `${env.serverConfig.orgsSpecialWhiteListSegment}/${id}`;
     return axios.delete(url);
   },
   async getConfig() {

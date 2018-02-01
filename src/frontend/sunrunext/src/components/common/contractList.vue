@@ -25,7 +25,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .div-org-selected {
   border: 1px solid @color-border-level2;
   align-items: center;
@@ -41,7 +40,8 @@ export default {
 
 .contract-name-selected {
   font-size: 14px;
-  width: 60px;
+  min-width: 30px;
+  max-width: 60px;
   color: @color-theme;
   line-height: 16px;
   white-space: nowrap;

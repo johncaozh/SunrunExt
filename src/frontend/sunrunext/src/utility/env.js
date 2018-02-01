@@ -6,6 +6,7 @@ const serverConfig = {
   filesSegment_video: "files/video",
   orgsSegment: "orgs",
   orgsSpecialSegment: "orgs/special",
+  orgsSpecialWhiteListSegment: "orgs/special/whiteList",
   appsSegment: "apps",
   appContextMenusSegment: "appContextMenus",
   appMessageTemplatesSegment: "appMessageTemplates",
