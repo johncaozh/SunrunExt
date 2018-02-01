@@ -12,28 +12,29 @@ const schema = mongoose.Schema({
         ref: 'managerGroup',
         required: false
     },
-    users: {
-        type: Array,
-        required: false,
-        default: [],
-    },
-    apps: {
-        type: Array,
-        required: false,
-        default: [],
-    },
-    orgs: {
-        type: Array,
-        required: false,
-        default: [],
-    }
 }, {
-        versionKey: false,
-        timestamps: {
-            createdAt: 'createdTime',
-            updatedAt: 'updatedTime'
-        }
-    })
+    versionKey: false,
+    timestamps: {
+        createdAt: 'createdTime',
+        updatedAt: 'updatedTime'
+    }
+})
+
+schema.pre('remove', function (next) {
+    require('./managerGroup_app').remove({
+        groupId: this._id
+    }).exec();
+
+    require('./managerGroup_org').remove({
+        groupId: this._id
+    }).exec();
+
+    require('./managerGroup_user').remove({
+        groupId: this._id
+    }).exec();
+
+    next();
+})
 
 const managerGroupModel = mongoose.model("managerGroup", schema);
 module.exports = managerGroupModel;

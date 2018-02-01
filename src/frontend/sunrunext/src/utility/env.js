@@ -12,6 +12,10 @@ const serverConfig = {
   appMessageTemplatesSegment: "appMessageTemplates",
   appAutoReplyRulesSegment: "appAutoReplyRules",
   appSentMessageRecordsSegment: "appSentMessageRecords",
+  managerGroupSegment: "managerGroups",
+  managerGroupSegment_apps: "managerGroups/apps",
+  managerGroupSegment_orgs: "managerGroups/orgs",
+  managerGroupSegment_users: "managerGroups/users",
   configSegment: "config",
 }
 

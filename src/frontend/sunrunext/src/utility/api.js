@@ -164,6 +164,75 @@ export default {
     var url = `${env.serverConfig.orgsSpecialWhiteListSegment}/${id}`;
     return axios.delete(url);
   },
+
+  async getManagerGroups() {
+    var url = env.serverConfig.managerGroupSegment;
+    return axios.get(url);
+  },
+  async createManagerGroup(param) {
+    var url = env.serverConfig.managerGroupSegment;
+    return axios.post(url, param);
+  },
+  async updateManagerGroup(id, param) {
+    var url = `${env.serverConfig.managerGroupSegment}/${id}`;
+    return axios.put(url, param);
+  },
+  async deleteManagerGroup(id) {
+    var url = `${env.serverConfig.managerGroupSegment}/${id}`;
+    return axios.delete(url);
+  },
+  async getManagerGroupDetail(id) {
+    var url = `${env.serverConfig.managerGroupSegment}/${id}`;
+    return axios.get(url);
+  },
+
+  async createManagerGroupApp(param) {
+    var url = env.serverConfig.managerGroupSegment_apps;
+    return axios.post(url, param);
+  },
+  async updateManagerGroupApp(id, param) {
+    var url = `${env.serverConfig.managerGroupSegment_apps}/${id}`;
+    return axios.put(url, param);
+  },
+  async deleteManagerGroupApp(id) {
+    var url = `${env.serverConfig.managerGroupSegment_apps}/${id}`;
+    return axios.delete(url);
+  },
+  async getManagerGroupAppDetailDetail(id) {
+    var url = `${env.serverConfig.managerGroupSegment_apps}/${id}`;
+    return axios.get(url);
+  },
+
+  async createManagerGroupOrg(param) {
+    var url = env.serverConfig.managerGroupSegment_orgs;
+    return axios.post(url, param);
+  },
+  async updateManagerGroupOrg(id, param) {
+    var url = `${env.serverConfig.managerGroupSegment_orgs}/${id}`;
+    return axios.put(url, param);
+  },
+  async deleteManagerGroupOrg(id) {
+    var url = `${env.serverConfig.managerGroupSegment_orgs}/${id}`;
+    return axios.delete(url);
+  },
+  async getManagerGroupOrgDetailDetail(id) {
+    var url = `${env.serverConfig.managerGroupSegment_orgs}/${id}`;
+    return axios.get(url);
+  },
+
+  async createManagerGroupUser(param) {
+    var url = env.serverConfig.managerGroupSegment_users;
+    return axios.post(url, param);
+  },
+  async deleteManagerGroupUser(id) {
+    var url = `${env.serverConfig.managerGroupSegment_users}/${id}`;
+    return axios.delete(url);
+  },
+  async getManagerGroupUserDetailDetail(id) {
+    var url = `${env.serverConfig.managerGroupSegment_users}/${id}`;
+    return axios.get(url);
+  },
+
   async getConfig() {
     var url = env.serverConfig.configSegment;
     return axios.get(url);
