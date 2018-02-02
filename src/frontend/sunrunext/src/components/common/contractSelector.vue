@@ -17,7 +17,7 @@
         <div class="flexDiv-v">
           <el-input :disabled="selectAllOrgs" placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini" v-model="filterText">
           </el-input>
-          <el-tree :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="false" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
+          <el-tree :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="true" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
         </div>
         <div class="flexDiv-v div-tempSelectedOrg">
           <div class="text-font-normal" style="margin-top:3px;margin-bottom:12px">

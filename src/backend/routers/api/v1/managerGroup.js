@@ -29,21 +29,21 @@ router.get("/managerGroups/:id", api.catchAsyncErrors(async function (req, res, 
     if (gotData != null) {
         var apps = await managerGroupAppModel.find({
             groupId: gotData._id
-        }, {
-            _id: 0
         });
+
+        apps = apps.map(i => i._id);
 
         var orgs = await managerGroupOrgModel.find({
             groupId: gotData._id
-        }, {
-            _id: 0
         });
+
+        orgs = orgs.map(i => i.orgId);
 
         var users = await managerGroupUserModel.find({
             groupId: gotData._id
-        }, {
-            _id: 0
         });
+
+        users = users.map(i => i.userId);
 
         gotData.apps = await appModel.find({
             _id: {
@@ -55,13 +55,17 @@ router.get("/managerGroups/:id", api.catchAsyncErrors(async function (req, res, 
             id: {
                 $in: orgs
             }
-        });
+        }).lean().exec();
+
+        gotData.orgs.forEach(i => i.type = "org");
 
         gotData.users = await userModel.find({
             id: {
                 $in: users
             }
-        });
+        }).lean().exec();
+
+        gotData.users.forEach(i => i.type = "user");
         api.attachData2Response(200, "获取成功", gotData, res);
     } else
         api.attachData2Response(404, "不存在", gotData, res);

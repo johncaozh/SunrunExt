@@ -1,6 +1,6 @@
 <template>
     <div class="flexDiv-h">
-        <el-menu default-active="1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :router="true">
+        <el-menu default-active="1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :router="true" style="background:#F9FAFC">
             <el-menu-item index="/enterprise/enterpriseInfo">
                 <span slot="title">企业信息</span>
             </el-menu-item>
