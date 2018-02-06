@@ -27,45 +27,40 @@ router.get("/managerGroups/:id", api.catchAsyncErrors(async function (req, res, 
     var gotData = await managerGroupModel.findById(id, req.body).lean().exec();
 
     if (gotData != null) {
-        var apps = await managerGroupAppModel.find({
+        gotData.apps = await managerGroupAppModel.find({
             groupId: gotData._id
-        });
-
-        apps = apps.map(i => i._id);
-
-        var orgs = await managerGroupOrgModel.find({
-            groupId: gotData._id
-        });
-
-        orgs = orgs.map(i => i.orgId);
-
-        var users = await managerGroupUserModel.find({
-            groupId: gotData._id
-        });
-
-        users = users.map(i => i.userId);
-
-        gotData.apps = await appModel.find({
-            _id: {
-                $in: apps
-            }
-        });
-
-        gotData.orgs = await orgModel.find({
-            id: {
-                $in: orgs
-            }
         }).lean().exec();
 
-        gotData.orgs.forEach(i => i.type = "org");
+        for (let i = 0; i < gotData.apps.length; i++) {
+            gotData.apps[i].detail = await appModel.findById(gotData.apps[i].appId).lean().exec();
+            gotData.apps[i].detail.permission = gotData.apps[i].permission;
+        }
 
-        gotData.users = await userModel.find({
-            id: {
-                $in: users
-            }
+        gotData.orgs = await managerGroupOrgModel.find({
+            groupId: gotData._id
         }).lean().exec();
 
-        gotData.users.forEach(i => i.type = "user");
+        for (let i = 0; i < gotData.orgs.length; i++) {
+            var detail = await orgModel.findOne({
+                id: gotData.orgs[i].orgId
+            }).lean().exec();
+            detail.type = "org";
+            gotData.orgs[i].detail = detail;
+            gotData.orgs[i].detail.permission = gotData.orgs[i].permission;
+        }
+
+        gotData.users = await managerGroupUserModel.find({
+            groupId: gotData._id
+        }).lean().exec();
+
+        for (let i = 0; i < gotData.users.length; i++) {
+            var detail = await userModel.findOne({
+                id: gotData.users[i].userId
+            }).lean().exec();
+            detail.type = "user";
+            gotData.users[i].detail = detail;
+        }
+
         api.attachData2Response(200, "获取成功", gotData, res);
     } else
         api.attachData2Response(404, "不存在", gotData, res);
@@ -88,7 +83,7 @@ router.delete("/managerGroups/:id", api.catchAsyncErrors(async function (req, re
 }));
 
 router.get("/managerGroups/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.param.id;
+    var id = this.params.id;
     var foundData = await managerGroupAppModel.findById(id).populate('appId');
     api.attachData2Response(200, "获取成功", foundData, res);
     next();
@@ -101,7 +96,7 @@ router.post("/managerGroups/apps", api.catchAsyncErrors(async function (req, res
 }));
 
 router.post("/managerGroups/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.param.id;
+    var id = this.params.id;
     var updatedData = await managerGroupAppModel.findByIdAndUpdate(id, req.body);
     api.attachData2Response(200, "更新成功", updatedData, res);
     next();
@@ -115,7 +110,7 @@ router.delete("/managerGroups/apps/:id", api.catchAsyncErrors(async function (re
 }));
 
 router.get("/managerGroups/orgs/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.param.id;
+    var id = req.params.id;
     var foundData = await managerGroupOrgModel.findById(id).lean().exec();
     foundData.orgDetail = iam.getOrgOrUser(foundData.orgId, "org");
     api.attachData2Response(200, "获取成功", foundData, res);
@@ -128,8 +123,8 @@ router.post("/managerGroups/orgs", api.catchAsyncErrors(async function (req, res
     next();
 }));
 
-router.post("/managerGroups/orgs/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.param.id;
+router.put("/managerGroups/orgs/:id", api.catchAsyncErrors(async function (req, res, next) {
+    var id = req.params.id;
     var updatedData = await managerGroupOrgModel.findByIdAndUpdate(id, req.body);
     api.attachData2Response(200, "更新成功", updatedData, res);
     next();
@@ -143,7 +138,7 @@ router.delete("/managerGroups/orgs/:id", api.catchAsyncErrors(async function (re
 }));
 
 router.get("/managerGroups/users/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.param.id;
+    var id = req.params.id;
     var foundData = await managerGroupUserModel.findById(id).lean().exec();
     foundData.userDetail = iam.getOrgOrUser(foundData.userId, "user");
     api.attachData2Response(200, "获取成功", foundData, res);
@@ -157,7 +152,7 @@ router.post("/managerGroups/users", api.catchAsyncErrors(async function (req, re
 }));
 
 router.post("/managerGroups/users/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.param.id;
+    var id = req.params.id;
     var updatedData = await managerGroupUserModel.findByIdAndUpdate(id, req.body);
     api.attachData2Response(200, "更新成功", updatedData, res);
     next();

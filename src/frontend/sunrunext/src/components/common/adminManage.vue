@@ -24,14 +24,12 @@
         <div class="flexDiv-h editItemContainer" v-if="editingManagerGroup.source">
           <span class="text-font-normal item-header">管理组成员</span>
           <div class="flexDiv-v" style="flex:1">
-            <contract-selector emptyLabel="添加" notEmptyLabel="" ref="userSelector" :preSelectedOrgs="editingManagerGroup.source.users" />
+            <contract-selector emptyLabel="添加" notEmptyLabel="" ref="userSelector" :preSelectedOrgs="editingManagerGroup.selectedUsers" />
           </div>
         </div>
         <div class="flexDiv-h editItemContainer">
           <span class="text-font-normal item-header">通讯录权限</span>
-          <div class="flexDiv-v">
-            <manage-group/>
-          </div>
+          <manage-group style="flex:1" ref="manageGroup" :permissionOrgs="editingManagerGroup.selectedOrgs" />
         </div>
         <div class="flexDiv-h editItemContainer">
           <span class="text-font-normal item-header">应用权限</span>
@@ -71,8 +69,10 @@ export default {
 
       editingManagerGroup: {
         source: null,
-        name: "",
-        preSelectedUsers: []
+        selectedUsers: [],
+        selectedOrgs: [],
+        selectedApps: [],
+        name: ""
       }
     };
   },
@@ -89,6 +89,18 @@ export default {
       this.editingManagerGroup.name = this.selectedOrg.name;
       this.editingManagerGroup.source = await api.getManagerGroupDetail(
         this.selectedOrg._id
+      );
+
+      this.editingManagerGroup.selectedOrgs = this.editingManagerGroup.source.orgs.map(
+        i => i.detail
+      );
+
+      this.editingManagerGroup.selectedApps = this.editingManagerGroup.source.apps.map(
+        i => i.detail
+      );
+
+      this.editingManagerGroup.selectedUsers = this.editingManagerGroup.source.users.map(
+        i => i.detail
       );
     }
   },
@@ -191,40 +203,127 @@ export default {
     },
 
     async save() {
-      var promiseArr = [];
-      var selectedUsers = this.$refs.userSelector.selectedUserIds;
+      await this.saveAdminUsersConfig();
+      await this.saveOrgsConfig();
+      await this.saveAdminGroupName();
+      await this.refreshOrgs();
+      this.setSelectedOrg(this.selectedOrg._id);
 
-      var addUsers = selectedUsers.filter(
-        i =>
-          this.editingManagerGroup.source.users.find(j => j.id == i.id) == null
-      );
+      this.$message({
+        type: "success",
+        message: "更新成功"
+      });
+    },
 
-      for (let i = 0; i < selectedUsers.length; i++) {
-        promiseArr.push(
-          new Promise(async (resolve, reject) => {
-            await api.createManagerGroupUser({
-              userId: selectedUsers[i],
-              groupId: this.selectedOrg._id
-            });
-          })
-        );
-      }
-
-      await Promise.all(promiseArr);
-
+    async saveAdminGroupName() {
       if (this.selectedOrg.name !== this.editingManagerGroup.name) {
         var data = {
           name: this.editingManagerGroup.name
         };
         await api.updateManagerGroup(this.selectedOrg._id, data);
-        await this.refreshOrgs();
-        this.setSelectedOrg(this.selectedOrg._id);
-
-        this.$message({
-          type: "success",
-          message: "更新成功"
-        });
       }
+    },
+
+    //管理组成员设置
+    async saveAdminUsersConfig() {
+      var promiseArr = [];
+      var selectedUsers = this.$refs.userSelector.selectedUserIds;
+
+      var addUsers = selectedUsers.filter(
+        i =>
+          this.editingManagerGroup.source.users.find(j => j.detail.id == i) ==
+          null
+      );
+
+      var deleteUsers = this.editingManagerGroup.source.users.filter(
+        i => selectedUsers.find(j => j == i.detail.id) == null
+      );
+
+      for (let i = 0; i < addUsers.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.createManagerGroupUser({
+              userId: addUsers[i],
+              groupId: this.selectedOrg._id
+            });
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < deleteUsers.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.deleteManagerGroupUser(deleteUsers[i]._id);
+            resolve(result);
+          })
+        );
+      }
+      if (promiseArr.length > 0) await Promise.all(promiseArr);
+    },
+
+    //保存通讯录权限设置
+    async saveOrgsConfig() {
+      var promiseArr = [];
+      var selectedOrgs = this.$refs.manageGroup.selectedOrgs;
+      var addOrgs = selectedOrgs.filter(
+        i =>
+          this.editingManagerGroup.source.orgs.find(j => j.detail.id == i.id) ==
+          null
+      );
+
+      var deleteOrgs = this.editingManagerGroup.source.orgs.filter(
+        i => selectedOrgs.find(j => j.id == i.detail.id) == null
+      );
+
+      var updateOrgs = this.editingManagerGroup.source.orgs.filter(i => {
+        var target = selectedOrgs.find(
+          j => j.id == i.detail.id && j.permission != i.detail.permission
+        );
+
+        if (target != null) {
+          i.permission = target.permission;
+        }
+
+        return target != null;
+      });
+
+      for (let i = 0; i < addOrgs.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.createManagerGroupOrg({
+              orgId: addOrgs[i].id,
+              groupId: this.selectedOrg._id,
+              permission: addOrgs[i].permission
+            });
+
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < deleteOrgs.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.deleteManagerGroupOrg(deleteOrgs[i]._id);
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < updateOrgs.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.updateManagerGroupOrg(updateOrgs[i]._id, {
+              permission: updateOrgs[i].permission
+            });
+
+            resolve(result);
+          })
+        );
+      }
+
+      if (promiseArr.length > 0) await Promise.all(promiseArr);
     },
 
     setSelectedOrg(id) {

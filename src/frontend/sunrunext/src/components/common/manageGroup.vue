@@ -1,34 +1,38 @@
 <template>
   <div class="flexDiv-h">
     <span v-if="selectedOrgs.length>0&&notEmptyLabel" class="text-font-normal" style="line-height:20px">{{notEmptyLabel}}</span>
-    <div class="flexDiv-h " style="flex:1;flex-wrap:wrap">
-      <div class="flexDiv-v" v-if="fullPermissionOrgs.length>0">
+    <div class="flexDiv-v " style="flex:1;flex-wrap:wrap">
+      <div class="flexDiv-v" v-if="fullPermissionOrgs.length>0" style="margin-bottom:20px">
         <div class="text-font-minor">具有管理权限</div>
-        <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in fullPermissionOrgs" :key="index">
-          <i class="el-icon-custom-group icon-org" style="margin-top:3px">
-          </i>
-          <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
+        <div class="flexDiv-h" style="flex:1;flex-wrap:wrap;margin-top:10px">
+          <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in fullPermissionOrgs" :key="index">
+            <i class="el-icon-custom-group icon-org" style="margin-top:3px">
+            </i>
+            <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
+          </div>
         </div>
       </div>
-      <div class="flexDiv-v" v-if="viewPermissionOrgs.length>0">
+      <div class="flexDiv-v" v-if="viewPermissionOrgs.length>0" style="margin-bottom:20px">
         <div class="text-font-minor">仅具有查看权限</div>
-        <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in viewPermissionOrgs" :key="index">
-          <i class="el-icon-custom-group icon-org" style="margin-top:3px">
-          </i>
-          <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
+        <div class="flexDiv-h" style="flex:1;flex-wrap:wrap;margin-top:10px">
+          <div class="flexDiv-h div-org-selected" style="padding:2px;align-items:center" v-for="(item,index) in viewPermissionOrgs" :key="index">
+            <i class="el-icon-custom-group icon-org" style="margin-top:3px">
+            </i>
+            <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
+          </div>
         </div>
       </div>
-      <el-button class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
+      <el-button class="button-link" type="text" style="padding:0px;align-self:flex-start" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
     </div>
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px">
-      <el-tree ref="tree" :expand-on-click-node="false" :render-content="renderTreeNode" node-key="id" :highlight-current="true" :default-expanded-keys="[-1]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
+      <el-tree :render-after-expand="true" ref="tree" :expand-on-click-node="false" :render-content="renderTreeNode" node-key="id" :highlight-current="true" :default-expanded-keys="[-1]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
       <div slot="footer" class="dialog-footer ">
         <span style="flex:1">
           <el-tooltip class="item" effect="light" content="创建者、超级管理员拥有企业的全局通讯录的管理权限。分级管理员只能管理相应的部分通讯录，并且其发消息等操作只能在其通讯录管理权限下进行。" placement="top-start">
             <i class="el-icon-question text-font-normal" />
           </el-tooltip>
         </span>
-        <el-button @click="dialogVisible=false" size="small">取消</el-button>
+        <el-button @click="cancelDialog" size="small">取消</el-button>
         <el-button type="primary" size="small" @click="confirmDialog">确定</el-button>
       </div>
     </el-dialog>
@@ -44,21 +48,23 @@ export default {
       orgArr: [], //一维的组织架构
       orgs: [],
       selectedOrgs: [],
-      tempSelectedOrgs: [],
       dialogVisible: false,
       loading: false,
       defaultProps: {
         children: "children",
         label: "name"
-      }
+      },
+      value: []
     };
   },
   computed: {
     fullPermissionOrgs: function() {
-      return this.selectedOrgs.filter(i => i.permision == 2);
+      return this.selectedOrgs.filter(i => i.fullPermission);
     },
     viewPermissionOrgs: function() {
-      return this.selectedOrgs.filter(i => i.type == 1);
+      return this.selectedOrgs.filter(
+        i => !i.fullPermission && i.viewPermission
+      );
     }
   },
   props: {
@@ -69,7 +75,7 @@ export default {
     },
     notEmptyLabel: {
       type: String,
-      default: "通讯录权限",
+      default: "",
       required: false
     },
     editLabel: {
@@ -87,45 +93,39 @@ export default {
     await this.getOrgs();
     this.processOrgs(this.orgs[0]);
     this.getOrgArr(this.orgs[0]);
-
-    if (this.permissionOrgs) {
-      this.permissionOrgs.forEach(i => {
-        var target = this.getTarget(i.id, i.type);
-        if (target) {
-          if (permissionOrgs[i].type == 1) {
-            target.fullPermission = false;
-            target.viewPermission = true;
-          } else if (preSelectedOrgs[i].type == 2) {
-            target.fullPermission = true;
-            target.viewPermission = true;
-          } else {
-            target.fullPermission = false;
-            target.viewPermission = false;
-          }
-        }
-      });
-    }
+    this.setOrgState();
   },
   watch: {
     preSelectedOrgs() {
-      this.permissionOrgs.forEach(i => {
-        var target = this.getTarget(i.id, i.type);
-        if (target) {
-          if (permissionOrgs[i].type == 1) {
-            target.fullPermission = false;
-            target.viewPermission = true;
-          } else if (preSelectedOrgs[i].type == 2) {
-            target.fullPermission = true;
-            target.viewPermission = true;
-          } else {
-            target.fullPermission = false;
-            target.viewPermission = false;
-          }
-        }
-      });
+      this.setOrgState();
     }
   },
   methods: {
+    setOrgState() {
+      if (this.permissionOrgs) {
+        this.permissionOrgs.forEach(i => {
+          var target = this.getTarget(i.id, i.type);
+          if (target) {
+            if (i.permission == 1) {
+              target.fullPermission = false;
+              target.viewPermission = true;
+            } else if (i.permission == 2) {
+              target.fullPermission = true;
+              target.viewPermission = true;
+            } else {
+              target.fullPermission = false;
+              target.viewPermission = false;
+            }
+          }
+        });
+      }
+
+      this.confirmDialog();
+    },
+
+    sync(e) {
+      this.value = e;
+    },
     processOrgs(org) {
       org.fullPermission = false;
       org.viewPermission = false;
@@ -133,8 +133,8 @@ export default {
       org.children = org.children || [];
       if (org.subOrgs && org.subOrgs.length > 0) {
         org.subOrgs.forEach(i => {
-          org.fullPermission = false;
-          org.viewPermission = false;
+          i.fullPermission = false;
+          i.viewPermission = false;
           org.children.push(i);
         });
       }
@@ -157,14 +157,29 @@ export default {
       return target;
     },
     async showDialog() {
-      this.tempSelectedOrgs = [];
-      this.selectedOrgs.forEach(i => {
-        this.tempSelectedOrgs.push(i);
-      });
+      this.setOrgState();
       this.dialogVisible = true;
     },
+
     confirmDialog() {
-      this.selectedOrgs = this.tempSelectedOrgs;
+      this.selectedOrgs = this.orgArr.filter(
+        i => i.fullPermission || i.viewPermission
+      );
+
+      this.selectedOrgs.forEach(j => {
+        if (j.fullPermission) j.permission = 2;
+        else if (j.viewPermission) j.permission = 1;
+      });
+      this.dialogVisible = false;
+    },
+
+    cancelDialog() {
+      this.orgs.forEach(i => {
+        i.fullPermission = false;
+        i.viewPermission = false;
+      });
+
+      this.setOrgState();
       this.dialogVisible = false;
     },
 
@@ -177,25 +192,31 @@ export default {
           />
           <span style="flex:1">{node.label}</span>
           <el-checkbox
-            v-model="data.viewPermission"
-            on-change={value => this.viewPermissionChanged(value, node, data)}
+            checked={data.viewPermission}
+            disabled={data.fullPermission}
+            on-change={e => this.viewPermissionChanged(data, node, e)}
           >
+            {" "}
             查看
           </el-checkbox>
           <el-checkbox
-            on-change={value => this.fullPermissionChanged(value, node, data)}
+            on-input={this.sync}
+            checked={data.fullPermission}
+            on-change={e => this.fullPermissionChanged(data, node, e)}
           >
+            {" "}
             管理
           </el-checkbox>
         </span>
       );
     },
-    viewPermissionChanged(value, node, data) {
-      data.viewPermission = value;
+
+    fullPermissionChanged(data, node, e) {
+      data.fullPermission = !data.fullPermission;
+      data.viewPermission = data.fullPermission;
     },
-    fullPermissionChanged(value, node, data) {
-      data.fullPermission = value;
-      if (data.fullPermission) data.viewPermission = true;
+    viewPermissionChanged(data, node, e) {
+      data.viewPermission = !data.viewPermission;
     }
   }
 };
