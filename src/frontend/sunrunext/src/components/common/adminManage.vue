@@ -1,58 +1,59 @@
 <template>
-    <div class="flexDiv-h">
-        <div class="flexDiv-v div-leftSide">
-            <el-button size="small" @click="openCreateDialog" type="primary" style="margin:20px" :disabled="!selectedOrg">新建管理组</el-button>
-            <el-tree ref="tree" :default-expand-all="true" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="_id" :highlight-current="true" @current-change="selectedNodeClick" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
-            <el-dialog width="400px" title="新建管理组" :visible.sync="dialogVisible">
-                <el-form :model="form" ref="form">
-                    <el-form-item label="管理组名称" prop="name" :rules="[{ required: true, message: '管理组名称不能为空'},{ max:32, message: '管理组名不能超过32个字'}]">
-                        <el-input v-model="form.name" size="small" placeholder="请输入管理组名称" />
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer ">
-                    <el-button @click="dialogVisible=false" size="small">取消</el-button>
-                    <el-button type="primary" @click="craeteManagerGroup" size="small">创建</el-button>
-                </div>
-            </el-dialog>
+  <div class="flexDiv-h">
+    <div class="flexDiv-v div-leftSide">
+      <el-button size="small" @click="openCreateDialog" type="primary" style="margin:20px" :disabled="!selectedOrg">新建管理组</el-button>
+      <el-tree ref="tree" :default-expand-all="true" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="_id" :highlight-current="true" @current-change="selectedNodeClick" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
+      <el-dialog width="400px" title="新建管理组" :visible.sync="dialogVisible">
+        <el-form :model="form" ref="form">
+          <el-form-item label="管理组名称" prop="name" :rules="[{ required: true, message: '管理组名称不能为空'},{ max:32, message: '管理组名不能超过32个字'}]">
+            <el-input v-model="form.name" size="small" placeholder="请输入管理组名称" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer ">
+          <el-button @click="dialogVisible=false" size="small">取消</el-button>
+          <el-button type="primary" @click="craeteManagerGroup" size="small">创建</el-button>
         </div>
-        <div style="flex:1" class="flexDiv-v">
-            <div class="flexDiv-v" v-if="selectedOrg" style="flex:1">
-                <div class="flexDiv-h editItemContainer">
-                    <span class="text-font-normal item-header">管理组名称</span>
-                    <input class="input-borderless" v-model="editingManagerGroup.name" type="text" placeholder="在此输入管理组名称" :readonly="!selectedOrg.parentId" />
-                </div>
-                <div class="flexDiv-h editItemContainer" v-if="editingManagerGroup.source">
-                    <span class="text-font-normal item-header">管理组成员</span>
-                    <div class="flexDiv-v" style="flex:1">
-                        <contract-selector emptyLabel="添加" notEmptyLabel="" ref="userSelector" :preSelectedOrgs="editingManagerGroup.source.users" />
-                    </div>
-                </div>
-                <div class="flexDiv-h editItemContainer">
-                    <span class="text-font-normal item-header">通讯录权限</span>
-                    <div class="flexDiv-v">
-
-                    </div>
-                </div>
-                <div class="flexDiv-h editItemContainer">
-                    <span class="text-font-normal item-header">应用权限</span>
-                    <div class="flexDiv-v">
-                    </div>
-                </div>
-                <div class="flexDiv-h" style="flex:1;align-items:flex-end;margin-bottom:20px">
-                    <el-button size="small" type="warning" @click="deleteMnagerGroup">删除</el-button>
-                    <el-button size="small" type="primary" @click="save">保存</el-button>
-                </div>
-            </div>
-            <div v-else>
-                请选择管理组
-            </div>
-        </div>
+      </el-dialog>
     </div>
+    <div style="flex:1" class="flexDiv-v">
+      <div class="flexDiv-v" v-if="selectedOrg" style="flex:1">
+        <div class="flexDiv-h editItemContainer">
+          <span class="text-font-normal item-header">管理组名称</span>
+          <input class="input-borderless" v-model="editingManagerGroup.name" type="text" placeholder="在此输入管理组名称" :readonly="!selectedOrg.parentId" />
+        </div>
+        <div class="flexDiv-h editItemContainer" v-if="editingManagerGroup.source">
+          <span class="text-font-normal item-header">管理组成员</span>
+          <div class="flexDiv-v" style="flex:1">
+            <contract-selector emptyLabel="添加" notEmptyLabel="" ref="userSelector" :preSelectedOrgs="editingManagerGroup.source.users" />
+          </div>
+        </div>
+        <div class="flexDiv-h editItemContainer">
+          <span class="text-font-normal item-header">通讯录权限</span>
+          <div class="flexDiv-v">
+            <manage-group/>
+          </div>
+        </div>
+        <div class="flexDiv-h editItemContainer">
+          <span class="text-font-normal item-header">应用权限</span>
+          <div class="flexDiv-v">
+          </div>
+        </div>
+        <div class="flexDiv-h" style="flex:1;align-items:flex-end;margin-bottom:20px">
+          <el-button size="small" type="warning" @click="deleteMnagerGroup">删除</el-button>
+          <el-button size="small" type="primary" @click="save">保存</el-button>
+        </div>
+      </div>
+      <div v-else>
+        请选择管理组
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import contractSelector from "./contractSelector";
 import api from "../../utility/api";
 import appSSOVue from "./appSSO.vue";
+import manageGroup from "./manageGroup";
 export default {
   data() {
     return {
@@ -76,7 +77,8 @@ export default {
     };
   },
   components: {
-    contractSelector
+    contractSelector,
+    manageGroup
   },
   async mounted() {
     await this.refreshOrgs();
