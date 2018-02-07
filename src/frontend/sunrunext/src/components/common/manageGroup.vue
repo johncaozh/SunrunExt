@@ -53,8 +53,7 @@ export default {
       defaultProps: {
         children: "children",
         label: "name"
-      },
-      value: []
+      }
     };
   },
   computed: {
@@ -93,15 +92,20 @@ export default {
     await this.getOrgs();
     this.processOrgs(this.orgs[0]);
     this.getOrgArr(this.orgs[0]);
-    this.setOrgState();
+    this.resetOrgsState();
   },
   watch: {
-    preSelectedOrgs() {
-      this.setOrgState();
+    permissionOrgs() {
+      this.orgArr.forEach(i => {
+        i.fullPermission = false;
+        i.viewPermission = false;
+      });
+
+      this.resetOrgsState();
     }
   },
   methods: {
-    setOrgState() {
+    resetOrgsState() {
       if (this.permissionOrgs) {
         this.permissionOrgs.forEach(i => {
           var target = this.getTarget(i.id, i.type);
@@ -121,10 +125,6 @@ export default {
       }
 
       this.confirmDialog();
-    },
-
-    sync(e) {
-      this.value = e;
     },
     processOrgs(org) {
       org.fullPermission = false;
@@ -157,7 +157,7 @@ export default {
       return target;
     },
     async showDialog() {
-      this.setOrgState();
+      this.resetOrgsState();
       this.dialogVisible = true;
     },
 
@@ -179,7 +179,7 @@ export default {
         i.viewPermission = false;
       });
 
-      this.setOrgState();
+      this.resetOrgsState();
       this.dialogVisible = false;
     },
 

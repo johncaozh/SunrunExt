@@ -49,7 +49,7 @@
                     <el-radio @change="valueChanged" v-model="config.appsLayoutMode" label="2">宫格模式</el-radio>
                 </span>
                 <div class="editItemContainer flexDiv-h" style="padding-bottom:0px;border-bottom:0px;border-top:1px solid #E4E7ED">
-                    <el-button type="text" class="button-link" style="padding:0px">设置应用分组</el-button>
+                    <el-button type="text" class="button-link" style="padding:0px" @click="$router.push('/enterprise/client/appGroup')">设置应用分组</el-button>
                     <span class="text-font-minor" style="margin-left:10px">应用较多时，可根据类别和使用频率对应用分组和排序</span>
                 </div>
             </div>

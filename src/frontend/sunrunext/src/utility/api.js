@@ -233,6 +233,23 @@ export default {
     return axios.get(url);
   },
 
+  async getAppGroups() {
+    var url = env.serverConfig.appGroupsSegment;
+    return axios.get(url);
+  },
+  async createAppGroup(param) {
+    var url = env.serverConfig.appGroupsSegment;
+    return axios.post(url, param);
+  },
+  async deleteAppGroup(id) {
+    var url = `${env.serverConfig.appGroupsSegment}/${id}`;
+    return axios.delete(url);
+  },
+  async updateAppGroup(id, param) {
+    var url = `${env.serverConfig.appGroupsSegment}/${id}`;
+    return axios.put(url);
+  },
+
   async getConfig() {
     var url = env.serverConfig.configSegment;
     return axios.get(url);

@@ -33,10 +33,9 @@
         </div>
         <div class="flexDiv-h editItemContainer">
           <span class="text-font-normal item-header">应用权限</span>
-          <div class="flexDiv-v">
-          </div>
+          <manage-app style="flex:1" ref="manageApp" :permissionApps="editingManagerGroup.selectedApps" />
         </div>
-        <div class="flexDiv-h" style="flex:1;align-items:flex-end;margin-bottom:20px">
+        <div class="flexDiv-h" style="flex:1;align-items:flex-end;margin-bottom:20px;margin-top:20px">
           <el-button size="small" type="warning" @click="deleteMnagerGroup">删除</el-button>
           <el-button size="small" type="primary" @click="save">保存</el-button>
         </div>
@@ -52,6 +51,7 @@ import contractSelector from "./contractSelector";
 import api from "../../utility/api";
 import appSSOVue from "./appSSO.vue";
 import manageGroup from "./manageGroup";
+import manageApp from "./manageApp";
 export default {
   data() {
     return {
@@ -78,7 +78,8 @@ export default {
   },
   components: {
     contractSelector,
-    manageGroup
+    manageGroup,
+    manageApp
   },
   async mounted() {
     await this.refreshOrgs();
@@ -205,6 +206,7 @@ export default {
     async save() {
       await this.saveAdminUsersConfig();
       await this.saveOrgsConfig();
+      await this.saveAppsConfig();
       await this.saveAdminGroupName();
       await this.refreshOrgs();
       this.setSelectedOrg(this.selectedOrg._id);
@@ -316,6 +318,70 @@ export default {
           new Promise(async (resolve, reject) => {
             var result = await api.updateManagerGroupOrg(updateOrgs[i]._id, {
               permission: updateOrgs[i].permission
+            });
+
+            resolve(result);
+          })
+        );
+      }
+
+      if (promiseArr.length > 0) await Promise.all(promiseArr);
+    },
+
+    async saveAppsConfig() {
+      var promiseArr = [];
+      var selectedApps = this.$refs.manageApp.selectedApps;
+      var addApps = selectedApps.filter(
+        i =>
+          this.editingManagerGroup.source.apps.find(
+            j => j.detail._id == i._id
+          ) == null
+      );
+
+      var deleteApps = this.editingManagerGroup.source.apps.filter(
+        i => selectedApps.find(j => j._id == i.detail._id) == null
+      );
+
+      var updateApps = this.editingManagerGroup.source.apps.filter(i => {
+        var target = selectedApps.find(
+          j => j._id == i.detail._id && j.permission != i.detail.permission
+        );
+
+        if (target != null) {
+          i.permission = target.permission;
+        }
+
+        return target != null;
+      });
+
+      for (let i = 0; i < addApps.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.createManagerGroupApp({
+              appId: addApps[i]._id,
+              groupId: this.selectedOrg._id,
+              permission: addApps[i].permission
+            });
+
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < deleteApps.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.deleteManagerGroupApp(deleteApps[i]._id);
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < updateApps.length; i++) {
+        promiseArr.push(
+          new Promise(async (resolve, reject) => {
+            var result = await api.updateManagerGroupApp(updateApps[i]._id, {
+              permission: updateApps[i].permission
             });
 
             resolve(result);

@@ -83,7 +83,7 @@ router.delete("/managerGroups/:id", api.catchAsyncErrors(async function (req, re
 }));
 
 router.get("/managerGroups/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.params.id;
+    var id = req.params.id;
     var foundData = await managerGroupAppModel.findById(id).populate('appId');
     api.attachData2Response(200, "获取成功", foundData, res);
     next();
@@ -95,8 +95,8 @@ router.post("/managerGroups/apps", api.catchAsyncErrors(async function (req, res
     next();
 }));
 
-router.post("/managerGroups/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
-    var id = this.params.id;
+router.put("/managerGroups/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
+    var id = req.params.id;
     var updatedData = await managerGroupAppModel.findByIdAndUpdate(id, req.body);
     api.attachData2Response(200, "更新成功", updatedData, res);
     next();

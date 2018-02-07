@@ -17,11 +17,11 @@
         <div class="flexDiv-v">
           <el-input :disabled="selectAllOrgs" placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini" v-model="filterText">
           </el-input>
-          <el-tree :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="true" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
+          <el-tree :render-after-expand="true" :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="true" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
         </div>
         <div class="flexDiv-v div-tempSelectedOrg">
           <div class="text-font-normal" style="margin-top:3px;margin-bottom:12px">
-            已选择部分或成员
+            已选择部门或成员
           </div>
           <div style="height:400px;overflow-y:auto" class="customScroll">
             <div v-for="(item,index) in tempSelectedOrgs" :style="{opacity:item.disabled?0.3:1}" :key="index" style="align-items:center;margin-bottom:3px;" class="flexDiv-h">
@@ -154,6 +154,7 @@ export default {
       this.sourceOrgs.disabled = this.selectAllOrgs;
     },
     preSelectedOrgs() {
+      this.selectedOrgs = [];
       this.preSelectedOrgs.forEach(i => {
         var target = this.getTarget(i.id, i.type);
         if (target) {

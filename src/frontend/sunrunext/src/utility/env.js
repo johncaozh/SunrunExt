@@ -16,6 +16,7 @@ const serverConfig = {
   managerGroupSegment_apps: "managerGroups/apps",
   managerGroupSegment_orgs: "managerGroups/orgs",
   managerGroupSegment_users: "managerGroups/users",
+  appGroupsSegment: "appGroups",
   configSegment: "config",
 }
 

@@ -21,11 +21,12 @@ router.get("/appGroups/:id", api.catchAsyncErrors(async function (req, res, next
     var gotData = await appGroupModel.findById(id, req.body).lean().exec();
 
     if (gotData != null) {
-        var apps = appModel.find({ groupId: id });
+        var apps = appModel.find({
+            groupId: id
+        });
         gotData.apps = apps;
         api.attachData2Response(200, "获取成功", gotData, res);
-    }
-    else
+    } else
         api.attachData2Response(404, "不存在", gotData, res);
 
     next();
@@ -45,4 +46,4 @@ router.delete("/appGroups/:id", api.catchAsyncErrors(async function (req, res, n
     next();
 }));
 
-module.exports = router;
+module.exports = router

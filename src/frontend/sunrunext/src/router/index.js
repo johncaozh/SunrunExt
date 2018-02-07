@@ -22,33 +22,38 @@ export default new Router({
         path: '/enterprise',
         component: resolve => require(['../components/enterprise.vue'], resolve),
         children: [{
-          path: '/enterprise/enterpriseInfo',
-          component: resolve => require(['../components/common/enterpriseInfo.vue'], resolve),
-        }, {
-          path: '/enterprise/admin',
-          component: resolve => require(['../components/common/adminManage.vue'], resolve),
-        }, {
-          path: '/enterprise/chatSession',
-          component: resolve => require(['../components/common/chatSessionManage.vue'], resolve),
-        }, {
-          path: '/enterprise/contract',
-          component: resolve => require(['../components/common/contractManage.vue'], resolve),
-        }, {
-          path: '/enterprise/security',
-          component: resolve => require(['../components/common/securityManage.vue'], resolve),
-        }, {
-          path: '/enterprise/contract/hideAddressBook',
-          component: resolve => require(['../components/common/contractManage_hideAddressBook.vue'], resolve),
-        }, {
-          path: '/enterprise/contract/notVisibleForAll',
-          component: resolve => require(['../components/common/contractManage_notVisibleForAll.vue'], resolve),
-        }, {
-          path: '/enterprise/contract/onlyVisibleForDepartment',
-          component: resolve => require(['../components/common/contractManage_onlyVisibleForDepartment.vue'], resolve),
-        }, {
-          path: '/enterprise/client',
-          component: resolve => require(['../components/common/clientManage.vue'], resolve),
-        }]
+            path: '/enterprise/enterpriseInfo',
+            component: resolve => require(['../components/common/enterpriseInfo.vue'], resolve),
+          }, {
+            path: '/enterprise/admin',
+            component: resolve => require(['../components/common/adminManage.vue'], resolve),
+          }, {
+            path: '/enterprise/chatSession',
+            component: resolve => require(['../components/common/chatSessionManage.vue'], resolve),
+          }, {
+            path: '/enterprise/contract',
+            component: resolve => require(['../components/common/contractManage.vue'], resolve),
+          }, {
+            path: '/enterprise/security',
+            component: resolve => require(['../components/common/securityManage.vue'], resolve),
+          }, {
+            path: '/enterprise/contract/hideAddressBook',
+            component: resolve => require(['../components/common/contractManage_hideAddressBook.vue'], resolve),
+          }, {
+            path: '/enterprise/contract/notVisibleForAll',
+            component: resolve => require(['../components/common/contractManage_notVisibleForAll.vue'], resolve),
+          }, {
+            path: '/enterprise/contract/onlyVisibleForDepartment',
+            component: resolve => require(['../components/common/contractManage_onlyVisibleForDepartment.vue'], resolve),
+          }, {
+            path: '/enterprise/client',
+            component: resolve => require(['../components/common/clientManage.vue'], resolve),
+          },
+          {
+            path: '/enterprise/client/appGroup',
+            component: resolve => require(['../components/common/appGroup.vue'], resolve),
+          }
+        ]
       },
       {
         path: '/apps/create',
