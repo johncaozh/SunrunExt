@@ -139,7 +139,7 @@ export default {
       });
 
       this.processGroups.forEach(i => {
-        i.apps = this.processApps.filter(j => j.groupId === i._id);
+        i.apps = this.processApps.filter(j => j.groupId === i._id) ;
       });
 
       var appsNotInGroups = this.processApps.filter(
