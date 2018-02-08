@@ -17,7 +17,7 @@ Vue.use(VueLazyload, {
   preLoad: 1.3,
   error: './assets/img/broken-image.png',
   loading: './assets/img/loading-image.svg',
-  attempt: 3
+  attempt: 1
 })
 
 Array.prototype.removeByValue = function (val) {

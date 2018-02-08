@@ -5,33 +5,55 @@
       <div class="flexDiv-h div-addGroup" style="margin-bottom:20px" @click="createGroup">
         <i class="el-icon-plus icon-operate" style="margin-right:5px" /> 添加分组
       </div>
-      <div class="flexDiv-v div-group" v-for="(item,index) in processGroups" :key="index">
+      <div class="flexDiv-v div-group" :class="{ 'div-group-grid': appsLayoutMode==2 }" v-for="(item,index) in processGroups" :key="index">
         <div class="flexDiv-h div-group-header">
-          <div class="text-font-normal">{{item.name}}</div>
+          <div class="text-font-minor">{{item.name}}</div>
           <tooltip text="未分组的应用，以及往后新添加的应用，在客户端将默认显示在“其他应用”此分组下" style="margin-left:5px" v-show="item.name=='其他应用'" />
           <i class="el-icon-edit-outline icon-operate" style="flex:1;text-align:right" v-show="item.name!='其他应用'" @click="editGroup(item)">
           </i>
-          <i class="el-icon-close icon-operate" style="margin-left:10px" v-show="item.name!='其他应用'">
+          <i class="el-icon-close icon-operate" style="margin-left:10px" v-show="item.name!='其他应用'" @click="removeGroup(item)">
           </i>
         </div>
-        <div class="flexDiv-v" v-if="item.apps.length>0">
-          <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app">
-            <img v-lazy="app.logoUrl" class="app-logo" />
-            <span class="app-name" style="flex:1">{{app.name}}</span>
+        <div class="flexDiv-v" v-if="item.apps.length>0" :class="{'div-apps-container-grid':appsLayoutMode==2}">
+          <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app" :class="{ 'div-app-grid': appsLayoutMode==2 }">
+            <img v-lazy="app.logoUrl" class="app-logo" :class="{'img-app-icon-grid':appsLayoutMode==2}" />
+            <span class="app-name">{{app.name}}</span>
           </div>
         </div>
         <div class="text-font-normal" style="align-self:center;justify-self:center;padding:10px" v-else>该分组下无应用</div>
       </div>
     </div>
     <div class="flexDiv-h div-bottom-operate ">
-      <el-button size="small">取消</el-button>
-      <el-button size="small">预览</el-button>
-      <el-button size="small" type="primary">保存</el-button>
+      <el-popover ref="preview" placement="bottom-start" trigger="click">
+        <iphone>
+          <div class="flexDiv-v" style="height:100%">
+            <div class="div-title-iphone">工作台</div>
+            <div class="customScroll div-group-container-iphone">
+              <div class="flexDiv-v div-group-iphone" v-for="(item,index) in processGroups" :key="index" v-if="item.apps.length>0" :class="{ 'div-group-iphone-grid': appsLayoutMode==2 }">
+                <div class="flexDiv-h div-group-header-iphone text-font-minor" :class="{'div-group-header-iphone-grid ':appsLayoutMode==2}">
+                  {{item.name}}
+                </div>
+                <div class="flexDiv-v" :class="{'div-apps-container-grid':appsLayoutMode==2}">
+                  <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app-iphone" :class="{ 'div-app-iphone-grid': appsLayoutMode==2 }" :style="{padding:appsLayoutMode==1?'10px':'0px'}">
+                    <img v-lazy="app.logoUrl" class="app-logo" :class="{'img-app-icon-iphone-grid':appsLayoutMode==2}" />
+                    <span :class="{'div-app-name-iphone-grid':appsLayoutMode==2,'app-name':appsLayoutMode==1}">{{app.name}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="item-icon" style="background-position: -120px -275px;width: 220px;height: 32px;background-size: 900px 880px;">
+            </span>
+          </div>
+        </iphone>
+      </el-popover>
+      <el-button size="small" @click="$router.go(-1)">取消</el-button>
+      <el-button size="small" v-popover:preview>预览</el-button>
+      <el-button size="small" type="primary" @click="save">保存</el-button>
     </div>
     <el-dialog :title="editingGroup?'编辑分组':'添加分组'" width="600px" :visible.sync="dialogVisible" style="padding:0px">
       <div class="flexDiv-h ">
         <div class="flexDiv-v">
-          <div class="flexDiv-v div-group-dialog" v-for="(item,index) in processGroups" :key="index" v-if="item!=editingGroup">
+          <div class="flexDiv-v div-group-dialog " v-for="(item,index) in processGroups" :key="index" v-if="item!=editingGroup">
             <div class="flexDiv-h div-group-header-dialog text-font-normal">
               {{item.name}}
             </div>
@@ -71,11 +93,12 @@
 <script>
 import api from "../../utility/api";
 import helper from "../../utility/helper";
-import appSSOVue from "./appSSO.vue";
 import tooltip from "./tooltip";
+import iphone from "./iphone";
 export default {
   data() {
     return {
+      appsLayoutMode: "1",
       dialogVisible: false,
       loading: false,
       sourceApps: [],
@@ -88,11 +111,15 @@ export default {
     };
   },
   components: {
-    tooltip
+    tooltip,
+    iphone
   },
   computed: {},
   props: {},
   async mounted() {
+    if (this.$route.query.appsLayoutMode)
+      this.appsLayoutMode = this.$route.query.appsLayoutMode;
+
     await this.getData();
   },
   watch: {},
@@ -143,12 +170,20 @@ export default {
     },
     clickApp(app, group) {
       app.sourceGroup = group;
+      app.groupId = this.editingGroup ? this.editingGroup._id : null;
       this.selectedApps.push(app);
       group.apps.removeByValue(app);
     },
     removeApp(app) {
       this.selectedApps.removeByValue(app);
-      if (app.sourceGroup) app.sourceGroup.apps.push(app);
+      if (app.sourceGroup) {
+        app.groupId = app.sourceGroup._id;
+        app.sourceGroup.apps.push(app);
+      } else {
+        var defaultGroup = this.getDefaultGroup();
+        app.groupId = null;
+        defaultGroup.apps.push(app);
+      }
     },
 
     confirm() {
@@ -173,6 +208,114 @@ export default {
       }
 
       this.dialogVisible = false;
+    },
+
+    async save() {
+      var promissArr = [];
+      var addGroups = this.processGroups.filter(
+        i => !i._id && i.name != "其他应用"
+      );
+      var updateGroups = this.processGroups.filter(i => {
+        var sourceGroup = this.sourceGroups.find(j => j._id == i._id);
+
+        if (sourceGroup == null) return false;
+        return sourceGroup.name != i.name;
+      });
+
+      var deleteGroups = this.sourceGroups.filter(
+        i => this.processGroups.find(j => j._id == i._id) == null
+      );
+
+      for (let i = 0; i < addGroups.length; i++) {
+        promissArr.push(
+          new Promise(async (resolve, reject) => {
+            var group = addGroups[i];
+            var result = await api.createAppGroup({
+              name: group.name
+            });
+
+            group.apps.forEach(j => (j.groupId = result._id));
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < updateGroups.length; i++) {
+        promissArr.push(
+          new Promise(async (resolve, reject) => {
+            var group = updateGroups[i];
+            var result = await api.updateAppGroup(group._id, {
+              name: group.name
+            });
+
+            resolve(result);
+          })
+        );
+      }
+
+      for (let i = 0; i < deleteGroups.length; i++) {
+        promissArr.push(
+          new Promise(async (resolve, reject) => {
+            var group = deleteGroups[i];
+            var result = await api.deleteAppGroup(group._id);
+            resolve(result);
+          })
+        );
+      }
+
+      await Promise.all(promissArr);
+      promissArr = [];
+
+      var updateApps = this.processApps.filter(i => {
+        var sourceApp = this.sourceApps.find(j => j._id == i._id);
+        return sourceApp != null && sourceApp.groupId != i.groupId;
+      });
+
+      for (let i = 0; i < updateApps.length; i++) {
+        promissArr.push(
+          new Promise(async (resolve, reject) => {
+            var app = updateApps[i];
+            var result = await api.updateApp(app._id, {
+              groupId: app.groupId
+            });
+
+            resolve(result);
+          })
+        );
+      }
+
+      await Promise.all(promissArr);
+
+      this.$message({
+        message: "保存成功",
+        type: "success"
+      });
+    },
+
+    removeGroup(group) {
+      var prompt = `删除后，“${
+        group.name
+      }”分组下的应用将移至“其他应用”，你可重新进行分组。,`;
+      this.$confirm(prompt, "提示", {
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          this.processGroups.removeByValue(group);
+          var defaultGroup = this.getDefaultGroup();
+          group.apps.forEach(i => {
+            i.groupId = null;
+            defaultGroup.apps.push(i);
+          });
+
+          group.apps = [];
+        })
+        .catch((err = {}));
+    },
+
+    getDefaultGroup() {
+      return this.processGroups.find(i => i.name == "其他应用");
     }
   }
 };
@@ -184,6 +327,7 @@ export default {
   padding-bottom: 10px;
   border-bottom: 1px solid @color-border-level2;
 }
+
 .div-bottom-operate {
   border-top: 1px solid @color-border-level2;
   padding-top: 20px;
@@ -213,12 +357,16 @@ export default {
   margin-bottom: 20px;
 }
 
+.div-group-grid {
+  background: #f9f9fa;
+}
+
 .div-group:last-child {
   margin-bottom: 0px;
 }
 
 .div-group-header {
-  padding: 5px;
+  padding: 4px;
   padding-left: 10px;
   background: #f9f9fa;
   align-items: center;
@@ -230,9 +378,24 @@ export default {
   align-items: center;
 }
 
+.div-group-header-iphone {
+  padding: 5px;
+  padding-left: 10px;
+  align-items: center;
+  background: #f9f9fa;
+}
+
+.div-group-header-iphone-grid {
+  border-bottom: 1px solid #e4e6e9;
+}
+
 .div-group-dialog {
   width: 300px;
   border-bottom: 1px solid @color-border-level2;
+}
+
+.div-group-iphone-grid {
+  background: white;
 }
 
 .div-group-dialog:last-child {
@@ -249,7 +412,40 @@ export default {
   padding: 10px;
 }
 
+.div-app-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  padding: 0px;
+  width: 84px;
+  height: 80px;
+}
+
+.div-app-iphone-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 0px;
+  position: relative;
+  width: calc(~"25% - 1px");
+  height: 64px;
+  border-right: 1px solid #e4e6e9;
+  border-bottom: 1px solid #e4e6e9;
+}
+
 .div-app-dialog {
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.div-app-iphone {
   align-items: center;
   padding: 10px;
   cursor: pointer;
@@ -286,6 +482,48 @@ export default {
   padding-left: 20px;
   flex: 1;
 }
+
+.div-title-iphone {
+  background: @color-theme;
+  color: white;
+  text-align: center;
+  padding: 7px;
+}
+
+.div-apps-container-grid {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.img-app-icon-grid {
+  width: 30px;
+  height: 30px;
+  margin-right: 0px;
+  margin-bottom: 10px;
+}
+
+.img-app-icon-iphone-grid {
+  width: 24px;
+  height: 24px;
+  margin-right: 0px;
+}
+
+.div-app-name-iphone-grid {
+  -webkit-text-size-adjust: none;
+  font-size: 12px;
+  color: black;
+  width: 90%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  -webkit-transform: scale(0.8);
+}
+
+.div-group-container-iphone {
+  height: 325px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 10px;
+}
 </style>
-
-

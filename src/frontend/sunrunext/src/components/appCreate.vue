@@ -33,7 +33,7 @@
         <el-form-item label="可见范围：" prop="iamUserIds">
           <contract-selector ref="contractSelector" emptyLabel="选择部门/成员" style="width:100% " :notEmptyLabel="null " />
         </el-form-item>
-        <el-button type="primary " class="commit " @click="submitForm ">创建应用</el-button>
+        <el-button type="primary " class="commit " @click="submitForm " style="margin-bottom:20px">创建应用</el-button>
       </el-form>
     </el-main>
   </el-container>
@@ -104,7 +104,6 @@ export default {
     },
     submitForm() {
       this.form.iamUserIds = this.$refs.contractSelector.selectedUserIds;
-      alert();
       this.form.iamOrgIds = this.$refs.contractSelector.selectedOrgIds;
 
       this.$refs["form"].validate(valid => {

@@ -247,7 +247,7 @@ export default {
   },
   async updateAppGroup(id, param) {
     var url = `${env.serverConfig.appGroupsSegment}/${id}`;
-    return axios.put(url);
+    return axios.put(url, param);
   },
 
   async getConfig() {
