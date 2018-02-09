@@ -590,6 +590,14 @@
                     }, callbackObj);
                 }, //end 'downloadImage' API
 
+                getImageInfo: function (callbackObj) {
+                    invokeCmd('getImageInfo', {
+                        localId: callbackObj.localId,
+                        getThumb: callbackObj.getThumb || true,
+                        maxThumbLength: callbackObj.maxThumbLength || 64
+                    }, callbackObj);
+                }, //end 'getImageInfo' API
+
                 chooseFile: function (callbackObj) {
                     invokeCmd('chooseFile', {
                         count: callbackObj.count || 9,
@@ -619,6 +627,12 @@
                         isShowProgressTips: (callbackObj.isShowProgressTips == 0) ? 0 : 1
                     }, callbackObj);
                 }, //end 'downloadFile' API
+
+                getFileInfo: function (callbackObj) {
+                    invokeCmd('getFileInfo', {
+                        localId: callbackObj.localId,
+                    }, callbackObj);
+                }, //end 'getFileInfo' API
 
                 getNetworkType: function (callbackObj) {
                     var parseNetworkResult = function (res) {
@@ -746,8 +760,8 @@
                     }());
                 }, //end 'scanQRCode' API
 
-                selectContract: function (callbackObj) {
-                    invokeCmd("selectContract", {
+                selectContact: function (callbackObj) {
+                    invokeCmd("selectContact", {
                         mode: callbackObj.mode || "single", //single表示单选，multi表示多选
                         selectedUserIds: callbackObj.selectedUserIds || {},
                     }, callbackObj)

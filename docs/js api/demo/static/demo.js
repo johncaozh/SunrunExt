@@ -417,6 +417,40 @@ sr.ready(function () {
     download();
   };
 
+  // 5.4 获取图片信息
+  document.querySelector('#getImageInfo').onclick = function () {
+    if (images.localId.length == 0) {
+      alert('请先使用 chooseImage 接口选择图片');
+      return;
+    }
+    var i = 0,
+      length = images.localId.length;
+    images.serverId = [];
+
+    function getInfo() {
+      sr.getImageInfo({
+        localId: images.localId[i],
+        getThumb: true,
+        maxThumbLength: 64,
+        success: function (res) {
+          alert(`第 ${i} 个图片的信息:
+                 图片名：${res.fileName}
+                 图片长度：${res.fileSize}
+                 图片缩略图Base64：${res.thumbBase64}
+          `);
+          i++;
+          if (i < length) {
+            getInfo();
+          }
+        },
+        fail: function (res) {
+          alert(JSON.stringify(res));
+        }
+      });
+    }
+    getInfo();
+  };
+
   // 5 文件接口
   var files = {
     localId: [],
@@ -495,6 +529,37 @@ sr.ready(function () {
       });
     }
     download();
+  };
+
+  // 5.4 获取文件信息
+  document.querySelector('#getFileInfo').onclick = function () {
+    if (files.localId.length == 0) {
+      alert('请先使用 chooseFile 接口选择文件');
+      return;
+    }
+    var i = 0,
+      length = files.localId.length;
+    files.serverId = [];
+
+    function getInfo() {
+      sr.getFileInfo({
+        localId: files.localId[i],
+        success: function (res) {
+          alert(`第 ${i} 个文件的信息:
+                 文件名：${res.fileName}
+                 文件长度：${res.fileSize}
+          `);
+          i++;
+          if (i < length) {
+            getInfo();
+          }
+        },
+        fail: function (res) {
+          alert(JSON.stringify(res));
+        }
+      });
+    }
+    getInfo();
   };
 
   // 6 设备信息接口
@@ -644,8 +709,8 @@ sr.ready(function () {
   // 10 用户接口
   // 10.1 通讯录选人
   document.querySelector('#selectContact').onclick = function () {
-    sr.selectContract({
-      selectContract: ["czq"],
+    sr.selectContact({
+      selectContact: ["czq"],
       success: function (res) {
         alert(JSON.stringify(res));
       }
@@ -653,7 +718,7 @@ sr.ready(function () {
   };
 
   document.querySelector('#getUserInfo').onclick = function () {
-    sr.selectContract({
+    sr.selectContact({
       userId: "czq",
       success: function (res) {
         alert(JSON.stringify(res));
