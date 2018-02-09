@@ -1,28 +1,59 @@
 <template>
   <div class="flexDiv-v">
-    <sub-header>测试应用</sub-header>
+    <sub-header>{{appDetail.name}}</sub-header>
     <div class="flexDiv-v app-main">
       <div class="flexDiv-v">
-        <div class="flexDiv-h app-basic">
-          <img style="width:60px;height:60px" :src="appDetail.logoUrl" />
-          <div class="flexDiv-v" style="margin-left:10px;justify-content:space-around;align-self:stretch">
-            <div style="font-size:22px;">{{appDetail.name}}</div>
-            <div class="text-font-normal">{{appDetail.desc}}</div>
-          </div>
-          <div class="flexDiv-v" style="flex:1;align-items:flex-end;justify-content:space-around;align-self:stretch">
-            <el-checkbox v-model="appDetail.enable" @change="appEnableChanged">启用</el-checkbox>
-            <el-checkbox v-model="appDetail.useInGroup" @change="appUseInGroupChanged">设为群应用</el-checkbox>
+        <div class="flexDiv-v">
+          <div class="flexDiv-h app-basic" style="align-items:flex-start">
+            <el-upload v-if="isEditingNameDesc" class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+              <img v-if="editingLogoUrl" :src="editingLogoUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+            <img style="width:60px;height:60px" :src="appDetail.logoUrl" v-else />
+            <el-collapse-transition>
+              <div v-show="isEditingNameDesc" style="margin-left:20px;">
+                <el-input v-model="editingName" placeholder="在此输入应用名称" size="small" />
+                <el-input v-model="editingDesc" type="textarea" size="small" style="margin-top:20px" :autosize="{ minRows: 2, maxRows: 4}" placeholder="在此输入应用描述" />
+                <div class="flexDiv-h" style="margin-top:20px">
+                  <el-button size="small" @click="isEditingNameDesc=false">取消</el-button>
+                  <el-button size="small" type="primary" @click="updateAppNameDesc">完成</el-button>
+                </div>
+              </div>
+            </el-collapse-transition>
+            <div class="flexDiv-v" style="margin-left:10px;justify-content:space-around;align-self:flex-start" v-show="!isEditingNameDesc">
+              <div class="flexDiv-h" style="font-size:22px;align-items:center">
+                {{appDetail.name}}
+                <i class="el-icon-edit i-edit " @click="editAppNameDesc" />
+              </div>
+              <div class="text-font-normal " style="margin-top:10px;">
+                {{appDetail.desc}}
+              </div>
+            </div>
+            <div class="flexDiv-v" style="flex:1;align-items:flex-end;align-self:stretch">
+              <el-checkbox v-model="appDetail.enable" @change="appEnableChanged">启用</el-checkbox>
+              <el-checkbox v-model="appDetail.useInGroup" @change="appUseInGroupChanged" style="margin-top:20px">设为群应用</el-checkbox>
+            </div>
           </div>
         </div>
-        <div class="flexDiv-v text-font-normal">
-          <el-row style="padding-top:20px;padding-bottom:20px">
-            <el-col :span="3">应用ID</el-col>
-            <el-col :span="10">{{appDetail._id}}</el-col>
-          </el-row>
-          <el-row v-show="!appDetail.useInGroup">
-            <el-col :span="3">可见范围</el-col>
-            <el-col :span="10">曹忠乾</el-col>
-          </el-row>
+        <div class="flexDiv-v text-font-normal" style="margin-top:20px">
+          <div class="flexDiv-h">
+            <span style="width:100px;">应用ID</span>{{appDetail._id}}
+          </div>
+          <div class="flexDiv-h" style="margin-top:20px">
+            <span style="width:100px;">可见范围</span>
+            <div class="flexDiv-v" style="flex:1">
+              <div class="flexDiv-h">
+                <contract-selector :editable="isEditingOrgs" notEmptyLabel="" v-if="appDetail" :preSelectedOrgs="editingOrgs" ref="contractSelector" style="flex:1" />
+                <el-button type="text" class="button-link" style="padding:0px" size="small" @click="editOrgs" v-show="!isEditingOrgs">编辑</el-button>
+              </div>
+              <el-collapse-transition>
+                <div class="flexDiv-h" style="margin-top:20px" v-if="isEditingOrgs">
+                  <el-button size="small" @click="cancelUpdateOrgs">取消</el-button>
+                  <el-button size="small" type="primary" @click="updateOrgs">完成</el-button>
+                </div>
+              </el-collapse-transition>
+            </div>
+          </div>
         </div>
         <div class="flexDiv-h app-menu">
           <app-visible v-show="!appDetail.useInGroup" :visible="appDetail.visible" @visibleChanged="appVisibleChanged" />
@@ -49,11 +80,20 @@ import appAutoReply from "./common/appAutoReply";
 import appSSO from "./common/appSSO";
 import subHeader from "./common/subHeader";
 import api from "../utility/api";
+import contractSelector from "./common/contractSelector";
 export default {
   data() {
     return {
       appId: null,
-      appDetail: {}
+      appDetail: {},
+      isEditingNameDesc: false,
+      editingName: null,
+      editingDesc: null,
+      editingLogoUrl: null,
+      editingAvatar: null,
+      isEditingOrgs: false,
+      editingOrgs: [],
+      uploadUrl: api.fileTransferUrl
     };
   },
   components: {
@@ -64,7 +104,8 @@ export default {
     appContextMenu,
     appAutoReply,
     appSSO,
-    subHeader
+    subHeader,
+    contractSelector
   },
   async mounted() {
     this.appId = this.$route.params.appId;
@@ -90,6 +131,8 @@ export default {
       this.appDetail.logoUrl = `${api.fileTransferUrl}/${
         this.appDetail.avatar
       }`;
+
+      this.editingOrgs = this.appDetail.orgs;
     },
     async appEnableChanged(value) {
       if (!value) {
@@ -188,6 +231,71 @@ export default {
           message: "已取消操作"
         });
       }
+    },
+    editAppNameDesc() {
+      this.editingName = this.appDetail.name;
+      this.editingDesc = this.appDetail.desc;
+      this.editingLogoUrl = this.appDetail.logoUrl;
+      this.editingAvatar = this.appDetail.avatar;
+      this.isEditingNameDesc = true;
+    },
+    async updateAppNameDesc() {
+      if (
+        this.editingName == null ||
+        this.editingName == undefined ||
+        this.editingName === ""
+      ) {
+        this.$message.err("应用名称不能为空");
+        return;
+      }
+
+      await this.updateApp({
+        name: this.editingName,
+        desc: this.editingDesc,
+        avatar: this.editingAvatar
+      });
+
+      await this.refreshAppDetail();
+
+      this.isEditingNameDesc = false;
+      this.$message({
+        type: "success",
+        message: "更新成功。"
+      });
+    },
+    handleAvatarSuccess(res, file) {
+      this.editingLogoUrl = `${api.fileTransferUrl}/${res.data}`;
+      this.editingAvatar = res.data;
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+
+      return isJPG && isLt2M;
+    },
+    editOrgs() {
+      this.editingOrgs = this.appDetail.orgs;
+      this.isEditingOrgs = true;
+    },
+    updateOrgs() {
+      this.updateApp({
+        iamUserIds: this.$refs.contractSelector.selectedUserIds,
+        iamOrgIds: this.$refs.contractSelector.selectedOrgIds
+      });
+
+      this.isEditingOrgs = false;
+    },
+    cancelUpdateOrgs() {
+      this.editingOrgs = this.appDetail.orgs;
+      this.$refs.contractSelector.resetSelectedOrgs();
+      this.isEditingOrgs = false;
     }
   }
 };
@@ -220,5 +328,41 @@ el-main {
   padding-bottom: 30px;
   border-bottom: 1px solid @color-border-level2;
   flex-wrap: wrap;
+}
+
+.i-edit {
+  color: @color-theme;
+  font-size: 16px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+  height: 60px;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+  height: 60px;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  display: block;
 }
 </style>

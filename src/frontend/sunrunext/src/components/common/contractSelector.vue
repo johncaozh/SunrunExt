@@ -8,9 +8,9 @@
         <i class="el-icon-custom-people icon-org" v-show="item.type=='user'" style="margin-top:3px">
         </i>
         <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
-        <i class="el-icon-close" style="font-size:14px;cursor:pointer;" @click="removeOrgFromSelectedOrgs(item)" />
+        <i class="el-icon-close" style="font-size:14px;cursor:pointer;" @click="removeOrgFromSelectedOrgs(item)" v-show="editable" />
       </div>
-      <el-button class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
+      <el-button v-show="editable" class="button-link" type="text" style="padding:0px" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
     </div>
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px">
       <div class="flexDiv-h ">
@@ -122,6 +122,11 @@ export default {
       type: String,
       default: "h",
       required: false
+    },
+    editable: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   async mounted() {
@@ -136,15 +141,7 @@ export default {
       });
     }
 
-    if (this.preSelectedOrgs) {
-      this.preSelectedOrgs.forEach(i => {
-        var target = this.getTarget(i.id, i.type);
-        if (target) {
-          target.selected = true;
-          this.selectedOrgs.push(target);
-        }
-      });
-    }
+    this.resetSelectedOrgs();
   },
   watch: {
     filterText(val) {
@@ -154,17 +151,22 @@ export default {
       this.sourceOrgs.disabled = this.selectAllOrgs;
     },
     preSelectedOrgs() {
-      this.selectedOrgs = [];
-      this.preSelectedOrgs.forEach(i => {
-        var target = this.getTarget(i.id, i.type);
-        if (target) {
-          target.selected = true;
-          this.selectedOrgs.push(target);
-        }
-      });
+      this.resetSelectedOrgs();
     }
   },
   methods: {
+    resetSelectedOrgs() {
+      this.selectedOrgs = [];
+      if (this.preSelectedOrgs) {
+        this.preSelectedOrgs.forEach(i => {
+          var target = this.getTarget(i.id, i.type);
+          if (target) {
+            target.selected = true;
+            this.selectedOrgs.push(target);
+          }
+        });
+      }
+    },
     processOrgs(org) {
       org.type = "org";
       org.selected = false;
@@ -195,6 +197,9 @@ export default {
     },
     getOrgArr(org) {
       this.orgArr = this.orgArr || [];
+
+      if (this.orgArr.indexOf(org) == -1) this.orgArr.push(org);
+
       org.users.forEach(u => {
         this.orgArr.push(u);
       });

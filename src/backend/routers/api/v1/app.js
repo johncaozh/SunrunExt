@@ -5,6 +5,8 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var appContextMenuModel = require('../../../db/appContextMenu');
 var appAutoReplyRuleModel = require('../../../db/appAutoReplyRule');
 var appMessageTemplateModel = require('../../../db/appMessageTemplate');
+var userModel = require('../../../db/user');
+var orgModel = require('../../../db/org');
 var router = express.Router();
 
 router.get("/apps", api.catchAsyncErrors(async function (req, res, next) {
@@ -26,6 +28,9 @@ router.get("/apps/:id", api.catchAsyncErrors(async function (req, res, next) {
     if (gotData != null) {
         gotData.contextMenus = await getAppContextMenu(id);
         gotData.autoReplyRules = await getAppAutoReplyRule(id);
+        var users = await getAppUsers(gotData.iamUserIds);
+        var orgs = await getAppOrgs(gotData.iamOrgIds);
+        gotData.orgs = users.concat(orgs)
         api.attachData2Response(200, "获取成功", gotData, res);
     } else
         api.attachData2Response(404, "不存在", gotData, res);
@@ -116,5 +121,33 @@ async function getAppAutoReplyRule(appId) {
         keywordRules: keywordRules,
     }
 };
+
+async function getAppUsers(iamUserIds) {
+    if (iamUserIds == null || iamUserIds.length == 0)
+        return [];
+
+    var users = await userModel.find({
+        id: {
+            $in: iamUserIds
+        }
+    }).lean().exec();
+
+    users.forEach(i => i.type = "user");
+    return users;
+}
+
+async function getAppOrgs(iamOrgIds) {
+    if (iamOrgIds == null || iamOrgIds.length == 0)
+        return [];
+
+    var orgs = await orgModel.find({
+        id: {
+            $in: iamOrgIds
+        }
+    }).lean().exec();
+
+    orgs.forEach(i => i.type = "org");
+    return orgs;
+}
 
 module.exports = router;
