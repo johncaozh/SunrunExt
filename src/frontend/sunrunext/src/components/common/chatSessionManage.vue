@@ -1,6 +1,6 @@
 <template>
-    <div class="flexDiv-v">
-        <div class="flexDiv-h editItemContainer" v-if="config">
+    <div class="flexDiv-v" v-if="config">
+        <div class="flexDiv-h editItemContainer">
             <span class="text-font-normal item-header">消息阅读状态</span>
             <div class="flexDiv-v">
                 <el-checkbox class="button-link" @change="valueChanged" v-model="config.gotResponseWhenFriendReadMsg">开启</el-checkbox>

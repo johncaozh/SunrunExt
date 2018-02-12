@@ -1,6 +1,6 @@
 <template>
     <div class="flexDiv-h">
-        <el-menu default-active="1" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :router="true" style="background:#F9FAFC">
+        <el-menu :default-active="defaultActive" class="el-menu-vertical" @open="handleOpen" @close="handleClose" :router="true" style="background:#F9FAFC">
             <el-menu-item index="/enterprise/enterpriseInfo">
                 <span slot="title">企业信息</span>
             </el-menu-item>
@@ -29,6 +29,17 @@
 
 <script>
 export default {
+  computed: {
+    defaultActive: function() {
+      var index1 = this.$route.path.indexOf("/");
+      var index2 = this.$route.path.indexOf("/", index1 + 1);
+      var index3 = this.$route.path.indexOf("/", index2 + 1);
+      
+      return index3 == -1
+        ? this.$route.path
+        : this.$route.path.slice(index1, index3 - index1);
+    }
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);

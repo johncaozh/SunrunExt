@@ -83,7 +83,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer ">
-        <el-button @click="dialogVisible=false" size="small">取消</el-button>
+        <el-button @click="cancel" size="small">取消</el-button>
         <el-button type="primary" size="small" @click="confirm">确定</el-button>
       </div>
     </el-dialog>
@@ -139,7 +139,7 @@ export default {
       });
 
       this.processGroups.forEach(i => {
-        i.apps = this.processApps.filter(j => j.groupId === i._id) ;
+        i.apps = this.processApps.filter(j => j.groupId === i._id);
       });
 
       var appsNotInGroups = this.processApps.filter(
@@ -206,6 +206,17 @@ export default {
           apps: this.selectedApps
         });
       }
+
+      this.dialogVisible = false;
+    },
+
+    cancel() {
+      this.selectedApps.forEach(app => {
+        if (app.sourceGroup) {
+          app.groupId = app.sourceGroup._id;
+          app.sourceGroup.apps.push(app);
+        }
+      });
 
       this.dialogVisible = false;
     },

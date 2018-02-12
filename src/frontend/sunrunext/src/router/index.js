@@ -18,9 +18,27 @@ export default new Router({
       }, {
         path: '/manager',
         component: resolve => require(['../components/manager.vue'], resolve),
+      },
+      {
+        path: '/manager/contractSync',
+        component: resolve => require(['../components/contractSync.vue'], resolve)
       }, {
+        path: '/manager/openApi',
+        component: resolve => require(['../components/openApi.vue'], resolve)
+      }, {
+        path: '/manager/message',
+        component: resolve => require(['../components/message.vue'], resolve)
+      }, {
+        path: '/manager/userMessage',
+        component: resolve => require(['../components/userMessageHistory.vue'], resolve)
+      }, {
+        path: '/manager/usageAnalysis',
+        component: resolve => require(['../components/usageAnalysis.vue'], resolve)
+      },
+      {
         path: '/enterprise',
         component: resolve => require(['../components/enterprise.vue'], resolve),
+        redirect: '/enterprise/enterpriseInfo',
         children: [{
             path: '/enterprise/enterpriseInfo',
             component: resolve => require(['../components/common/enterpriseInfo.vue'], resolve),
@@ -79,23 +97,7 @@ export default new Router({
         path: '/apps/:appId/autoReply/newKeyword',
         component: resolve => require(['../components/appAutoReply_new_keyword.vue'], resolve)
       },
-      {
-        path: '/contractSync',
-        component: resolve => require(['../components/contractSync.vue'], resolve)
-      }, {
-        path: '/openApi',
-        component: resolve => require(['../components/openApi.vue'], resolve)
-      }, {
-        path: '/message',
-        component: resolve => require(['../components/message.vue'], resolve)
-      }, {
-        path: '/userMessage',
-        component: resolve => require(['../components/userMessageHistory.vue'], resolve)
-      }, {
-        path: '/usageAnalysis',
-        component: resolve => require(['../components/usageAnalysis.vue'], resolve)
-      },
     ]
   }, ],
-  // mode: 'history',
+  mode: 'history',
 })

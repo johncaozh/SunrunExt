@@ -1,6 +1,6 @@
 <template>
     <div class="flexDiv-h div-item-container">
-        <div class="flexDiv-h div-item" @click="$router.push('./contractSync')">
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/contractSync')">
             <span class="item-icon" style="background-position: -97px -386px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -8,7 +8,7 @@
                 <span class="text-font-minor item-desc">可通过API接口管理通讯录，同时可设置查看或编辑权限，管理更加方便</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item" @click="$router.push('./message')">
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/message')">
             <span class="item-icon" style="background-position: -551px -210px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -16,7 +16,7 @@
                 <span class="text-font-minor item-desc">可通过自定义的消息型应用给成员群发消息</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item" @click="$router.push('./userMessage')">
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/userMessage')">
             <span class="item-icon" style="background-position: -420px -463px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -24,7 +24,7 @@
                 <span class="text-font-minor item-desc">可查看成员通过应用发送的消息，并进行回复</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item" @click="$router.push('./message?tabIndex=3')">
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/message?tabIndex=3')">
             <span class="item-icon" style="background-position:-140px -463px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -32,7 +32,7 @@
                 <span class="text-font-minor item-desc">可将重要常用的素材存放在此，方便管理员发送消息</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item" @click="$router.push('./usageAnalysis')">
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/usageAnalysis')">
             <span class="item-icon" style="background-position: -551px -140px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
@@ -40,7 +40,7 @@
                 <span class="text-font-minor item-desc">可通过使用分析查看成员、管理员和应用的使用情况</span>
             </div>
         </div>
-        <div class="flexDiv-h div-item" @click="$router.push('./openApi')">
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/openApi')">
             <span class="item-icon" style="background-position: -481px -70px;">
             </span>
             <div class="flexDiv-v" style="flex:1">
