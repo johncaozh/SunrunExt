@@ -19,11 +19,11 @@
         <div class="flexDiv-v editItemContainer">
             <div class="flexDiv-h" style="align-items:center">
                 <span class="text-font-normal item-header">企业成员</span>
-                <input class="input-borderless" type="text" placeholder="当前没有企业成员" readonly="readonly" />
+                <input class="input-borderless" type="text" readonly="readonly" v-model="userCount" />
             </div>
             <div class="flexDiv-h" style="align-items:center;margin-top:20px">
                 <span class="text-font-normal item-header">企业部门</span>
-                <input class="input-borderless" type="text" placeholder="当前没有企业部门" readonly="readonly" />
+                <input class="input-borderless" type="text" placeholder="当前没有企业部门" readonly="readonly" v-model="orgCount" />
             </div>
         </div>
         <div class="flexDiv-v editItemContainer">
@@ -50,16 +50,47 @@ export default {
   data() {
     return {
       logoUrl: null,
-      uploadUrl: api.fileTransferUrl
+      uploadUrl: api.fileTransferUrl,
+      orgArr: []
     };
   },
   watch: {
     config() {
       if (this.config && this.config.enterpriseLogoMediaId)
-        this.logoUrl = `${api.fileTransferUrl}/${this.config.enterpriseLogoMediaId}`;
+        this.logoUrl = `${api.fileTransferUrl}/${
+          this.config.enterpriseLogoMediaId
+        }`;
     }
   },
+  computed: {
+    orgCount() {
+      return this.orgArr.filter(i => i.type == "org").length;
+    },
+    userCount() {
+      return this.orgArr.filter(i => i.type == "user").length;
+    }
+  },
+  async mounted() {
+    var orgs = await api.getOrg();
+    this.orgArr = [];
+    this.getOrgArr(orgs);
+  },
   methods: {
+    getOrgArr(org) {
+      this.orgArr = this.orgArr || [];
+
+      if (this.orgArr.indexOf(org) == -1) this.orgArr.push(org);
+
+      org.users.forEach(u => {
+        u.type = "user";
+        this.orgArr.push(u);
+      });
+      org.subOrgs.forEach(j => {
+        u.type = "org";
+        this.orgArr.push(j);
+        this.getOrgArr(j);
+      });
+    },
     async valueChanged(value) {
       await api.updateConfig(this.config);
       await api.getConfig();
@@ -106,8 +137,8 @@ export default {
   border: 1px solid @color-border-level2;
 }
 
-.img-log{
-    width: 236px;
-    height: 62px;
+.img-log {
+  width: 236px;
+  height: 62px;
 }
 </style>
