@@ -1,46 +1,46 @@
 <template>
-    <div class="flexDiv-v" v-if="config">
-        <div class="flexDiv-v editItemContainer">
-            <div class="flexDiv-h" style="align-items:center">
-                <span class="text-font-normal item-header">企业Logo</span>
-                <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
-                    <div class="flexDiv-v div-uploader">
-                        <img v-if="logoUrl" :src="logoUrl" class="img-log">
-                        <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
-                    </div>
-                    <div slot="tip" class="text-font-minor">推荐尺寸702*180</div>
-                </el-upload>
-            </div>
-            <div class="flexDiv-h" style="align-items:center;margin-top:20px">
-                <span class="text-font-normal item-header">企业简称</span>
-                <input class="input-borderless" type="text" v-model="config.enterpriseName" placeholder="在此输入企业简称" />
-            </div>
-        </div>
-        <div class="flexDiv-v editItemContainer">
-            <div class="flexDiv-h" style="align-items:center">
-                <span class="text-font-normal item-header">企业成员</span>
-                <input class="input-borderless" type="text" readonly="readonly" v-model="userCount" />
-            </div>
-            <div class="flexDiv-h" style="align-items:center;margin-top:20px">
-                <span class="text-font-normal item-header">企业部门</span>
-                <input class="input-borderless" type="text" placeholder="当前没有企业部门" readonly="readonly" v-model="orgCount" />
-            </div>
-        </div>
-        <div class="flexDiv-v editItemContainer">
-            <div class="flexDiv-h" style="align-items:center">
-                <span class="text-font-normal item-header">企业电话</span>
-                <input class="input-borderless" type="text" v-model="config.enterprisePhone" placeholder="在此输入企业电话" />
-            </div>
-            <div class="flexDiv-h" style="align-items:center;margin-top:20px">
-                <span class="text-font-normal item-header">企业地址</span>
-                <input class="input-borderless" type="text" v-model="config.enterpriseAddress" placeholder="在此输入企业地址" />
-            </div>
-        </div>
-        <span style="margin-top:20px;margin-bottom:20px">
-            <el-button type="normal" size="small" @click="getConfig">取消</el-button>
-            <el-button type="primary" size="small" @click="updateConfig(config)">保存</el-button>
-        </span>
+  <div class="flexDiv-v" v-if="config">
+    <div class="flexDiv-v editItemContainer">
+      <div class="flexDiv-h" style="align-items:center">
+        <span class="text-font-normal item-header">企业Logo</span>
+        <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
+          <div class="flexDiv-v div-uploader">
+            <img v-if="logoUrl" :src="logoUrl" class="img-log">
+            <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
+          </div>
+          <div slot="tip" class="text-font-minor">推荐尺寸702*180</div>
+        </el-upload>
+      </div>
+      <div class="flexDiv-h" style="align-items:center;margin-top:20px">
+        <span class="text-font-normal item-header">企业简称</span>
+        <input class="input-borderless" type="text" v-model="config.enterpriseName" placeholder="在此输入企业简称" />
+      </div>
     </div>
+    <div class="flexDiv-v editItemContainer">
+      <div class="flexDiv-h" style="align-items:center">
+        <span class="text-font-normal item-header">企业成员</span>
+        <input class="input-borderless" type="text" readonly="readonly" v-model="userCount" placeholder="当前没有企业成员" />
+      </div>
+      <div class="flexDiv-h" style="align-items:center;margin-top:20px">
+        <span class="text-font-normal item-header">企业部门</span>
+        <input class="input-borderless" type="text" placeholder="当前没有企业部门" readonly="readonly" v-model="orgCount" />
+      </div>
+    </div>
+    <div class="flexDiv-v editItemContainer">
+      <div class="flexDiv-h" style="align-items:center">
+        <span class="text-font-normal item-header">企业电话</span>
+        <input class="input-borderless" type="text" v-model="config.enterprisePhone" placeholder="在此输入企业电话" />
+      </div>
+      <div class="flexDiv-h" style="align-items:center;margin-top:20px">
+        <span class="text-font-normal item-header">企业地址</span>
+        <input class="input-borderless" type="text" v-model="config.enterpriseAddress" placeholder="在此输入企业地址" />
+      </div>
+    </div>
+    <span style="margin-top:20px;margin-bottom:20px">
+      <el-button type="normal" size="small" @click="getConfig">取消</el-button>
+      <el-button type="primary" size="small" @click="updateConfig(config)">保存</el-button>
+    </span>
+  </div>
 </template>
 <script>
 import platformConfig from "../mixin/platformConfig";
@@ -64,10 +64,12 @@ export default {
   },
   computed: {
     orgCount() {
-      return this.orgArr.filter(i => i.type == "org").length;
+      var count = this.orgArr.filter(i => i.type == "org").length;
+      return `${count} 个部门`;
     },
     userCount() {
-      return this.orgArr.filter(i => i.type == "user").length;
+      var count = this.orgArr.filter(i => i.type == "user").length;
+      return `${count} 个成员`;
     }
   },
   async mounted() {
@@ -86,7 +88,7 @@ export default {
         this.orgArr.push(u);
       });
       org.subOrgs.forEach(j => {
-        u.type = "org";
+        j.type = "org";
         this.orgArr.push(j);
         this.getOrgArr(j);
       });

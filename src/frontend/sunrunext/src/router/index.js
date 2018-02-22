@@ -6,6 +6,7 @@ export default new Router({
   routes: [{
     path: '/',
     component: resolve => require(['../components/main.vue'], resolve),
+    redirect:'/home',
     children: [{
         path: '/home',
         component: resolve => require(['../components/home.vue'], resolve)

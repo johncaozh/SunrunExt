@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import moment from 'moment'
 import env from './env'
+import api from './api'
 
 Vue.filter('dateConverter', function (value, formatString) {
   formatString = formatString || env.constants.dateFormat;
@@ -31,7 +32,7 @@ Vue.filter('appMessageTemplateTypeConverter', function (type) {
     return "视频";
   else if (type == "file")
     return "文件";
-  else return "文字" 
+  else return "文字"
 });
 
 Vue.filter('appMessageTemplateToStringConverter', function (template) {
@@ -50,4 +51,8 @@ Vue.filter('appMessageTemplateToStringConverter', function (template) {
   else if (template.type == "file")
     return template.data.fileName;
   else return "文字"
+});
+
+Vue.filter('getMediaLink', function (mediaId) {
+  return `${api.fileTransferUrl}/${mediaId}`
 });

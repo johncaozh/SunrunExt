@@ -1,60 +1,154 @@
 <template>
     <div class="flexDiv-h div-root">
-        <el-collapse style="flex:1">
+        <el-collapse style="flex:1" :accordion="true">
             <el-collapse-item v-for="(item,index) in news" :key="index" :title="item.title">
                 <div v-html="item.detail"></div>
             </el-collapse-item>
         </el-collapse>
-        <div class="flexDiv-v div-right">
+        <div class="flexDiv-v div-right" style="align-items:center">
+            <img :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log" />
+            <div class="div-enterpriseName">{{config.enterpriseName}}</div>
 
+            <div class="div-count text-font-normal">人员：
+                <router-link to="/orgs">
+                    {{userCount}}人
+                </router-link>
+            </div>
+            <div class="div-count text-font-normal">部门：
+                <router-link to="/orgs">
+                    {{orgCount}}个
+                </router-link>
+            </div>
         </div>
     </div>
 </template>
 
-<<script>
+<script>
+import platformConfig from "./mixin/platformConfig";
+import api from "../utility/api";
 export default {
-  data(){
-      return {
-          news:[{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          },{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          },{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          },{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          },{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          },{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          },{
-              title:'这是一条测试新闻',
-              detail:'与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。'
-          }]
-      };
+  mixins: [platformConfig],
+  data() {
+    return {
+      orgArr: [],
+      news: [
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        },
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        },
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        },
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        },
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        },
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        },
+        {
+          title: "这是一条测试新闻",
+          detail:
+            "与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。"
+        }
+      ]
+    };
+  },
+  computed: {
+    orgCount() {
+      return this.orgArr.filter(i => i.type == "org").length;
+    },
+    userCount() {
+      return this.orgArr.filter(i => i.type == "user").length;
+    }
+  },
+  async mounted() {
+    var orgs = await api.getOrg();
+    this.orgArr = [];
+    this.getOrgArr(orgs);
+  },
+  methods: {
+    getOrgArr(org) {
+      this.orgArr = this.orgArr || [];
+
+      if (this.orgArr.indexOf(org) == -1) this.orgArr.push(org);
+
+      org.users.forEach(u => {
+        u.type = "user";
+        this.orgArr.push(u);
+      });
+      org.subOrgs.forEach(j => {
+        j.type = "org";
+        this.orgArr.push(j);
+        this.getOrgArr(j);
+      });
+    }
   }
-}
+};
 </script>
 
 <style scoped lang="less">
 .div-root {
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  flex: 1;
+  width: 1000px;
 }
 
 .div-right {
   border-left: 1px dotted @color-border-level2;
-  width: 320px;
+  width: 280px;
   padding-left: 30px;
   margin-left: 40px;
+}
+
+.img-log {
+  width: 300px;
+  height: 80px;
+}
+
+.div-enterpriseName {
+  font-size: 14px;
+  border-bottom: 1px solid @color-border-level2;
+  color: @color-theme;
+  margin-top: 10px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.div-count {
+  align-self: flex-start;
+  margin-left: 10px;
+  margin-top: 15px;
+}
+
+a {
+  text-decoration: none;
+  color: @color-theme;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 </style>
 
