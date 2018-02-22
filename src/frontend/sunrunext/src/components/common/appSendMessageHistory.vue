@@ -1,7 +1,7 @@
 <template>
   <div class="flexDiv-h">
     <app-list :showAllAppOption="true" @appChanged="appChanged" />
-    <el-table :data="records" style="width: 100%">
+    <el-table :data="records" style="width: 100%;margin-left:20px">
       <el-table-column prop="type" :filter-multiple="false" label="状态" width="120" :filters="[{ text: '已发送', value: 'sent' }, { text: '定时发送', value: 'timing' }, { text: '草稿', value: 'draft' }]" :filter-method="filterTag" filter-placement="bottom-end">
         <template slot-scope="scope">
           <span v-if="scope.row.type=='sent'">

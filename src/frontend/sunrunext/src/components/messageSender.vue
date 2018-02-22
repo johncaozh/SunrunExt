@@ -13,7 +13,7 @@
             <el-checkbox v-model="safe">保密</el-checkbox>
             <span class="text-font-minor" style="margin-left:20px">开启保密后，文章详情页面将印有收件人姓名</span>
         </div>
-        <div class="flexDiv-h" style="margin-top:20px">
+        <div class="flexDiv-h" style="margin-top:20px;margin-bottom:20px">
             <el-button type="primary" size="small" @click="sentMessageRecord">发送</el-button>
             <schedule-time-send @dateSelected="createSentTimingMessageRecord">
                 <el-button size="small" style="margin-left:10px;margin-right:10px">定时发送</el-button>

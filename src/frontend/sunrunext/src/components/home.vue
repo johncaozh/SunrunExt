@@ -1,26 +1,25 @@
 <template>
-    <div class="flexDiv-h div-root">
-        <el-collapse style="flex:1" :accordion="true">
-            <el-collapse-item v-for="(item,index) in news" :key="index" :title="item.title">
-                <div v-html="item.detail"></div>
-            </el-collapse-item>
-        </el-collapse>
-        <div class="flexDiv-v div-right" style="align-items:center">
-            <img :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log" />
-            <div class="div-enterpriseName">{{config.enterpriseName}}</div>
-
-            <div class="div-count text-font-normal">人员：
-                <router-link to="/orgs">
-                    {{userCount}}人
-                </router-link>
-            </div>
-            <div class="div-count text-font-normal">部门：
-                <router-link to="/orgs">
-                    {{orgCount}}个
-                </router-link>
-            </div>
-        </div>
+  <div class="flexDiv-h div-root1">
+    <el-collapse style="flex:1" :accordion="true">
+      <el-collapse-item v-for="(item,index) in news" :key="index" :title="item.title">
+        <div v-html="item.detail"></div>
+      </el-collapse-item>
+    </el-collapse>
+    <div class="flexDiv-v div-right">
+      <img :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log" />
+      <div class="div-enterpriseName">{{config.enterpriseName}}</div>
+      <div class="div-count text-font-normal">人员：
+        <router-link to="/orgs">
+          {{userCount}}人
+        </router-link>
+      </div>
+      <div class="div-count text-font-normal">部门：
+        <router-link to="/orgs">
+          {{orgCount}}个
+        </router-link>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -104,20 +103,19 @@ export default {
 </script>
 
 <style scoped lang="less">
-.div-root {
-  margin-left: 40px;
-  margin-right: 40px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  flex: 1;
-  width: 1000px;
+.div-root1 {
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .div-right {
   border-left: 1px dotted @color-border-level2;
   width: 280px;
-  padding-left: 30px;
-  margin-left: 40px;
+  padding-left: 10px;
+  margin-left: 30px;
+  align-items: center;
 }
 
 .img-log {

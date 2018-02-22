@@ -1,34 +1,26 @@
 <template>
-  <el-container>
-    <el-aside width="260px">
-      <el-container style="background:#F9FAFC;height:100%;border-right: 1px dotted #DCE1E6;">
-        <el-header style="padding:10px;height:auto">
-          <el-input v-model="filterText" placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini">
-          </el-input>
-        </el-header>
-        <el-main style="padding:0px;flex:1">
-          <el-tree :filter-node-method="filterNode" ref="tree" node-key="id" :render-content="renderTreaNode" :highlight-current="true" @node-click="orgSelected" :default-expanded-keys="[0]" :default-checked-keys="[0]" :data="orgs" :props="defaultProps" style="background:transparent"></el-tree>
-        </el-main>
-      </el-container>
-    </el-aside>
-    <el-main style="padding:0 10px">
-      <el-table :data="users" style="width: 100%">
-        <el-table-column prop="name" label="姓名" width="180">
-        </el-table-column>
-        <el-table-column prop="rank" label="职务" width="180">
-        </el-table-column>
-        <el-table-column prop="address" label="部门">
-        </el-table-column>
-        <el-table-column prop="mobile" label="手机">
-        </el-table-column>
-        <el-table-column prop="email" label="邮箱">
-        </el-table-column>
-      </el-table>
-    </el-main>
-  </el-container>
+  <div class="flexDiv-h" style="flex:1">
+    <div class="flexDiv-v div-aside">
+      <el-input v-model="filterText " placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini" />
+      <el-tree v-loading="loading " :filter-node-method="filterNode " ref="tree" node-key="id" :render-content="renderTreaNode " @current-change="orgSelected " :default-expanded-keys="['0'] " :data="orgs " :highlight-current="true " :props="defaultProps " style="background:transparent;margin-top:10px"></el-tree>
+    </div>
+    <el-table :data="users " style="width:100%">
+      <el-table-column prop="name" label="姓名" width="180">
+      </el-table-column>
+      <el-table-column prop="rank" label="职务" width="180">
+      </el-table-column>
+      <el-table-column prop="address" label="部门">
+      </el-table-column>
+      <el-table-column prop="mobile" label="手机">
+      </el-table-column>
+      <el-table-column prop="email" label="邮箱">
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 <script>
 import api from "../utility/api";
+import Vue from "Vue";
 export default {
   data() {
     return {
@@ -39,7 +31,8 @@ export default {
         children: "subOrgs",
         label: "name"
       },
-      filterText: ""
+      filterText: "",
+      loading: false
     };
   },
   watch: {
@@ -50,14 +43,20 @@ export default {
   },
 
   async mounted() {
+    this.loading = true;
     this.sourceData = await api.getOrg();
     this.orgs.push(this.sourceData);
+    var instance = this;
+
+    Vue.nextTick(function() {
+      instance.$refs.tree.setCurrentKey(instance.orgs[0].id);
+      instance.orgSelected(instance.orgs[0], null);
+      instance.loading = false;
+    });
   },
 
-  components: {},
-
   methods: {
-    orgSelected(org, node, el) {
+    orgSelected(org, node) {
       this.users.length = 0;
       this.getOrgUser(org, this.users);
     },
@@ -89,7 +88,12 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-
+<style lang="less" scoped>
+.div-aside {
+  width: 240px;
+  padding: 10px;
+  border-right: 1px dotted @color-border-level2;
+  background: #f9fafc;
+  margin-right: 20px;
+}
 </style>

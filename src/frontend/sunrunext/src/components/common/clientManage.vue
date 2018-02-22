@@ -152,7 +152,7 @@ export default {
 }
 
 .div-enterpriseName {
-  font-size: 16px;
+  font-size: 14px;
   border-top: 1px solid @color-border-level2;
   margin-top: 10px;
   padding-top: 10px;

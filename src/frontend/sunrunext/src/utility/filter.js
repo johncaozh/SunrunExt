@@ -56,3 +56,11 @@ Vue.filter('appMessageTemplateToStringConverter', function (template) {
 Vue.filter('getMediaLink', function (mediaId) {
   return `${api.fileTransferUrl}/${mediaId}`
 });
+
+Vue.filter('getVideoMediaLink', function (mediaId) {
+  return `${api.fileTransferUrl_video}/${mediaId}`
+});
+
+Vue.filter('getAudioMediaLink', function (mediaId) {
+  return `${api.fileTransferUrl_audio}/${mediaId}`
+});

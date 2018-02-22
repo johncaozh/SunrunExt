@@ -9,7 +9,7 @@
         <el-menu-item index="/enterprise" class="menuItem">我的企业</el-menu-item>
       </el-menu>
     </div>
-    <div id="content" class="div-root">
+    <div id="content" class="flexDiv-v div-root">
       <router-view></router-view>
     </div>
   </div>

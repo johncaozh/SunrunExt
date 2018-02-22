@@ -496,11 +496,11 @@ export default {
 
 .iphone-content {
   flex: 1;
-  background: #ebebeb;
+  background: #F9F9FA;
 }
 
 .iphone-subMenuItems {
-  background: #ebebeb;
+  background: #F9F9FA;
   padding-left: 26px;
   justify-content: space-around;
   align-items: flex-end;
@@ -550,11 +550,11 @@ export default {
 }
 
 .addMainMenu:hover {
-  background: #ebebeb;
+  background: #F9F9FA;
 }
 
 .editing {
-  background: #ebebeb;
+  background: #F9F9FA;
   padding: 15px;
   min-height: 470px;
 }
@@ -587,7 +587,7 @@ export default {
 .subMenuItems {
   border: 1px solid #dcdde0;
   flex: 1;
-  color: #ebebeb;
+  color: #F9F9FA;
   margin-left: 2px;
   margin-right: 2px;
   margin-bottom: 10px;

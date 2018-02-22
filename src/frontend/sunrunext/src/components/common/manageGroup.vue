@@ -25,7 +25,7 @@
       <el-button class="button-link" type="text" style="padding:0px;align-self:flex-start" @click="showDialog">{{selectedOrgs.length>0?editLabel:emptyLabel}}</el-button>
     </div>
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px">
-      <el-tree :render-after-expand="true" ref="tree" :expand-on-click-node="false" :render-content="renderTreeNode" node-key="id" :highlight-current="true" :default-expanded-keys="[-1]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
+      <el-tree :render-after-expand="true" ref="tree" :expand-on-click-node="false" :render-content="renderTreeNode" node-key="id" :highlight-current="true" :default-expanded-keys="['0']" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
       <div slot="footer" class="dialog-footer ">
         <span style="flex:1">
           <el-tooltip class="item" effect="light" content="创建者、超级管理员拥有企业的全局通讯录的管理权限。分级管理员只能管理相应的部分通讯录，并且其发消息等操作只能在其通讯录管理权限下进行。" placement="top-start">
