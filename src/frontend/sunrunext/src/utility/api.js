@@ -250,6 +250,11 @@ export default {
     return axios.put(url, param);
   },
 
+  async getProducts() {
+    var url = env.serverConfig.productsSegment;
+    return axios.get(url);
+  },
+
   async getConfig() {
     var url = env.serverConfig.configSegment;
     return axios.get(url);

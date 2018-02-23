@@ -4,11 +4,12 @@ var express = require("express");
 var orgModel = require('../db/org')
 var userModel = require('../db/user')
 var env = require('./env')
+var url = require('url');
 var router = express.Router();
 var accessToken = null;
 
-//从IAM同步组织架构
-async function syncIamUsers() {
+//刷新AccessToken
+async function refreshAccessToken() {
     var getAcessTokenUrl = `${env.iamConfig.service}/oauth2/token?grant_type=client_credentials&access_key=${env.iamConfig.access_key}&access_secret=${env.iamConfig.access_secret}&scope=SunrunIAM-api:*:*:*`
 
     var getAccessTokenRes = await rq({
@@ -18,6 +19,27 @@ async function syncIamUsers() {
 
     var getAcessTokenJO = JSON.parse(getAccessTokenRes);
     accessToken = getAcessTokenJO.access_token;
+}
+
+//获取产品列表
+async function getProductList() {
+    await refreshAccessToken();
+    var hostIp = url.parse(env.iamConfig.service).host;
+    var getProductListUrl = `${env.iamConfig.service}/product/list?access_token=${accessToken}&server_host=${hostIp}`;
+
+    var getProductListRes = await rq({
+        url: getProductListUrl,
+        rejectUnauthorized: false
+    });
+
+    var getProductListJO = JSON.parse(getProductListRes);
+    return getProductListJO.products;
+}
+
+
+//从IAM同步组织架构
+async function syncIamUsers() {
+    await refreshAccessToken();
     var getDomainListUrl = `${env.iamConfig.service}/domain/list?access_token=${accessToken}`;
 
     var getDomainListRes = await rq({
@@ -150,5 +172,6 @@ module.exports = {
     router,
     syncIamUsers,
     getDomainOrg,
-    getOrgOrUser
+    getOrgOrUser,
+    getProductList
 };

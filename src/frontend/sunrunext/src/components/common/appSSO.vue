@@ -12,12 +12,8 @@
       <el-dialog :close-on-click-modal=false title="设置应用单点登录" width="500px" :visible.sync="dialogVisible">
         <span>请选择该应用使用IAM单点登录时用到的产品：</span>
         <el-select style="width:100%" size="small" v-model="tempIamProductName" clearable placeholder="请选择产品">
-           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            </el-option>
+          <el-option v-for="item in products" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
         </el-select>
         <div slot="footer" class="dialog-footer ">
           <el-button @click="dialogVisible=false" size="small">取消</el-button>
@@ -30,34 +26,14 @@
 
 <script>
 import validator from "validator";
+import api from "../../utility/api";
 export default {
   data() {
     return {
       innerIamProductName: "",
       tempIamProductName: "",
       dialogVisible: false,
-      options: [
-        {
-          value: "sunrunvas",
-          label: "SunrunVas"
-        },
-        {
-          value: "sunruniaas",
-          label: "SunrunIaaS"
-        },
-        {
-          value: "sunrundfs",
-          label: "SunrunDFS"
-        },
-        {
-          value: "sunrunim",
-          label: "SunrunIM"
-        },
-        {
-          value: "sunrunpm",
-          label: "SunrunPM"
-        }
-      ]
+      products: []
     };
   },
   props: {
@@ -71,7 +47,20 @@ export default {
       this.innerIamProductName = this.iamProductName;
     }
   },
+  async mounted() {
+    await this.getProductList();
+  },
   methods: {
+    async getProductList() {
+      var data = await api.getProducts();
+      this.products = [];
+      data.forEach(i => {
+        this.products.push({
+          label: i.name,
+          value: i.name
+        });
+      });
+    },
     openDialog() {
       this.tempIamProductName = this.innerIamProductName;
       this.dialogVisible = true;

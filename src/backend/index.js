@@ -23,6 +23,7 @@ var v1_router_appSentMessageRecord = require('./routers/api/v1/appSentMessageRec
 var v1_router_config = require('./routers/api/v1/config');
 var v1_router_managerGroup = require('./routers/api/v1/managerGroup');
 var v1_router_appGroup = require('./routers/api/v1/appGroup');
+var v1_router_product = require('./routers/api/v1/product');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
@@ -97,6 +98,7 @@ app.use("/api/v1/", v1_router_appSentMessageRecord);
 app.use("/api/v1/", v1_router_config);
 app.use("/api/v1/", v1_router_managerGroup.router);
 app.use("/api/v1/", v1_router_appGroup);
+app.use("/api/v1/", v1_router_product);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
