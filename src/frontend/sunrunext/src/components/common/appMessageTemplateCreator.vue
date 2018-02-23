@@ -4,7 +4,7 @@
       <el-tab-pane name="text">
         <span slot="label" class="label">
           <i class="el-icon-custom-text icon"></i> 文字</span>
-        <textarea placeholder="直接开始输入..." maxlength="600" v-model="textMessageContext.content" />
+        <textarea placeholder="直接开始输入..." v-model="textMessageContext.content" />
       </el-tab-pane>
       <el-tab-pane name="news">
         <span slot="label" class="label">
@@ -302,6 +302,21 @@ export default {
       if (this.templateType) {
         this.activeName = this.templateType;
       }
+    },
+    "textMessageContext.content": function(newVal, oldVal) {
+      if (
+        this.textMessageContext.content &&
+        this.textMessageContext.content.length > 600
+      ) {
+        this.$message({
+          type: "error",
+          message: "最多输入600字"
+        });
+        this.textMessageContext.content = this.textMessageContext.content.slice(
+          0,
+          600
+        );
+      }
     }
   },
   mounted() {
@@ -568,11 +583,13 @@ export default {
         this.voiceMessageContext.duration = selectedTemplate.data.duration;
       } else if (this.activeName == "video") {
         this.videoMessageContext.mediaId = selectedTemplate.data.mediaId;
-        this.videoMessageContext.thumbMediaId = selectedTemplate.data.thumbMediaId;
+        this.videoMessageContext.thumbMediaId =
+          selectedTemplate.data.thumbMediaId;
         this.videoMessageContext.title = selectedTemplate.data.title;
         this.videoMessageContext.abstract = selectedTemplate.data.abstract;
         this.videoMessageContext.mediaUrl = selectedTemplate.data.mediaUrl;
-        this.videoMessageContext.thumbMediaUrl = selectedTemplate.data.thumbMediaUrl;
+        this.videoMessageContext.thumbMediaUrl =
+          selectedTemplate.data.thumbMediaUrl;
       } else if (this.activeName == "file") {
         this.videoMessageContext.mediaId = selectedTemplate.data.mediaId;
         this.videoMessageContext.fileSize = selectedTemplate.data.fileSize;
@@ -592,7 +609,7 @@ export default {
   padding-right: 15px;
   padding-bottom: 15px;
   background: #fbfbfb;
-  min-height: 300px;
+  min-height: 270px;
 }
 
 .icon {
@@ -622,7 +639,7 @@ textarea {
   resize: none;
   width: 100%;
   height: 100%;
-  height: 240px;
+  height: 200px;
   word-break: break-all;
   color: @color-font-minor;
   outline: none;
@@ -640,7 +657,8 @@ textarea::-webkit-input-placeholder {
   float: left;
   border: 1px solid @color-border-level2;
   border-radius: 5px;
-  padding: 95px;
+  width: 270px;
+  height: 210px;
   font-size: 14px;
   background: white;
   color: @color-theme;
