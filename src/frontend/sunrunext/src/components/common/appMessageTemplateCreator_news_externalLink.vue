@@ -6,7 +6,7 @@
       </div>
       <div class="editItemContainer">
         <span class="text-font-minor">
-          <img :src="editingNew.mediaUrl" style="width:120px;height:60px;" v-show="editingNew.mediaId" />
+          <img :src="editingNew.mediaId|getMediaLink" style="width:120px;height:60px;" v-show="editingNew.mediaId" />
           <el-upload :show-file-list="false" :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl">
             <el-button type="text" class="button-link" style="margin-right:10px;">{{editingNew.mediaId?"更改":"添加封面图"}}</el-button>
           </el-upload>
@@ -36,7 +36,7 @@
           </div>
           <div class="main-new-media" style="position:relative">
             <div class="main-new-media-placeholder" v-show="!item.mediaId" />
-            <img :src="item.mediaUrl" style="width:250px;height:125px" v-show="item.mediaId">
+            <img :src="item.mediaId|getMediaLink" style="width:250px;height:125px" v-show="item.mediaId">
             <div class="text-font-normal main-new-title-overConver" v-if="tempNews.length>1">
               {{item.title?item.title:'标题'}}
             </div>
@@ -51,7 +51,7 @@
           </div>
           <div style="">
             <div class="main-new-media-placeholder" style="width:40px;height:40px;min-height:40px" v-show="!item.mediaId" />
-            <img :src="item.mediaUrl" style="width:40px;height:40px" v-show="item.mediaId">
+            <img :src="item.mediaId|getMediaLink" style="width:40px;height:40px" v-show="item.mediaId">
           </div>
         </div>
         <div class="flexDiv-h new-tool">
@@ -71,17 +71,17 @@
 <script>
 import api from "../../utility/api";
 import helper from "../../utility/helper";
+import upload from "../mixin/upload";
 export default {
+  mixins: [upload],
   data() {
     return {
       editingNew: {
         mediaId: null,
-        mediaUrl: null,
         title: null,
         abstract: null,
         link: null
       },
-      uploadUrl: api.fileTransferUrl,
       tempNews: [],
       isUploading: false
     };
@@ -119,9 +119,6 @@ export default {
     handleCoverSuccess(res, file) {
       this.isUploading = false;
       this.editingNew.mediaId = res.data;
-      this.editingNew.mediaUrl = `${api.fileTransferUrl}/${
-        this.editingNew.mediaId
-      }`;
     },
     beforeCoverUpload(file) {
       console.log(file.type);

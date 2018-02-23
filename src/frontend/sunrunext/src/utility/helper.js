@@ -1,4 +1,5 @@
 import validator from "validator";
+import api from "./api";
 
 export default {
   isUrl(url) {
@@ -22,5 +23,17 @@ export default {
       newobj[attr] = this.deepCopy(obj[attr]);
     }
     return newobj;
+  },
+
+  getMediaLink(mediaId) {
+    return `${api.fileTransferUrl}/${mediaId}`
+  },
+
+  getVideoMediaLink(mediaId) {
+    return `${api.fileTransferUrl_video}/${mediaId}`
+  },
+
+  getAudioMediaLink(mediaId) {
+    return `${api.fileTransferUrl_audio}/${mediaId}`
   }
 }

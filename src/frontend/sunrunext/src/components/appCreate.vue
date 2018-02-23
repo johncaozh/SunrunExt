@@ -10,7 +10,7 @@
         <el-form-item label="应用Logo" :rules="[ { required: true, message: '产品Logo不能为空'}] " prop="avatar">
           <div class="avatar-container">
             <el-upload class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-              <img v-if="logoUrl" :src="logoUrl" class="avatar">
+              <img v-if="form.avatar" :src="form.avatar|getMediaLink" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
             <span class="minorText" style="margin-left:10px;font-size:12px;color:@color-font-minor">
@@ -43,7 +43,9 @@
 import subHeader from "./common/subHeader";
 import api from "../utility/api";
 import contractSelector from "./common/contractSelector";
+import upload from "./mixin/upload";
 export default {
+  mixins: [upload],
   data() {
     var checkRules = (rule, value, callback) => {
       if (this.form.iamUserIds.length == 0 && this.form.iamOrgIds.length == 0) {
@@ -75,8 +77,6 @@ export default {
         iamUserIds: [],
         iamOrgIds: []
       },
-      logoUrl: null,
-      uploadUrl: api.fileTransferUrl
     };
   },
   components: {
@@ -86,7 +86,6 @@ export default {
 
   methods: {
     handleAvatarSuccess(res, file) {
-      this.logoUrl = `${api.fileTransferUrl}/${res.data}`;
       this.form.avatar = res.data;
     },
     beforeAvatarUpload(file) {

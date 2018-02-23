@@ -5,7 +5,7 @@
         <span class="text-font-normal item-header">企业Logo</span>
         <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
           <div class="flexDiv-v div-uploader">
-            <img v-if="logoUrl" :src="logoUrl" class="img-log">
+            <img v-if="config.enterpriseLogoMediaId" :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log">
             <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
           </div>
           <div slot="tip" class="text-font-minor">推荐尺寸702*180</div>
@@ -45,22 +45,13 @@
 <script>
 import platformConfig from "../mixin/platformConfig";
 import api from "../../utility/api";
+import upload from "../mixin/upload.js";
 export default {
-  mixins: [platformConfig],
+  mixins: [platformConfig, upload],
   data() {
     return {
-      logoUrl: null,
-      uploadUrl: api.fileTransferUrl,
       orgArr: []
     };
-  },
-  watch: {
-    config() {
-      if (this.config && this.config.enterpriseLogoMediaId)
-        this.logoUrl = `${api.fileTransferUrl}/${
-          this.config.enterpriseLogoMediaId
-        }`;
-    }
   },
   computed: {
     orgCount() {
@@ -98,7 +89,6 @@ export default {
       await api.getConfig();
     },
     handleLogoSuccess(res, file) {
-      this.logoUrl = `${api.fileTransferUrl}/${res.data}`;
       this.config.enterpriseLogoMediaId = res.data;
     },
     beforeLogoUpload(file) {

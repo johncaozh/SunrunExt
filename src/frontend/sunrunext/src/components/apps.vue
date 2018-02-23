@@ -4,14 +4,14 @@
     <div id="apps">
       <el-card class="app" v-for="(item, index) in apps" v-bind:key="index" body-style="padding:10px" @click.native="$router.push('/apps/'+item._id+'/detail')">
         <div style="display:flex;align-items:center">
-          <img style="width:40px;height:40px" :src="item.logoUrl"/>
+          <img style="width:40px;height:40px" :src="item.avatar|getMediaLink" />
           <span style="margin-left:10px">{{item.name}}</span>
         </div>
       </el-card>
       <el-card class="app" body-style="padding:10px" @click.native="$router.push('/apps/create')">
         <div style="display:flex;align-items:center">
-          <div style="width:40px;height:40px;border:1px solid #C0C0C0;display:flex;justify-content:center;align-items:center;color:#C0C0C0" >
-            <i class="el-icon-plus" style="font-size:24px"/>
+          <div style="width:40px;height:40px;border:1px solid #C0C0C0;display:flex;justify-content:center;align-items:center;color:#C0C0C0">
+            <i class="el-icon-plus" style="font-size:24px" />
           </div>
           <span class="name" style="margin-left:10px;color:@color-theme">添加应用</span>
         </div>
@@ -34,9 +34,6 @@ export default {
   },
   async mounted() {
     var res = await api.getApps();
-    res.forEach(app => {
-      app.logoUrl = `${api.fileTransferUrl}/${app.avatar}`;
-    });
     this.apps = res;
   }
 };

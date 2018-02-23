@@ -18,7 +18,7 @@
                 </div>
                 <div class="main-new-media" style="position:relative">
                   <div class="main-new-media-placeholder" v-show="!item.mediaId" />
-                  <img :src="item.mediaUrl" style="width:250px;height:125px" v-show="item.mediaId">
+                  <img :src="item.mediaId|getMediaLink" style="width:250px;height:125px" v-show="item.mediaId">
                   <div class="text-font-normal main-new-title-overConver" v-if="newsMessageContext.news.length>1">
                     {{item.title?item.title:'标题'}}
                   </div>
@@ -33,7 +33,7 @@
                 </div>
                 <div style="">
                   <div class="main-new-media-placeholder" style="width:40px;height:40px;min-height:40px" v-show="!item.mediaId" />
-                  <img :src="item.mediaUrl" style="width:40px;height:40px" v-show="item.mediaId">
+                  <img :src="item.mediaId|getMediaLink" style="width:40px;height:40px" v-show="item.mediaId">
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="main-new-media" style="position:relative">
                   <div class="main-new-media-placeholder" v-show="!item.mediaId" />
-                  <img :src="item.mediaUrl" style="width:250px;height:125px" v-show="item.mediaId">
+                  <img :src="item.mediaId|getMediaLink" style="width:250px;height:125px" v-show="item.mediaId">
                   <div class="text-font-normal main-new-title-overConver" v-if="externalLinkNewsMessageContext.news.length>1">
                     {{item.title?item.title:'标题'}}
                   </div>
@@ -79,7 +79,7 @@
                 </div>
                 <div style="">
                   <div class="main-new-media-placeholder" style="width:40px;height:40px;min-height:40px" v-show="!item.mediaId" />
-                  <img :src="item.mediaUrl" style="width:40px;height:40px" v-show="item.mediaId">
+                  <img :src="item.mediaId|getMediaLink" style="width:40px;height:40px" v-show="item.mediaId">
                 </div>
               </div>
             </div>
@@ -102,15 +102,15 @@
         <span slot="label" class="label">
           <i class="el-icon-custom-photo icon"></i> 图片</span>
         <div>
-          <div v-if="photoMessageContext.imageUrl" style="align-items:flex-end">
+          <div v-if="photoMessageContext.mediaId" style="align-items:flex-end">
             <div class="boder" style="padding:10px">
-              <img :src="photoMessageContext.imageUrl" style="max-width:300px;max-height:300px;">
+              <img :src="photoMessageContext.mediaId|getMediaLink" style="max-width:300px;max-height:300px;">
               <el-button type="text" class="button-link" size="small" @click="cleanPhotoMessageContext">删除</el-button>
             </div>
           </div>
           <div class="flexDiv-h" style="align-items:center" v-else>
             <el-upload class="avatar-uploader" :action="uploadUrl" :show-file-list="false" :on-success="handlePhotoSuccess" :before-upload="beforePhotoUpload" v-loading="photoMessageContext.isUploading">
-              <img v-if="photoMessageContext.imageUrl" :src="photoMessageContext.imageUrl" class="avatar">
+              <img v-if="photoMessageContext.mediaId" :src="photoMessageContext.mediaId|getMediaLink" class="avatar">
               <div class="flexDiv-v border" v-else>
                 <i class="el-icon-plus icon-plus "></i>
                 添加图片
@@ -133,7 +133,7 @@
                 <span>{{voiceMessageContext.fileName}}</span>
                 <span class="text-font-minor">{{voiceMessageContext.duration}}"</span>
               </div>
-              <audio :src="voiceMessageContext.mediaUrl" ref="voicePlayer" style="width:200px;height:40px;" />
+              <audio :src="voiceMessageContext.mediaId|getMediaLink" ref="voicePlayer" style="width:200px;height:40px;" />
             </div>
             <el-button type="text" style="margin-left:10px;" class="button-link" size="small" @click="cleanVoiceMessageContext">删除</el-button>
           </div>
@@ -157,7 +157,7 @@
               {{videoMessageContext.title}}
             </div>
             <div class="video-preview-media" style="position:relative">
-              <img :src="videoMessageContext.thumbMediaUrl" style="width:250px">
+              <img :src="videoMessageContext.thumbMediaId|getMediaLink" style="width:250px">
             </div>
             <div class="text-font-minor video-preview-abstract" style="line-height:16px">
               {{videoMessageContext.abstract}}
@@ -221,7 +221,10 @@ import appMessageTemplateCreator_video from "./appMessageTemplateCreator_video";
 import appMessageTemplateCreator_news from "./appMessageTemplateCreator_news";
 import appMessageTemplateCreator_news_externalLink from "./appMessageTemplateCreator_news_externalLink";
 import appMessageTemplateMaterial from "./appMessageTemplateMaterial";
+import upload from "../mixin/upload";
+import helper from "../../utility/helper";
 export default {
+  mixins: [upload],
   data() {
     return {
       activeName: "text",
@@ -230,30 +233,25 @@ export default {
       },
       photoMessageContext: {
         isUploading: false,
-        imageUrl: null,
         mediaId: null
       },
       voiceMessageContext: {
         isUploading: false,
         mediaId: null, //amr媒体ID
         duration: 0, //秒为单位
-        fileName: null,
-        mediaUrl: null
+        fileName: null
       },
       fileMessageContext: {
         isUploading: false,
         mediaId: null,
         fileSize: 0, //秒为单位
-        fileName: null,
-        mediaUrl: null
+        fileName: null
       },
       videoMessageContext: {
         mediaId: null,
         thumbMediaId: null,
         title: null,
         abstract: null,
-        mediaUrl: null,
-        thumbMediaUrl: null,
         isDialogVisible: false
       },
       newsMessageContext: {
@@ -266,9 +264,7 @@ export default {
       },
       messageTemplateMaterialContext: {
         isDialogVisible: false
-      },
-      uploadUrl: api.fileTransferUrl,
-      uploadUrl_audio: api.fileTransferUrl_audio
+      }
     };
   },
 
@@ -303,6 +299,9 @@ export default {
         this.activeName = this.templateType;
       }
     },
+    template() {
+      this.resetTemplate();
+    },
     "textMessageContext.content": function(newVal, oldVal) {
       if (
         this.textMessageContext.content &&
@@ -320,46 +319,41 @@ export default {
     }
   },
   mounted() {
-    if (this.template) {
-      this.activeName = this.template.type;
-
-      if (this.activeName == "text") {
-        this.textMessageContext.content = this.template.data.content;
-      } else if (this.activeName == "news") {
-        this.newsMessageContext.news = this.template.data.news;
-      } else if (this.activeName == "externalLinkNews") {
-        this.externalLinkNewsMessageContext.news = this.template.data.news;
-      } else if (this.activeName == "photo") {
-        this.photoMessageContext.mediaId = this.template.data.mediaId;
-        this.photoMessageContext.imageUrl = this.template.data.imageUrl;
-      } else if (this.activeName == "voice") {
-        this.voiceMessageContext.mediaId = this.template.data.mediaId;
-        this.voiceMessageContext.mediaUrl = this.template.data.mediaUrl;
-        this.voiceMessageContext.fileName = this.template.data.fileName;
-        this.voiceMessageContext.duration = this.template.data.duration;
-      } else if (this.activeName == "video") {
-        this.videoMessageContext.mediaId = this.template.data.mediaId;
-        this.videoMessageContext.thumbMediaId = this.template.data.thumbMediaId;
-        this.videoMessageContext.title = this.template.data.title;
-        this.videoMessageContext.abstract = this.template.data.abstract;
-        this.videoMessageContext.mediaUrl = this.template.data.mediaUrl;
-        this.videoMessageContext.thumbMediaUrl = this.template.data.thumbMediaUrl;
-      } else if (this.activeName == "file") {
-        this.videoMessageContext.mediaId = this.template.data.mediaId;
-        this.videoMessageContext.fileSize = this.template.data.fileSize;
-        this.videoMessageContext.fileName = this.template.data.fileName;
-        this.videoMessageContext.mediaUrl = this.template.data.mediaUrl;
-      }
-    }
+    this.resetTemplate();
   },
 
   methods: {
+    resetTemplate() {
+      if (this.template) {
+        this.activeName = this.template.type;
+
+        if (this.activeName == "text") {
+          this.textMessageContext.content = this.template.data.content;
+        } else if (this.activeName == "news") {
+          this.newsMessageContext.news = this.template.data.news;
+        } else if (this.activeName == "externalLinkNews") {
+          this.externalLinkNewsMessageContext.news = this.template.data.news;
+        } else if (this.activeName == "photo") {
+          this.photoMessageContext.mediaId = this.template.data.mediaId;
+        } else if (this.activeName == "voice") {
+          this.voiceMessageContext.mediaId = this.template.data.mediaId;
+          this.voiceMessageContext.fileName = this.template.data.fileName;
+          this.voiceMessageContext.duration = this.template.data.duration;
+        } else if (this.activeName == "video") {
+          this.videoMessageContext.mediaId = this.template.data.mediaId;
+          this.videoMessageContext.thumbMediaId = this.template.data.thumbMediaId;
+          this.videoMessageContext.title = this.template.data.title;
+          this.videoMessageContext.abstract = this.template.data.abstract;
+        } else if (this.activeName == "file") {
+          this.videoMessageContext.mediaId = this.template.data.mediaId;
+          this.videoMessageContext.fileSize = this.template.data.fileSize;
+          this.videoMessageContext.fileName = this.template.data.fileName;
+        }
+      }
+    },
     handlePhotoSuccess(res, file) {
       this.photoMessageContext.isUploading = false;
       this.photoMessageContext.mediaId = res.data;
-      this.photoMessageContext.imageUrl = `${api.fileTransferUrl}/${
-        this.photoMessageContext.mediaId
-      }`;
     },
     beforePhotoUpload(file) {
       const isvalidPhoto =
@@ -384,16 +378,13 @@ export default {
     },
     cleanPhotoMessageContext() {
       this.photoMessageContext.isUploading = false;
-      this.photoMessageContext.imageUrl = null;
+      this.photoMessageContext.mediaId = null;
     },
     handleVoiceSuccess(res, file) {
       this.voiceMessageContext.isUploading = false;
       this.voiceMessageContext.fileName = file.name;
       this.voiceMessageContext.mediaId = res.data.mediaId;
       this.voiceMessageContext.duration = res.data.duration;
-      this.voiceMessageContext.mediaUrl = `${api.fileTransferUrl}/${
-        this.voiceMessageContext.mediaId
-      }`;
     },
     handleVoiceError(err, file, fileList) {
       this.voiceMessageContext.isUploading = false;
@@ -439,9 +430,6 @@ export default {
       this.fileMessageContext.fileName = file.name;
       this.fileMessageContext.mediaId = res.data;
       this.fileMessageContext.fileSize = file.size;
-      this.fileMessageContext.mediaUrl = `${api.fileTransferUrl}/${
-        this.fileMessageContext.mediaId
-      }`;
     },
     handleFileError(err, file, fileList) {
       this.voiceMessageContext.isUploading = false;
@@ -463,7 +451,7 @@ export default {
     },
     downloadFile() {
       var a = document.createElement("a");
-      a.href = this.fileMessageContext.mediaUrl;
+      a.href = helper.getMediaLink(this.fileMessageContext.mediaId);
       a.click();
     },
     editVideoTemplate() {
@@ -477,8 +465,6 @@ export default {
       this.videoMessageContext.thumbMediaId = this.$refs.videoEditor.thumbMediaId;
       this.videoMessageContext.title = this.$refs.videoEditor.title;
       this.videoMessageContext.abstract = this.$refs.videoEditor.abstract;
-      this.videoMessageContext.mediaUrl = this.$refs.videoEditor.mediaUrl;
-      this.videoMessageContext.thumbMediaUrl = this.$refs.videoEditor.thumbMediaUrl;
       this.videoMessageContext.isDialogVisible = false;
     },
     editExternalLinkNewsTemplate() {
@@ -575,10 +561,8 @@ export default {
         this.externalLinkNewsMessageContext.news = this.template.data.news;
       } else if (this.activeName == "photo") {
         this.photoMessageContext.mediaId = selectedTemplate.data.mediaId;
-        this.photoMessageContext.imageUrl = selectedTemplate.data.imageUrl;
       } else if (this.activeName == "voice") {
         this.voiceMessageContext.mediaId = selectedTemplate.data.mediaId;
-        this.voiceMessageContext.mediaUrl = selectedTemplate.data.mediaUrl;
         this.voiceMessageContext.fileName = selectedTemplate.data.fileName;
         this.voiceMessageContext.duration = selectedTemplate.data.duration;
       } else if (this.activeName == "video") {
@@ -587,14 +571,10 @@ export default {
           selectedTemplate.data.thumbMediaId;
         this.videoMessageContext.title = selectedTemplate.data.title;
         this.videoMessageContext.abstract = selectedTemplate.data.abstract;
-        this.videoMessageContext.mediaUrl = selectedTemplate.data.mediaUrl;
-        this.videoMessageContext.thumbMediaUrl =
-          selectedTemplate.data.thumbMediaUrl;
       } else if (this.activeName == "file") {
         this.videoMessageContext.mediaId = selectedTemplate.data.mediaId;
         this.videoMessageContext.fileSize = selectedTemplate.data.fileSize;
         this.videoMessageContext.fileName = selectedTemplate.data.fileName;
-        this.videoMessageContext.mediaUrl = this.template.data.mediaUrl;
       }
 
       this.messageTemplateMaterialContext.isDialogVisible = false;
@@ -609,7 +589,7 @@ export default {
   padding-right: 15px;
   padding-bottom: 15px;
   background: #fbfbfb;
-  min-height: 270px;
+  min-height: 280px;
 }
 
 .icon {

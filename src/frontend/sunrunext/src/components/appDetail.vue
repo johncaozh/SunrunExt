@@ -6,10 +6,10 @@
         <div class="flexDiv-v">
           <div class="flexDiv-h app-basic" style="align-items:flex-start">
             <el-upload v-if="isEditingNameDesc" class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-              <img v-if="editingLogoUrl" :src="editingLogoUrl" class="avatar">
+              <img v-if="editingAvatar" :src="editingAvatar|getMediaLink" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
-            <img style="width:60px;height:60px" :src="appDetail.logoUrl" v-else />
+            <img style="width:60px;height:60px" :src="appDetail.avatar|getMediaLink" v-else />
             <el-collapse-transition>
               <div v-show="isEditingNameDesc" style="margin-left:20px;">
                 <el-input v-model="editingName" placeholder="在此输入应用名称" size="small" />
@@ -81,7 +81,9 @@ import appSSO from "./common/appSSO";
 import subHeader from "./common/subHeader";
 import api from "../utility/api";
 import contractSelector from "./common/contractSelector";
+import upload from "./mixin/upload";
 export default {
+  mixins: [upload],
   data() {
     return {
       appId: null,
@@ -89,11 +91,9 @@ export default {
       isEditingNameDesc: false,
       editingName: null,
       editingDesc: null,
-      editingLogoUrl: null,
       editingAvatar: null,
       isEditingOrgs: false,
-      editingOrgs: [],
-      uploadUrl: api.fileTransferUrl
+      editingOrgs: []
     };
   },
   components: {
@@ -128,10 +128,6 @@ export default {
     },
     async refreshAppDetail() {
       this.appDetail = await api.getAppDetail(this.appId);
-      this.appDetail.logoUrl = `${api.fileTransferUrl}/${
-        this.appDetail.avatar
-      }`;
-
       this.editingOrgs = this.appDetail.orgs;
     },
     async appEnableChanged(value) {
@@ -235,7 +231,6 @@ export default {
     editAppNameDesc() {
       this.editingName = this.appDetail.name;
       this.editingDesc = this.appDetail.desc;
-      this.editingLogoUrl = this.appDetail.logoUrl;
       this.editingAvatar = this.appDetail.avatar;
       this.isEditingNameDesc = true;
     },
@@ -264,7 +259,6 @@ export default {
       });
     },
     handleAvatarSuccess(res, file) {
-      this.editingLogoUrl = `${api.fileTransferUrl}/${res.data}`;
       this.editingAvatar = res.data;
     },
     beforeAvatarUpload(file) {

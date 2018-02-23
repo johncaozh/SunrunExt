@@ -7,7 +7,7 @@
           <el-popover ref="popover1" placement="bottom-start" trigger="click">
             <iphone>
               <div class="flexDiv-v" style="align-items:center">
-                <img v-if="logoUrl" :src="logoUrl" class="img-log" style="margin-top:80px">
+                <img v-if="config.enterpriseLogoMediaId" :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log" style="margin-top:80px">
                 <div class="div-enterpriseName">{{config.enterpriseName}}</div>
                 <div class="div-client">融合客户端</div>
               </div>
@@ -20,14 +20,14 @@
           <el-radio @change="valueChanged" v-model="config.clientSplashScreenMode" label="2">自定义</el-radio>
           <el-upload style="margin-left:20px" :action="uploadUrl" :show-file-list="false" :on-success="handleSplashSuccess" :before-upload="beforeSplashUpload">
             <div class="flexDiv-v div-uploader">
-              <img v-if="splashScreenUrl" :src="splashScreenUrl" class="img-splash">
+              <img v-if="config.clientSplashScreenMediaId" :src="config.clientSplashScreenMediaId|getMediaLink" class="img-splash">
               <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>
             </div>
             <div slot="tip" class="text-font-minor">推荐尺寸450*800</div>
           </el-upload>
           <el-popover ref="popover2" placement="bottom-start" trigger="click">
             <iphone>
-              <img :src="splashScreenUrl" class="img-splash-preview" />
+              <img :src="config.clientSplashScreenMediaId|getMediaLink" class="img-splash-preview" />
             </iphone>
           </el-popover>
           <el-button v-popover:popover2 size="small" type="text" class="button-link" style="padding:0px;margin-left:10px">预览</el-button>
@@ -70,33 +70,12 @@ import platformConfig from "../mixin/platformConfig";
 import api from "../../utility/api";
 import iphone from "./iphone";
 import appGroupLayout from "./appGroupLayout";
+import upload from "../mixin/upload";
 export default {
-  mixins: [platformConfig],
-  data() {
-    return {
-      logoUrl: null,
-      splashScreenUrl: null,
-      uploadUrl: api.fileTransferUrl
-    };
-  },
+  mixins: [platformConfig, upload],
   components: {
     iphone,
     appGroupLayout
-  },
-  watch: {
-    config() {
-      if (this.config)
-        if (this.config.enterpriseLogoMediaId) {
-          this.logoUrl = `${api.fileTransferUrl}/${
-            this.config.enterpriseLogoMediaId
-          }`;
-          if (this.config.clientSplashScreenMediaId) {
-            this.splashScreenUrl = `${api.fileTransferUrl}/${
-              this.config.clientSplashScreenMediaId
-            }`;
-          }
-        }
-    }
   },
   methods: {
     async valueChanged(value) {
@@ -104,7 +83,6 @@ export default {
       await api.getConfig();
     },
     async handleSplashSuccess(res, file) {
-      this.splashScreenUrl = `${api.fileTransferUrl}/${res.data}`;
       this.config.clientSplashScreenMediaId = res.data;
       await api.updateConfig(this.config);
     },

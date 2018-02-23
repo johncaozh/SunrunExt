@@ -2,14 +2,14 @@
   <div class="flexDiv-h" style="align-items:center">
     <span v-if="selectedApp" class="text-font-normal">应用名称：</span>
     <div class="flexDiv-h div-app-selected" v-if="selectedApp">
-      <img :src="selectedApp.logoUrl" class="app-logo-selected" />
+      <img :src="selectedApp.avatar|getMediaLink" class="app-logo-selected" />
       <span class="app-name-selected">{{selectedApp.name}}</span>
     </div>
     <el-button class="button-link" type="text" @click="showDialog">{{selectedApp?"修改":emptyLabel}}</el-button>
     <el-dialog :title="emptyLabel" width="618px" :visible.sync="dialogVisible" style="padding:0px">
       <div class="flexDiv-h div-app-container">
         <div v-for="(item,index) in apps" :key="index" class="flexDiv-h div-app" @click="selectApp(item)">
-          <img :src="item.logoUrl" class="app-logo" />
+          <img :src="item.avatar|getMediaLink" class="app-logo" />
           <span class="app-name">{{item.name}}</span>
           <div class="div-selected" :style="{display:tempSelectedApp==item?'flex':'none'}">
             <div class="div-white " />
@@ -52,9 +52,6 @@ export default {
       if (this.loading) return;
 
       var res = await api.getApps();
-      res.forEach(app => {
-        app.logoUrl = `${api.fileTransferUrl}/${app.avatar}`;
-      });
       this.apps = res;
       this.loading = false;
     },

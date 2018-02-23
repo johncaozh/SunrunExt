@@ -1,10 +1,11 @@
 <template>
   <div class="flexDiv-v customScroll div-app-container">
-    <div v-for="(item,index) in apps" :key="index" class="flexDiv-h div-app" @click="selectApp(item)" :style="{background:item==selectedApp?'#2f5981':'transparent'}">
+    <div v-if="apps.length" v-for="(item,index) in apps" :key="index" class="flexDiv-h div-app" @click="selectApp(item)" :style="{background:item==selectedApp?'#2f5981':'transparent'}">
       <span v-if="item._id=='-1'" class="item-icon app-logo" style="background-position: -152px -794px;"></span>
-      <img v-lazy="item.logoUrl" class="app-logo" v-else/>
+      <img v-lazy="item.avatar|getMediaLink" class="app-logo" v-else/>
       <span class="app-name" :style="{color:item==selectedApp?'white':'black'}">{{item.name}}</span>
     </div>
+    <div v-else class="text-font-normal" style="align-self:center">当前没有应用</div>
   </div>
 </template>
 
@@ -39,7 +40,6 @@ export default {
         }
 
         res.forEach(app => {
-          app.logoUrl = `${api.fileTransferUrl}/${app.avatar}`;
           this.apps.push(app);
         });
       }

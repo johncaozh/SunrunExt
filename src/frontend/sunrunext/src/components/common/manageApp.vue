@@ -6,7 +6,7 @@
         <div class="text-font-minor">具有管理权限</div>
         <div class="flexDiv-h" style="flex:1;flex-wrap:wrap;margin-top:10px">
           <div class="flexDiv-h div-app-selected" style="padding:2px;align-items:center" v-for="(item,index) in fullPermissionApps" :key="index">
-            <img v-lazy="item.logoUrl" class="app-logo" />
+            <img :src="item.avatar|getMediaLink" class="app-logo" />
             <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
           </div>
         </div>
@@ -15,7 +15,7 @@
         <div class="text-font-minor">仅具有发消息权限</div>
         <div class="flexDiv-h" style="flex:1;flex-wrap:wrap;margin-top:10px">
           <div class="flexDiv-h div-app-selected" style="padding:2px;align-items:center" v-for="(item,index) in sendMessagePermissionApps" :key="index">
-            <img v-lazy="item.logoUrl" class="app-logo" />
+            <img :src="item.avatar|getMediaLink" class="app-logo" />
             <span style="flex:1" class="contract-name-selected">{{item.name}}</span>
           </div>
         </div>
@@ -25,7 +25,7 @@
     <el-dialog :title="emptyLabel" width="600px" :visible.sync="dialogVisible" style="padding:0px;">
       <div class="flexDiv-v customScroll">
         <div class="flexDiv-h div-app" v-for="(item,index) in apps" :key="index">
-          <img v-lazy="item.logoUrl" class="app-logo" />
+          <img :src="item.avatar|getMediaLink" class="app-logo" />
           <span class="app-name" style="flex:1">{{item.name}}</span>
           <el-checkbox :disabled="item.fullPermission" v-model="item.sendMessagePermission">发消息</el-checkbox>
           <el-checkbox v-model="item.fullPermission" @change="fullPermissionChanged(item)">管理</el-checkbox>
@@ -133,7 +133,6 @@ export default {
       if (this.loading) return;
       var apps = await api.getApps();
       apps.forEach(i => {
-        i.logoUrl = `${api.fileTransferUrl}/${i.avatar}`;
         i.sendMessagePermission = false;
         i.fullPermission = false;
       });

@@ -17,7 +17,7 @@
         <div class="flexDiv-v">
           <el-input :disabled="selectAllOrgs" placeholder="搜索成员、部门" prefix-icon="el-icon-search" size="mini" v-model="filterText">
           </el-input>
-          <el-tree :render-after-expand="true" :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="true" @node-click="nodeClick" :default-expanded-keys="[0]" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
+          <el-tree :render-after-expand="true" :disabled="selectAllOrgs" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false" :render-content="renderTreaNode" node-key="id" :highlight-current="true" @node-click="nodeClick" :default-expanded-keys="['0']" :data="orgs" :props="defaultProps" class="tree customScroll"></el-tree>
         </div>
         <div class="flexDiv-v div-tempSelectedOrg">
           <div class="text-font-normal" style="margin-top:3px;margin-bottom:12px">
@@ -240,7 +240,6 @@ export default {
     renderTreaNode(h, { node, data, store }) {
       var iconClass =
         data.type == "org" ? "el-icon-custom-group" : "el-icon-custom-people";
-      var selectedIconStyle = data.selected ? "display:block" : "display:none";
       return (
         <span style="flex:1;display:flex;align-items:center;font-size:14px;padding-right:8px;">
           <i
@@ -248,7 +247,10 @@ export default {
             style="color:#3E6A8F;margin-right:5px;font-size:18px"
           />
           <span>{node.label}</span>
-          <i class="el-icon-check" style={selectedIconStyle} />
+          <i
+            class="el-icon-check"
+            style={{ display: data.selected ? "block" : "none" }}
+          />
         </span>
       );
     },

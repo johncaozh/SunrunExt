@@ -16,7 +16,7 @@
         </div>
         <div class="flexDiv-v" v-if="item.apps.length>0" :class="{'div-apps-container-grid':appsLayoutMode==2}">
           <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app" :class="{ 'div-app-grid': appsLayoutMode==2 }">
-            <img v-lazy="app.logoUrl" class="app-logo" :class="{'img-app-icon-grid':appsLayoutMode==2}" />
+            <img :src="app.avatar|getMediaLink" class="app-logo" :class="{'img-app-icon-grid':appsLayoutMode==2}" />
             <span class="app-name">{{app.name}}</span>
           </div>
         </div>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="flexDiv-v" :class="{'div-apps-container-grid':appsLayoutMode==2}">
                   <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app-iphone" :class="{ 'div-app-iphone-grid': appsLayoutMode==2 }" :style="{padding:appsLayoutMode==1?'10px':'0px'}">
-                    <img v-lazy="app.logoUrl" class="app-logo" :class="{'img-app-icon-iphone-grid':appsLayoutMode==2}" />
+                    <img :src="app.avatar|getMediaLink" class="app-logo" :class="{'img-app-icon-iphone-grid':appsLayoutMode==2}" />
                     <span :class="{'div-app-name-iphone-grid':appsLayoutMode==2,'app-name':appsLayoutMode==1}">{{app.name}}</span>
                   </div>
                 </div>
@@ -59,7 +59,7 @@
             </div>
             <div class="flexDiv-v">
               <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app-dialog" @click="clickApp(app,item)">
-                <img v-lazy="app.logoUrl" class="app-logo" />
+                <img :src="app.avatar|getMediaLink" class="app-logo" />
                 <span class="app-name" style="flex:1">{{app.name}}</span>
               </div>
             </div>
@@ -75,7 +75,7 @@
           </div>
           <div class="flexDiv-v">
             <div v-for="(app,index) in selectedApps" :key="index" class="flexDiv-h div-app-dialog-selected ">
-              <img v-lazy="app.logoUrl" class="app-logo" />
+              <img :src="app.avatar|getMediaLink" class="app-logo" />
               <span class="app-name" style="flex:1">{{app.name}}</span>
               <i class="el-icon-close icon-operate" @click="removeApp(app)" />
             </div>
@@ -129,14 +129,6 @@ export default {
       this.sourceApps = await api.getApps();
       this.processGroups = await api.getAppGroups();
       this.processApps = await api.getApps();
-
-      this.sourceApps.forEach(i => {
-        i.logoUrl = `${api.fileTransferUrl}/${i.avatar}`;
-      });
-
-      this.processApps.forEach(i => {
-        i.logoUrl = `${api.fileTransferUrl}/${i.avatar}`;
-      });
 
       this.processGroups.forEach(i => {
         i.apps = this.processApps.filter(j => j.groupId === i._id);

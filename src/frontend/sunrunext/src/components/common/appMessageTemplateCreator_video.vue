@@ -6,8 +6,8 @@
       </div>
       <div class="editItemContainer">
         <span class="text-font-minor">
-          <img :src="thumbMediaUrl" style="width:100px" v-show="mediaId" />
-          <el-upload :show-file-list="false" :on-success="handleVideoSuccess" :before-upload="beforeVideoUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl">
+          <img :src="thumbMediaId|getMediaLink" style="width:100px" v-show="mediaId" />
+          <el-upload :show-file-list="false" :on-success="handleVideoSuccess" :before-upload="beforeVideoUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl_video">
             <el-button type="text" class="button-link" style="margin-right:10px;">{{mediaId?"更改":"添加视频"}}</el-button>
           </el-upload>
           <span v-show="!mediaId">
@@ -28,7 +28,7 @@
       </div>
       <div class="preview-media" style="position:relative">
         <div class="preview-media-placeholder" v-show="!mediaId" />
-        <img :src="thumbMediaUrl" style="width:250px" v-show="mediaId">
+        <img :src="thumbMediaId|getMediaLink" style="width:250px" v-show="mediaId">
         <i class="el-icon-custom-play icon-video-play" @click="showingPlayer=true" v-show="mediaId" />
       </div>
       <div class="text-font-minor preview-abstract" style="line-height:16px">
@@ -47,7 +47,10 @@ import api from "../../utility/api";
 import { videoPlayer } from "vue-video-player";
 import "../../assets/custom-theme.css";
 import "../../assets/video-js.css";
+import upload from "../mixin/upload";
+import helper from "../../utility/helper";
 export default {
+  mixins: [upload],
   data() {
     return {
       mediaId: null,
@@ -55,9 +58,6 @@ export default {
       title: null,
       abstract: null,
       isUploading: false,
-      mediaUrl: null,
-      thumbMediaUrl: null,
-      uploadUrl: api.fileTransferUrl_video,
       showingPlayer: false,
       playerOptions: {
         width: "640px",
@@ -89,11 +89,9 @@ export default {
       this.thumbMediaId = this.videoMessageContext.thumbMediaId;
       this.title = this.videoMessageContext.title;
       this.abstract = this.videoMessageContext.abstract;
-      this.mediaUrl = this.videoMessageContext.mediaUrl;
-      this.thumbMediaUrl = this.videoMessageContext.thumbMediaUrl;
       this.isUploading = false;
-      this.playerOptions.sources[0].src = this.mediaUrl;
-      this.playerOptions.poster = this.thumbMediaUrl;
+      this.playerOptions.sources[0].src = helper.getMediaLink(this.mediaId);
+      this.playerOptions.poster = helper.getMediaLink(this.thumbMediaId);
     }
   },
   methods: {
@@ -101,10 +99,8 @@ export default {
       this.isUploading = false;
       this.mediaId = res.data.mediaId;
       this.thumbMediaId = res.data.thumbMediaId;
-      this.mediaUrl = `${api.fileTransferUrl}/${this.mediaId}`;
-      this.thumbMediaUrl = `${api.fileTransferUrl}/${this.thumbMediaId}`;
-      this.playerOptions.sources[0].src = this.mediaUrl;
-      this.playerOptions.poster = this.thumbMediaUrl;
+      this.playerOptions.sources[0].src = helper.getMediaLink(this.mediaId);
+      this.playerOptions.poster = helper.getMediaLink(this.thumbMediaId);
     },
     beforeVideoUpload(file) {
       console.log(file.type);

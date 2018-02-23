@@ -2,6 +2,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import env from './env'
 import api from './api'
+import helper from "./helper";
 
 Vue.filter('dateConverter', function (value, formatString) {
   formatString = formatString || env.constants.dateFormat;
@@ -54,13 +55,13 @@ Vue.filter('appMessageTemplateToStringConverter', function (template) {
 });
 
 Vue.filter('getMediaLink', function (mediaId) {
-  return `${api.fileTransferUrl}/${mediaId}`
+  return helper.getMediaLink(mediaId);
 });
 
 Vue.filter('getVideoMediaLink', function (mediaId) {
-  return `${api.fileTransferUrl_video}/${mediaId}`
+  return helper.getVideoMediaLink(mediaId);
 });
 
 Vue.filter('getAudioMediaLink', function (mediaId) {
-  return `${api.fileTransferUrl_audio}/${mediaId}`
+  return helper.getAudioMediaLink(mediaId);
 });

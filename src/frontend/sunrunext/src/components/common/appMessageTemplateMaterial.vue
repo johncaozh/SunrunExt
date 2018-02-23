@@ -1,122 +1,122 @@
 <template>
-    <div class="flexDiv-h">
-        <el-menu :default-active="selectedTemplateType" class="el-menu-vertical" @select="handleSelect">
-            <el-menu-item index="text">
-                <i class="el-icon-custom-text"></i>
-                <span slot="title">文字</span>
-            </el-menu-item>
-            <el-menu-item index="news">
-                <i class="el-icon-custom-news"></i>
-                <span slot="title">图文</span>
-            </el-menu-item>
-            <el-menu-item index="externalLinkNews">
-                <i class="el-icon-custom-externalLinkNews"></i>
-                <span slot="title">外链图文</span>
-            </el-menu-item>
-            <el-menu-item index="photo">
-                <i class="el-icon-custom-photo"></i>
-                <span slot="title">图片</span>
-            </el-menu-item>
-            <el-menu-item index="voice">
-                <i class="el-icon-custom-voiceMessage"></i>
-                <span slot="title">语音</span>
-            </el-menu-item>
-            <el-menu-item index="video">
-                <i class="el-icon-custom-video"></i>
-                <span slot="title">视频</span>
-            </el-menu-item>
-            <el-menu-item index="file">
-                <i class="el-icon-custom-file"></i>
-                <span slot="title">文件</span>
-            </el-menu-item>
-        </el-menu>
-        <div class="flexDiv-v" style="flex:1;padding-left:20px;padding-right:30px;padding-bottom:10px">
-            <div class="flexDiv-h editItemContainer" style="align-items:center;padding-top:20px;padding-bottom:20px">
-                <el-button style="margin-right:10px;" icon="el-icon-plus" size="small" v-show="canEdit" @click="showTemplateCreator">添加{{selectedTemplateType|appMessageTemplateTypeConverter()}}</el-button>
-                <span style="flex:1" class="text-font-minor">共 {{templates.length}} 条</span>
-                <el-input v-model="filterText" placeholder="搜索" prefix-icon="el-icon-search" size="small" style="width:250px">
-                </el-input>
-            </div>
-            <div style="flex:1;" class="flexDiv-v">
-                <div class="flexDiv-v " v-if="templates.length>0">
-                    <div @click="selectTemplate(item)" :style="{cursor:canEdit?'normal':'pointer'}" class="flexDiv-h editItemContainer" style="align-items:center;padding-top:20px;padding-bottom:20px" v-for="(item,index) in templates" :key="index">
-                        <span class="text-font-normal" style="flex:1">
-                            <div v-if="selectedTemplateType=='text'">
-                                {{item.data.content}}
-                            </div>
-                            <div class="flexDiv-h" v-else-if="selectedTemplateType=='news'||selectedTemplateType=='externalLinkNews'">
-                                <img :src="item.data.news[0].mediaUrl" style="width:107px;height:54px"> {{item.data.content}}
-                                <ul>
-                                    <li v-for="(item1,index1) in item.data.news" :key="index1">
-                                        {{item1.title}}
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="flexDiv-h" v-else-if="selectedTemplateType=='photo'">
-                                <img :src="item.data.imageUrl" style="width:100px;height:100px">
-                            </div>
-                            <div class="flexDiv-h" style="align-items:center" v-else-if="selectedTemplateType=='voice'">
-                                <div class="flexDiv-h border" style="padding:10px;margin-right:10px;" @click="playVoice('voicePlayer'+index)">
-                                    <i class="el-icon-custom-voiceMessage icon-voiceMessage"></i>
-                                </div>
-                                <span style="flex:1">{{item.data.fileName}}</span>
-                                <span class="text-font-minor" style="margin-right:20px;">{{item.data.duration}}"</span>
-                                <audio :src="item.data.mediaUrl" :ref="'voicePlayer'+index" style="width:200px;height:40px;" />
-                            </div>
-                            <div class="flexDiv-h" style="align-items:center" v-else-if="selectedTemplateType=='video'">
-                                <div class="flexDiv-v previewContainer">
-                                    <div class="text-font-normal preview-title" style="line-height:18px">
-                                        {{item.data.title}}
-                                    </div>
-                                    <div class="preview-media" style="position:relative">
-                                        <img :src="item.data.thumbMediaUrl" style="width:250px">
-                                        <i class="el-icon-custom-play icon-video-play" @click="playVideo(item)" />
-                                    </div>
-                                    <div class="text-font-minor preview-abstract" style="line-height:16px">
-                                        {{item.data.abstract}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flexDiv-h" style="align-items:center" v-else-if="selectedTemplateType=='file'">
-                                <file-icon :file-name="item.data.fileName" @click.native="downloadFile(item.data.mediaUrl)" />
-                                <span style="flex:1">{{item.data.fileName}}</span>
-                                <span class="text-font-minor" style="text-font-minor;margin-right:20px">{{item.data.fileSize|sizeUnitConverter(item.data.fileSize)}}</span>
-                            </div>
-                        </span>
-                        <span class="text-font-minor">
-                            {{item.createdTime|dateConverter()}}
-                        </span>
-                        <span style="margin-left:20px" v-if="canEdit">
-                            <el-button size="small" type="text" class="button-link" style="padding:0px" @click="editTemplate(item)">编辑</el-button>
-                            <el-button type="text" size="small" class="button-link" style="padding:0px;margin-left:20px" @click="deleteTemplate(item)">删除</el-button>
-                        </span>
-                        <i class="icon-selected el-icon-check" v-show="item==selectedTemplate"></i>
-                    </div>
+  <div class="flexDiv-h">
+    <el-menu :default-active="selectedTemplateType" class="el-menu-vertical" @select="handleSelect">
+      <el-menu-item index="text">
+        <i class="el-icon-custom-text"></i>
+        <span slot="title">文字</span>
+      </el-menu-item>
+      <el-menu-item index="news">
+        <i class="el-icon-custom-news"></i>
+        <span slot="title">图文</span>
+      </el-menu-item>
+      <el-menu-item index="externalLinkNews">
+        <i class="el-icon-custom-externalLinkNews"></i>
+        <span slot="title">外链图文</span>
+      </el-menu-item>
+      <el-menu-item index="photo">
+        <i class="el-icon-custom-photo"></i>
+        <span slot="title">图片</span>
+      </el-menu-item>
+      <el-menu-item index="voice">
+        <i class="el-icon-custom-voiceMessage"></i>
+        <span slot="title">语音</span>
+      </el-menu-item>
+      <el-menu-item index="video">
+        <i class="el-icon-custom-video"></i>
+        <span slot="title">视频</span>
+      </el-menu-item>
+      <el-menu-item index="file">
+        <i class="el-icon-custom-file"></i>
+        <span slot="title">文件</span>
+      </el-menu-item>
+    </el-menu>
+    <div class="flexDiv-v" style="flex:1;padding-left:20px;padding-right:30px;padding-bottom:10px">
+      <div class="flexDiv-h editItemContainer" style="align-items:center;padding-top:20px;padding-bottom:20px">
+        <el-button style="margin-right:10px;" icon="el-icon-plus" size="small" v-show="canEdit" @click="showTemplateCreator">添加{{selectedTemplateType|appMessageTemplateTypeConverter()}}</el-button>
+        <span style="flex:1" class="text-font-minor">共 {{templates.length}} 条</span>
+        <el-input v-model="filterText" placeholder="搜索" prefix-icon="el-icon-search" size="small" style="width:250px">
+        </el-input>
+      </div>
+      <div style="flex:1;" class="flexDiv-v">
+        <div class="flexDiv-v " v-if="templates.length>0">
+          <div @click="selectTemplate(item)" :style="{cursor:canEdit?'normal':'pointer'}" class="flexDiv-h editItemContainer" style="align-items:center;padding-top:20px;padding-bottom:20px" v-for="(item,index) in templates" :key="index">
+            <span class="text-font-normal" style="flex:1">
+              <div v-if="selectedTemplateType=='text'">
+                {{item.data.content}}
+              </div>
+              <div class="flexDiv-h" v-else-if="selectedTemplateType=='news'||selectedTemplateType=='externalLinkNews'">
+                <img :src="item.data.news[0].mediaId|getMediaLink" style="width:107px;height:54px" v-if="item.data.news"> {{item.data.content}}
+                <ul>
+                  <li v-for="(item1,index1) in item.data.news" :key="index1">
+                    {{item1.title}}
+                  </li>
+                </ul>
+              </div>
+              <div class="flexDiv-h" v-else-if="selectedTemplateType=='photo'">
+                <img :src="item.data.mediaId|getMediaLink" style="width:100px;height:100px">
+              </div>
+              <div class="flexDiv-h" style="align-items:center" v-else-if="selectedTemplateType=='voice'">
+                <div class="flexDiv-h border" style="padding:10px;margin-right:10px;" @click="playVoice('voicePlayer'+index)">
+                  <i class="el-icon-custom-voiceMessage icon-voiceMessage"></i>
                 </div>
-                <div class="flexDiv-v div-empty" v-else>
-                    <i class="el-icon-custom-text icon-empty" v-if="selectedTemplateType=='text'"></i>
-                    <i class="el-icon-custom-news icon-empty" v-else-if="selectedTemplateType=='news'"></i>
-                    <i class="el-icon-custom-externalLinkNews icon-empty" v-else-if="selectedTemplateType=='externalLinkNews'"></i>
-                    <i class="el-icon-custom-photo icon-empty" v-else-if="selectedTemplateType=='photo'"></i>
-                    <i class="el-icon-custom-voiceMessage icon-empty" v-else-if="selectedTemplateType=='voice'"></i>
-                    <i class="el-icon-custom-video icon-empty" v-else-if="selectedTemplateType=='video'"></i>
-                    <i class="el-icon-custom-file icon-empty" v-else-if="selectedTemplateType=='file'"></i>
-                    <span class="text-font-minor">暂无素材</span>
+                <span style="flex:1">{{item.data.fileName}}</span>
+                <span class="text-font-minor" style="margin-right:20px;">{{item.data.duration}}"</span>
+                <audio :src="item.data.mediaId|getMediaLink" :ref="'voicePlayer'+index" style="width:200px;height:40px;" />
+              </div>
+              <div class="flexDiv-h" style="align-items:center" v-else-if="selectedTemplateType=='video'">
+                <div class="flexDiv-v previewContainer">
+                  <div class="text-font-normal preview-title" style="line-height:18px">
+                    {{item.data.title}}
+                  </div>
+                  <div class="preview-media" style="position:relative">
+                    <img :src="item.data.thumbMediaId|getMediaLink" style="width:250px">
+                    <i class="el-icon-custom-play icon-video-play" @click="playVideo(item)" />
+                  </div>
+                  <div class="text-font-minor preview-abstract" style="line-height:16px">
+                    {{item.data.abstract}}
+                  </div>
                 </div>
-            </div>
+              </div>
+              <div class="flexDiv-h" style="align-items:center" v-else-if="selectedTemplateType=='file'">
+                <file-icon :file-name="item.data.fileName" @click.native="downloadFile(item.data.mediaId|getMediaLink)" />
+                <span style="flex:1">{{item.data.fileName}}</span>
+                <span class="text-font-minor" style="text-font-minor;margin-right:20px">{{item.data.fileSize|sizeUnitConverter(item.data.fileSize)}}</span>
+              </div>
+            </span>
+            <span class="text-font-minor">
+              {{item.createdTime|dateConverter()}}
+            </span>
+            <span style="margin-left:20px" v-if="canEdit">
+              <el-button size="small" type="text" class="button-link" style="padding:0px" @click="editTemplate(item)">编辑</el-button>
+              <el-button type="text" size="small" class="button-link" style="padding:0px;margin-left:20px" @click="deleteTemplate(item)">删除</el-button>
+            </span>
+            <i class="icon-selected el-icon-check" v-show="item==selectedTemplate"></i>
+          </div>
         </div>
-        <el-dialog :title="selectedTemplateType|appMessageTemplateTypeConverter()" :close-on-click-modal=false width="1000px" :visible.sync="dialogVisible">
-            <app-message-template-creator ref="templateCreator" :canOpenMaterial="false" :templateType="selectedTemplateType" />
-            <div slot="footer" class="dialog-footer ">
-                <el-button @click="hideTempldateCreator">取消</el-button>
-                <el-button type="primary" @click="saveTemplate">保存</el-button>
-            </div>
-        </el-dialog>
-        <el-dialog :visible.sync="showingPlayer" width="680px" append-to-body @close="videoClosed">
-            <video-player class="video-player-box" ref="videoPlayer" :options="playerOptions" :playsinline="true">
-            </video-player>
-        </el-dialog>
+        <div class="flexDiv-v div-empty" v-else>
+          <i class="el-icon-custom-text icon-empty" v-if="selectedTemplateType=='text'"></i>
+          <i class="el-icon-custom-news icon-empty" v-else-if="selectedTemplateType=='news'"></i>
+          <i class="el-icon-custom-externalLinkNews icon-empty" v-else-if="selectedTemplateType=='externalLinkNews'"></i>
+          <i class="el-icon-custom-photo icon-empty" v-else-if="selectedTemplateType=='photo'"></i>
+          <i class="el-icon-custom-voiceMessage icon-empty" v-else-if="selectedTemplateType=='voice'"></i>
+          <i class="el-icon-custom-video icon-empty" v-else-if="selectedTemplateType=='video'"></i>
+          <i class="el-icon-custom-file icon-empty" v-else-if="selectedTemplateType=='file'"></i>
+          <span class="text-font-minor">暂无素材</span>
+        </div>
+      </div>
     </div>
+    <el-dialog :title="selectedTemplateType|appMessageTemplateTypeConverter()" :close-on-click-modal=false width="1000px" :visible.sync="dialogVisible">
+      <app-message-template-creator ref="templateCreator" :canOpenMaterial="false" :templateType="selectedTemplateType" />
+      <div slot="footer" class="dialog-footer ">
+        <el-button @click="hideTempldateCreator">取消</el-button>
+        <el-button type="primary" @click="saveTemplate">保存</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :visible.sync="showingPlayer" width="680px" append-to-body @close="videoClosed">
+      <video-player class="video-player-box" ref="videoPlayer" :options="playerOptions" :playsinline="true">
+      </video-player>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -125,6 +125,8 @@ import { videoPlayer } from "vue-video-player";
 import "../../assets/custom-theme.css";
 import "../../assets/video-js.css";
 import fileIcon from "./fileIcon";
+import helper from "../../utility/helper";
+import Vue from "Vue";
 export default {
   data() {
     return {
@@ -209,8 +211,10 @@ export default {
       }
     },
     playVideo(video) {
-      this.playerOptions.sources[0].src = video.data.mediaUrl;
-      this.playerOptions.poster = video.data.thumbMediaUrl;
+      this.playerOptions.sources[0].src = helper.getMediaLink(
+        video.data.mediaId
+      );
+      this.playerOptions.poster = helper.getMediaLink(video.data.thumbMediaId);
       this.showingPlayer = true;
     },
     videoClosed() {
@@ -228,11 +232,15 @@ export default {
     editTemplate(template) {
       this.dialogVisible = true;
       this.editingTemplate = template;
-      this.$refs.templateCreator.template = template;
+      setTimeout(() => {
+        this.$refs.templateCreator.template = template;
+      }, 100);
     },
     hideTempldateCreator() {
       this.editingTemplate = null;
       this.dialogVisible = false;
+    alert("fd")
+      this.$refs.appMessageTemplateCreator.clean();
     },
     selectTemplate(template) {
       if (!this.canEdit) {

@@ -6,7 +6,7 @@
       </div>
       <div class="flexDiv-v" v-if="item.apps.length>0" :class="{'div-apps-container-grid':appsLayoutMode==2}">
         <div v-for="(app,appIndex) in item.apps" :key="appIndex" class="flexDiv-h div-app" :class="{ 'div-app-grid': appsLayoutMode==2 }">
-          <img v-lazy="app.logoUrl" class="app-logo" :class="{'img-app-icon-grid':appsLayoutMode==2}" />
+          <img :src="app.avatar|getMediaLink" class="app-logo" :class="{'img-app-icon-grid':appsLayoutMode==2}" />
           <span class="app-name">{{app.name}}</span>
         </div>
       </div>
@@ -42,11 +42,6 @@ export default {
     async getData() {
       this.processGroups = await api.getAppGroups();
       this.processApps = await api.getApps();
-
-      this.processApps.forEach(i => {
-        i.logoUrl = `${api.fileTransferUrl}/${i.avatar}`;
-      });
-
       this.processGroups.forEach(i => {
         i.apps = this.processApps.filter(j => j.groupId === i._id);
       });

@@ -28,6 +28,11 @@
 import appList from "./common/appList";
 import subHeader from "./common/subHeader";
 export default {
+  data() {
+    return {
+      users: []
+    };
+  },
   components: {
     appList,
     subHeader
