@@ -1,6 +1,6 @@
 <template>
   <div class="flexDiv-h">
-    <app-list :showAllAppOption="true" @appChanged="appChanged" />
+    <app-list :showAllAppOption="true" @appChanged="appChanged" :preSelectedAppId="selectedAppId" />
     <el-table :data="records" style="width: 100%;margin-left:20px">
       <el-table-column prop="type" :filter-multiple="false" label="状态" width="120" :filters="[{ text: '已发送', value: 'sent' }, { text: '定时发送', value: 'timing' }, { text: '草稿', value: 'draft' }]" :filter-method="filterTag" filter-placement="bottom-end">
         <template slot-scope="scope">
@@ -56,7 +56,7 @@
     <schedule-time-send ref="timeScheduler" @dateSelected="dateSelected">
     </schedule-time-send>
     <el-dialog title="编辑" :close-on-click-modal=false width="1000px" :visible.sync="dialogVisible">
-      <app-message-template-creator ref="templateCreator" :canOpenMaterial="false"  />
+      <app-message-template-creator ref="templateCreator" :canOpenMaterial="false" />
       <div slot="footer" class="dialog-footer ">
         <el-button @click="hideTempldateCreator">取消</el-button>
         <el-button type="primary" @click="saveTemplate">保存</el-button>
@@ -74,6 +74,7 @@ export default {
   data() {
     return {
       records: [],
+      selectedAppId: null,
       selectedApp: null,
       selectedType: null,
       editingTemplate: null,
@@ -86,6 +87,7 @@ export default {
     appMessageTemplateCreator
   },
   async mounted() {
+    this.selectedAppId = this.$route.query.appId;
     await this.getRecords();
   },
   methods: {

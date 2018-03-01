@@ -5,7 +5,6 @@
 }(this,
     function (glob, setGlobal) {
         function invokeCmd(cmd, param, callbackObj) {
-
             if (isAndroid) {
                 glob.invokeCallback = function (res) {
                     completeBridgeInteraction(cmd, res, callbackObj);

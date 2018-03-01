@@ -20,6 +20,18 @@ Vue.use(VueLazyload, {
   attempt: 1
 })
 
+router.beforeEach(function (to, from, next) {
+  window.scrollTo(0, 0)
+  // if (to.path.indexOf("/manager/") !== -1) {
+  //   if (!sessionStore.getLogonUser()) {
+  //     next("/login");
+  //     return;
+  //   }
+  // }
+
+  next();
+})
+
 Array.prototype.removeByValue = function (val) {
   for (var i = 0; i < this.length; i++) {
     if (this[i] == val) {

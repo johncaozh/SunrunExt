@@ -1,27 +1,27 @@
 <template>
-    <div class="flexDiv-v">
-        <div class="editItemContainer">
-            <app-selector ref="appSelector"></app-selector>
-        </div>
-        <div class="editItemContainer">
-            <contract-selector ref="contractSelector" />
-        </div>
-        <div class="editItemContainer">
-            <app-message-template-creator ref="appMessageTemplateCreator" />
-        </div>
-        <div class="flexDiv-h editItemContainer" style="align-items:center">
-            <el-checkbox v-model="safe">保密</el-checkbox>
-            <span class="text-font-minor" style="margin-left:20px">开启保密后，文章详情页面将印有收件人姓名</span>
-        </div>
-        <div class="flexDiv-h" style="margin-top:20px;margin-bottom:20px">
-            <el-button type="primary" size="small" @click="sentMessageRecord">发送</el-button>
-            <schedule-time-send @dateSelected="createSentTimingMessageRecord">
-                <el-button size="small" style="margin-left:10px;margin-right:10px">定时发送</el-button>
-            </schedule-time-send>
-            <el-button size="small" @click="createSentDraftMessageRecord">存为草稿</el-button>
-            <el-button size="small" @click="previewTemplate">预览</el-button>
-        </div>
+  <div class="flexDiv-v">
+    <div class="editItemContainer">
+      <app-selector ref="appSelector" :preSelectedAppId="selectedAppId"></app-selector>
     </div>
+    <div class="editItemContainer">
+      <contract-selector ref="contractSelector" />
+    </div>
+    <div class="editItemContainer">
+      <app-message-template-creator ref="appMessageTemplateCreator" />
+    </div>
+    <div class="flexDiv-h editItemContainer" style="align-items:center">
+      <el-checkbox v-model="safe">保密</el-checkbox>
+      <span class="text-font-minor" style="margin-left:20px">开启保密后，文章详情页面将印有收件人姓名</span>
+    </div>
+    <div class="flexDiv-h" style="margin-top:20px;margin-bottom:20px">
+      <el-button type="primary" size="small" @click="sentMessageRecord">发送</el-button>
+      <schedule-time-send @dateSelected="createSentTimingMessageRecord">
+        <el-button size="small" style="margin-left:10px;margin-right:10px">定时发送</el-button>
+      </schedule-time-send>
+      <el-button size="small" @click="createSentDraftMessageRecord">存为草稿</el-button>
+      <el-button size="small" @click="previewTemplate">预览</el-button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -34,8 +34,12 @@ export default {
   data() {
     return {
       safe: false,
-      showPreviewLayout: false
+      showPreviewLayout: false,
+      selectedAppId: null
     };
+  },
+  mounted() {
+    this.selectedAppId = this.$route.query.appId;
   },
   components: {
     appSelector,

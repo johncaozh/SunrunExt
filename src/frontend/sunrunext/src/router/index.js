@@ -6,7 +6,7 @@ export default new Router({
   routes: [{
     path: '/',
     component: resolve => require(['../components/main.vue'], resolve),
-    redirect:'/home',
+    redirect: '/home',
     children: [{
         path: '/home',
         component: resolve => require(['../components/home.vue'], resolve)
@@ -85,6 +85,10 @@ export default new Router({
       {
         path: '/apps/:appId/contextMenu',
         component: resolve => require(['../components/appContextMenu.vue'], resolve)
+      },
+      {
+        path: '/apps/:appId/receiveMsg',
+        component: resolve => require(['../components/appReceiveMsg.vue'], resolve)
       },
       {
         path: '/apps/:appId/autoReply',

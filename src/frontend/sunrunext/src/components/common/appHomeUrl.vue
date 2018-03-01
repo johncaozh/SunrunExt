@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card" body-style="padding:20px">
     <div class="flexDiv-v">
-      <div class="flexDiv-h" style="align-items:center">
+      <div class="flexDiv-h" style="align-items:center;">
         <i class="el-icon-custom-workspace menuIcon" />应用主页
       </div>
       <div v-if="url" class="text-font-minor" style="margin-top:10px;height:60px">应用主页：{{url}}</div>

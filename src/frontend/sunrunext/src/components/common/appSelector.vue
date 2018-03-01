@@ -42,6 +42,11 @@ export default {
       type: String,
       default: "选择需要发消息的应用",
       required: false
+    },
+    preSelectedAppId: {
+      type: String,
+      default: null,
+      required: false
     }
   },
   async mounted() {
@@ -53,6 +58,10 @@ export default {
 
       var res = await api.getApps();
       this.apps = res;
+
+      if (this.preSelectedAppId)
+        this.selectedApp = this.apps.find(i => i._id == this.preSelectedAppId);
+
       this.loading = false;
     },
     async showDialog() {

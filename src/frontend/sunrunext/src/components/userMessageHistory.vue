@@ -2,7 +2,7 @@
   <div class="flexDiv-v">
     <sub-header>用户消息</sub-header>
     <div class="flexDiv-h">
-      <app-list/>
+      <app-list :preSelectedAppId="selectedAppId" />
       <el-table :data="users" style="width: 100%">
         <el-table-column prop="name" label="状态" width="120">
         </el-table-column>
@@ -30,12 +30,16 @@ import subHeader from "./common/subHeader";
 export default {
   data() {
     return {
-      users: []
+      users: [],
+      selectedAppId: null
     };
   },
   components: {
     appList,
     subHeader
+  },
+  mounted() {
+    this.selectedAppId = this.$route.query.appId;
   },
   methods: {
     formatter(row, column) {

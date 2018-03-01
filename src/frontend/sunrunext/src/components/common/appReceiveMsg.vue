@@ -2,19 +2,26 @@
   <el-card class="box-card" body-style="padding:20px">
     <div class="flexDiv-v">
       <div class="flexDiv-h" style="align-items:center">
-        <i class="el-icon-custom-userMessage menuIcon"/>接收消息
+        <i class="el-icon-custom-userMessage menuIcon" />接收消息
       </div>
       <div class="text-font-minor" style="margin-top:10px;height:60px">接收用户发送的普通消息以及菜单操作、进入应用、上报地理位置等事件信息</div>
-      <span >
-        <el-button type="text" class="button-link">查看消息</el-button>
-        <el-button type="text" class="button-link">设置API接收</el-button>
+      <span>
+        <el-button type="text" class="button-link" @click="$router.push('/manager/userMessage?appId='+appId)">查看消息</el-button>
+        <el-button type="text" class="button-link" @click="$router.push('/apps/'+appId+'/receiveMsg')">设置API接收</el-button>
       </span>
     </div>
-</el-card>
+  </el-card>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    appId: {
+      type: String,
+      required: true
+    }
+  }
+};
 </script>
 
 <style scoped lang="less">

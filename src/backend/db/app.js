@@ -64,6 +64,42 @@ const schema = mongoose.Schema({
         default: null,
         required: false,
     },
+    //接收消息的服务器地址里的Token
+    receiveMsg_url_token: {
+        type: String,
+        default: null,
+        required: false,
+    },
+    //接收消息的服务器地址里的EncodingAESKey
+    receiveMsg_url_encodingAESKey: {
+        type: String,
+        default: null,
+        required: false,
+    },
+    //接收用户发送的普通消息
+    receiveMsg_user: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+    //接收自定义菜单操作消息
+    receiveMsg_contextMenu: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+    //接收上报地理位置的消息（用户进入应用后上报地理位置）
+    receiveMsg_location: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+    //接收上报进入应用事件的消息（用户进入应用后上报）
+    receiveMsg_enterApp: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
     //关联的用户ID数组
     iamUserIds: {
         type: Array,
@@ -84,12 +120,12 @@ const schema = mongoose.Schema({
         required: false
     }
 }, {
-        versionKey: false,
-        timestamps: {
-            createdAt: 'createdTime',
-            updatedAt: 'updatedTime'
-        }
-    });
+    versionKey: false,
+    timestamps: {
+        createdAt: 'createdTime',
+        updatedAt: 'updatedTime'
+    }
+});
 
 const appModel = mongoose.model("app", schema);
 module.exports = appModel;

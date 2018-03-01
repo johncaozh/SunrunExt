@@ -58,10 +58,10 @@
         <div class="flexDiv-h app-menu">
           <app-visible v-show="!appDetail.useInGroup" :visible="appDetail.visible" @visibleChanged="appVisibleChanged" />
           <app-home-url :homeUrl="appDetail.home_url" @urlChanged="appUrlChanged" />
-          <app-context-menu v-show="!appDetail.useInGroup" :appId="appDetail._id" :contextMenu="appDetail.contextMenu" />
-          <app-send-msg v-show="!appDetail.useInGroup" />
-          <app-receive-msg v-show="!appDetail.useInGroup" />
-          <app-auto-reply v-show="!appDetail.useInGroup" :appId="appDetail._id" />
+          <app-context-menu v-show="!appDetail.useInGroup" :appId="appId" :contextMenu="appDetail.contextMenu" />
+          <app-send-msg v-show="!appDetail.useInGroup" :appId="appId" />
+          <app-receive-msg v-show="!appDetail.useInGroup" :appId="appId" />
+          <app-auto-reply v-show="!appDetail.useInGroup" :appId="appId" />
           <app-s-s-o @iamProductNameChanged="appIamProductNameChanged" :iamProductName="appDetail.iamProductName" />
         </div>
         <el-button type="text" style="margin-top:30px;color:red;align-self:flex-start" @click="deleteApp">删除应用</el-button>
