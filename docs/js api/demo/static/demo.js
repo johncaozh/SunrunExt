@@ -717,8 +717,9 @@ sr.ready(function () {
     });
   };
 
+  //10.2 获取用户信息
   document.querySelector('#getUserInfo').onclick = function () {
-    sr.selectContact({
+    sr.getUserInfo({
       userId: "czq",
       success: function (res) {
         alert(JSON.stringify(res));
