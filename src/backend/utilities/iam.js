@@ -36,6 +36,37 @@ async function getProductList() {
     return getProductListJO.products;
 }
 
+//验证ST
+async function verifyST(st) {
+    await refreshAccessToken();
+    var validateSTUrl = `${env.iamConfig.service}/sso/service_validate?st=${st}&service=${env.iamConfig.registerProductName}`
+
+    var verifySTRes = await rq({
+        url: validateSTUrl,
+        rejectUnauthorized: false
+    });
+
+    var verifySTJO = JSON.parse(verifySTRes);
+    return {
+        id: verifySTJO.user_id,
+        userId: verifySTJO.user_name
+    }
+}
+
+//获取用户信息
+async function getUserDetail(userId) {
+    await refreshAccessToken();
+    var getUserDetailUrl = `${env.iamConfig.service}/user/get?access_token=${accessToken}&user_id=${userId}`;
+
+    var getUserDetailRes = await rq({
+        url: getUserDetailUrl,
+        rejectUnauthorized: false
+    });
+
+    var getUserDetailJO = JSON.parse(getUserDetailRes);
+    return getUserDetailJO;
+}
+
 
 //从IAM同步组织架构
 async function syncIamUsers() {
@@ -173,5 +204,7 @@ module.exports = {
     syncIamUsers,
     getDomainOrg,
     getOrgOrUser,
-    getProductList
+    getProductList,
+    verifyST,
+    getUserDetail,
 };

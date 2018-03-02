@@ -263,4 +263,13 @@ export default {
     var url = env.serverConfig.configSegment;
     return axios.put(url, param);
   },
+  
+  async login(param) {
+    var url = env.serverConfig.loginSegment;
+    return axios.post(url, param);
+  },
+  async logout() {
+    var url = env.serverConfig.logoutSegment;
+    return axios.post(url);
+  },
 }

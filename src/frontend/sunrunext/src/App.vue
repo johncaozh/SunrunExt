@@ -1,9 +1,16 @@
 <template>
   <div id="app" class="flexDiv-v">
-    <div class="header">
+    <div class="header flexDiv-h" style="justify-content:center;" v-show="!isAuthenticationPage">
+      <div style="width:1080px;align-items:center;justify-content:space-between" class="flexDiv-h">
+        <img src="./assets/img/sunrun.png" style="width:125px;height:32px;cursor:pointer" @click="$router.push('/home')" />
+        <span>
+          <span @click="gotoApiDocsPage" class="header-link">API文档</span>
+          <router-link to="/orgs" class="header-link">退出</router-link>
+        </span>
+      </div>
     </div>
     <router-view/>
-    <span class="foot-link">
+    <span class="foot-link" v-show="!isAuthenticationPage">
       <a>关于尚云</a>
       <a>用户中心</a>
       <a>尚云官网</a>
@@ -13,8 +20,29 @@
 </template>
 
 <script>
+import env from "./utility/env";
 export default {
-  name: "app"
+  name: "app",
+  data() {
+    return {
+      logon: false,
+      logonUserData: null
+    };
+  },
+  mounted() {},
+  computed: {
+    isAuthenticationPage: function() {
+      return this.$route.path == "/authentication";
+    }
+  },
+  methods: {
+    gotoApiDocsPage() {
+      var a = document.createElement("a");
+      a.href = env.serverConfig.apiDocsServerEndPoint;
+      a.target = "_blank";
+      a.click();
+    }
+  }
 };
 </script>
 
@@ -38,6 +66,17 @@ export default {
   padding-top: 20px;
   padding-bottom: 60px;
   color: #909399;
+}
+
+.header-link {
+  text-decoration: none;
+  color: white;
+  font-size: 13px;
+  margin-left: 20px;
+}
+
+.header-link:hover {
+  text-decoration: underline;
 }
 </style>
 

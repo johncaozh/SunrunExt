@@ -24,6 +24,7 @@ var v1_router_config = require('./routers/api/v1/config');
 var v1_router_managerGroup = require('./routers/api/v1/managerGroup');
 var v1_router_appGroup = require('./routers/api/v1/appGroup');
 var v1_router_product = require('./routers/api/v1/product');
+var v1_router_authentication = require('./routers/api/v1/authentication');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
@@ -41,11 +42,13 @@ log.use(app);
 app.use(express.static(env.serverEndConfig.staticFileDir));
 app.use(cookieParser());
 app.use(session({
-    secret: 'sunrunio38288446',
+    secret: 'sunrunext38288446',
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: false
+        secure: false,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 // default session expiration is set to 1 hour
     }
 }));
 
@@ -57,9 +60,17 @@ app.use(bodyParser.urlencoded({
     limit: '10mb'
 }));
 
+app.use(function (req, req, next) {
+    if (req.session) {
+        req.session._garbage = Date();
+        req.session.touch();
+    }
+    next(); 
+});
+
 //允许跨域访问
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header("Access-Control-Allow-Origin", req.get('origin'));
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
     res.header('Access-Control-Allow-Credentials', true);
@@ -99,6 +110,7 @@ app.use("/api/v1/", v1_router_config);
 app.use("/api/v1/", v1_router_managerGroup.router);
 app.use("/api/v1/", v1_router_appGroup);
 app.use("/api/v1/", v1_router_product);
+app.use("/api/v1/", v1_router_authentication);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
