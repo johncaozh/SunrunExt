@@ -9,6 +9,7 @@ import './assets/iconfont.css';
 import './assets/common.css';
 import filter from './utility/filter'
 import VueLazyload from 'vue-lazyload'
+import helper from "./utility/helper";
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
@@ -22,12 +23,13 @@ Vue.use(VueLazyload, {
 
 router.beforeEach(function (to, from, next) {
   window.scrollTo(0, 0)
-  // if (to.path.indexOf("/manager/") !== -1) {
-  //   if (!sessionStore.getLogonUser()) {
-  //     next("/login");
-  //     return;
-  //   }
-  // }
+  if (to.path != "/login" && to.path != "/logout") {
+    var userId = helper.getCookie('userId');
+    if (!userId) {
+      next("/login");
+      return;
+    }
+  }
 
   next();
 })

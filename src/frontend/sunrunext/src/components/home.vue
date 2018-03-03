@@ -5,7 +5,7 @@
         <div v-html="item.detail"></div>
       </el-collapse-item>
     </el-collapse>
-    <div class="flexDiv-v div-right">
+    <div class="flexDiv-v div-right" v-if="config">
       <img :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log" />
       <div class="div-enterpriseName">{{config.enterpriseName}}</div>
       <div class="div-count text-font-normal">人员：
