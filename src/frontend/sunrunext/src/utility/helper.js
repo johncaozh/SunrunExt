@@ -58,6 +58,6 @@ export default {
   },
 
   delCookie(c_name) {
-    setCookie(c_name, "", -1)
+    this.setCookie(c_name, "", -1)
   }
 }

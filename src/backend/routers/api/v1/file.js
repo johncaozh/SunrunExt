@@ -153,9 +153,10 @@ router.get("/files/:fileId", api.catchAsyncErrors(async function (req, res, next
             next();
         }
     }
-
-    api.attachData2Response(302, "获取文件成功", item.presignedUrl, res);
-    next();
+    else {
+        api.attachData2Response(302, "获取文件成功", item.presignedUrl, res);
+        next();
+    }
 }));
 
 module.exports = router;

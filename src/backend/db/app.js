@@ -58,6 +58,12 @@ const schema = mongoose.Schema({
         default: null,
         required: false,
     },
+    //应用主页地址是否时外网地址
+    home_url_isInternet: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
     //接收消息的服务器地址
     receiveMsg_url: {
         type: String,
@@ -120,12 +126,12 @@ const schema = mongoose.Schema({
         required: false
     }
 }, {
-    versionKey: false,
-    timestamps: {
-        createdAt: 'createdTime',
-        updatedAt: 'updatedTime'
-    }
-});
+        versionKey: false,
+        timestamps: {
+            createdAt: 'createdTime',
+            updatedAt: 'updatedTime'
+        }
+    });
 
 const appModel = mongoose.model("app", schema);
 module.exports = appModel;

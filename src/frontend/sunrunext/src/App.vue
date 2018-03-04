@@ -1,11 +1,11 @@
 <template>
   <div id="app" class="flexDiv-v">
-    <div class="header flexDiv-h" style="justify-content:center;" v-show="!isAuthenticationPage">
+    <div class="header flexDiv-h" style="justify-content:center;min-width:1080px" v-show="!isAuthenticationPage">
       <div style="width:1080px;align-items:center;justify-content:space-between" class="flexDiv-h">
         <img src="./assets/img/sunrun.png" style="width:125px;height:32px;cursor:pointer" @click="$router.push('/home')" />
         <span>
           <span @click="gotoApiDocsPage" class="header-link">API文档</span>
-          <router-link to="/orgs" class="header-link">退出</router-link>
+          <router-link to="/logout" class="header-link">退出</router-link>
         </span>
       </div>
     </div>
@@ -32,7 +32,7 @@ export default {
   mounted() {},
   computed: {
     isAuthenticationPage: function() {
-      return this.$route.path == "/authentication";
+      return this.$route.path == "/login";
     }
   },
   methods: {
