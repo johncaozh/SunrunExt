@@ -32,11 +32,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     //     to: path.join(config.dev.assetsPublicPath, 'index.html')
     //   }, ],
     // },
-    historyApiFallback: true, 
+    historyApiFallback: true,
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
     compress: true,
-    host: HOST || config.dev.host,
+    // host: HOST || config.dev.host,
+    host: '0.0.0.0',
     port: PORT || config.dev.port,
     open: config.dev.autoOpenBrowser,
     overlay: config.dev.errorOverlay ? {

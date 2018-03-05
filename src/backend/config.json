@@ -11,6 +11,6 @@
   "autoGotoVisiualModeInGroupSession": true,
   "showWatermarkerInGroupSession": true,
   "showWatermarkerInAdressBook": true,
-  "appsLayoutMode": "1",
+  "appsLayoutMode": "2",
   "sendEmailOrSNS": false
 }
