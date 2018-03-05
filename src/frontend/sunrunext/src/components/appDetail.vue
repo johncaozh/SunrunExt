@@ -58,7 +58,7 @@
         <div class="flexDiv-h app-menu">
           <app-visible v-show="!appDetail.useInGroup" :visible="appDetail.visible" @visibleChanged="appVisibleChanged" />
           <app-home-url :homeUrl="appDetail.home_url" :homeIsInternelUrl="appDetail.home_url_isInternet" @urlChanged="appUrlChanged" @isInternelUrlChanged="appIsInternelUrlChanged" />
-          <app-context-menu v-show="!appDetail.useInGroup" :appId="appId" :contextMenu="appDetail.contextMenu" />
+          <app-context-menu v-show="!appDetail.useInGroup" :appId="appId" :contextMenu='appDetail.contextMenu||""' />
           <app-send-msg v-show="!appDetail.useInGroup" :appId="appId" />
           <app-receive-msg v-show="!appDetail.useInGroup" :appId="appId" />
           <app-auto-reply v-show="!appDetail.useInGroup" :appId="appId" />
@@ -86,7 +86,7 @@ export default {
   mixins: [upload],
   data() {
     return {
-      appId: null,
+      appId: "",
       appDetail: {},
       isEditingNameDesc: false,
       editingName: null,

@@ -121,7 +121,7 @@ export default {
           await Promise.all(promiseArr);
           await this.loadData();
         })
-        .catch((err = {}));
+        .catch(err => {});
     }
   }
 };

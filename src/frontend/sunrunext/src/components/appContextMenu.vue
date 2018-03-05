@@ -36,35 +36,35 @@
                 </span>
               </div>
             </div>
-              <el-form :rules="subMenuRule" :model="subMenu" :ref="subMenu.name+index" style="background:white;padding:15px;margin-top:10px" v-for="(subMenu,index) in editingMenu.subMenuItems" :key="index">
-                <i class="el-icon-delete icon icon-delete" @click="removeSubMenu(subMenu)" />
-                <el-form-item label="子菜单" prop="name">
-                  <el-input v-model="subMenu.name" size="small"></el-input>
-                </el-form-item>
-                <el-form-item prop="type">
-                  <div class="flexDiv-h">
-                    菜单类型：
-                    <el-select size="small" v-model="subMenu.type" placeholder="请选择">
-                      <el-option v-for="item in menuItemTypes" :key="item.value" :label="item.label" :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                </el-form-item>
-                <el-form-item prop="url" v-if="subMenu.type=='view'">
-                  <div class="flexDiv-h">
-                    网页地址：
-                    <el-input size="small" style="flex:1" v-model="subMenu.url" />
-                  </div>
-                </el-form-item>
-                <div class="flexDiv-h" v-else-if="subMenu.type=='send_message'">
-                  编辑消息体
+            <el-form :rules="subMenuRule" :model="subMenu" :ref="subMenu.name+index" style="background:white;padding:15px;margin-top:10px" v-for="(subMenu,index) in editingMenu.subMenuItems" :key="index">
+              <i class="el-icon-delete icon icon-delete" @click="removeSubMenu(subMenu)" />
+              <el-form-item label="子菜单" prop="name">
+                <el-input v-model="subMenu.name" size="small"></el-input>
+              </el-form-item>
+              <el-form-item prop="type">
+                <div class="flexDiv-h">
+                  菜单类型：
+                  <el-select size="small" v-model="subMenu.type" placeholder="请选择">
+                    <el-option v-for="item in menuItemTypes" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
                 </div>
-                <div style="align-items:center" class="flexDiv-h" v-else>
-                  <span v-if="!appDetail.receiveMsg_url">添加此事件，需要先设置接收消息服务器
-                    <el-button type="text" class="button-link">去设置</el-button>
-                  </span>
+              </el-form-item>
+              <el-form-item prop="url" v-if="subMenu.type=='view'">
+                <div class="flexDiv-h">
+                  网页地址：
+                  <el-input size="small" style="flex:1" v-model="subMenu.url" />
                 </div>
-              </el-form>
+              </el-form-item>
+              <div class="flexDiv-h" v-else-if="subMenu.type=='send_message'">
+                编辑消息体
+              </div>
+              <div style="align-items:center" class="flexDiv-h" v-else>
+                <span v-if="!appDetail.receiveMsg_url">添加此事件，需要先设置接收消息服务器
+                  <el-button type="text" class="button-link">去设置</el-button>
+                </span>
+              </div>
+            </el-form>
             <el-button type="text" class="button-link" @click="addSubMenu" v-show="editingMenu.subMenuItems.length<5">添加子菜单（最多5个）</el-button>
           </el-form>
           <span style="margin-top:20px">
@@ -74,20 +74,20 @@
         </div>
         <div class="flexDiv-v" v-else>
           <div v-for="(item,index) in appDetail.contextMenus" :key="index" class="mainMenu">
-            <i class="el-icon-edit-outline icon icon-edit" @click="editMenu(item)"/>
+            <i class="el-icon-edit-outline icon icon-edit" @click="editMenu(item)" />
             <div class="flexDiv-v">
- <span class="text-font-normal">
-            菜单{{index}}
-            </span>
-            <span style="line-height:40px;">
-            {{item.name}}
-            </span>
-             <span style="line-height:20px;font-size:14px;" v-for="(subMenu,index) in item.subMenuItems" :key="index">
+              <span class="text-font-normal">
+                菜单{{index}}
+              </span>
+              <span style="line-height:40px;">
+                {{item.name}}
+              </span>
+              <span style="line-height:20px;font-size:14px;" v-for="(subMenu,index) in item.subMenuItems" :key="index">
                 {{subMenu.name}}
-            </span>
+              </span>
             </div>
           </div>
-          <div class="addMainMenu" @click="addMenu" v-show="appDetail.contextMenus.length<3">
+          <div class="addMainMenu" @click="addMenu" v-show="!appDetail.contextMenus||appDetail.contextMenus.length<3">
             添加主菜单（最多三个）
           </div>
         </div>
@@ -96,31 +96,30 @@
         <div class="flexDiv-h iphone-title">{{appDetail.name}}</div>
         <div class="flexDiv-h iphone-content"></div>
         <div class="flexDiv-h iphone-subMenuItems">
-              <div v-for="(item,index) in appDetail.contextMenus" :key="index" class="flexDiv-v subMenuItems" v-bind:style="{ opacity:item.subMenuItems.length>0?1:0 }">
-                <div class="flexDiv-v">
-                    <div class="subMenu" v-for="(subMenu,subMenuIndex) in item.subMenuItems" :key="subMenuIndex">
-                        {{subMenu.name||"未设置"}}
-                    </div>
-                </div>
-                <div class="subMenuItems-triangle" />
+          <div v-for="(item,index) in appDetail.contextMenus" :key="index" class="flexDiv-v subMenuItems" v-bind:style="{ opacity:item.subMenuItems.length>0?1:0 }">
+            <div class="flexDiv-v">
+              <div class="subMenu" v-for="(subMenu,subMenuIndex) in item.subMenuItems" :key="subMenuIndex">
+                {{subMenu.name||"未设置"}}
+              </div>
             </div>
+            <div class="subMenuItems-triangle" />
+          </div>
         </div>
         <div class="flexDiv-h iphone-contextMenu">
-          <div class="flexDiv-h" style="flex:1;align-items:center" v-if="appDetail.contextMenus.length==0">
+          <div class="flexDiv-h" style="flex:1;align-items:center" v-if="!appDetail.contextMenus||appDetail.contextMenus.length==0">
             <i class="el-icon-custom-voice icon" />
-              <div class="inputText" />
-          <i class="el-icon-custom-emotion icon" style="padding-right:0px" />
-          <i class="el-icon-custom-add icon" />
+            <div class="inputText" />
+            <i class="el-icon-custom-emotion icon" style="padding-right:0px" />
+            <i class="el-icon-custom-add icon" />
           </div>
-          
-          <div class="flexDiv-h" v-else style="flex:1;align-items:center" >
+
+          <div class="flexDiv-h" v-else style="flex:1;align-items:center">
             <i class="el-icon-custom-callKeyboard icon" />
-              <div v-for="(item,index) in appDetail.contextMenus" :key="index" class="flexDiv-h menuItemInToobar" >
-                <i class="el-icon-custom-contextMenuMore icon" style="font-size:2px;margin-top:2px;" v-if="item.subMenuItems.length>0"/>
-                {{item.name||"未设置"}}
-            </div>
+            <div v-for="(item,index) in appDetail.contextMenus" :key="index" class="flexDiv-h menuItemInToobar">
+              <i class="el-icon-custom-contextMenuMore icon" style="font-size:2px;margin-top:2px;" v-if="item.subMenuItems.length>0" /> {{item.name||"未设置"}}
             </div>
           </div>
+        </div>
       </div>
     </div>
   </div>
@@ -340,7 +339,9 @@ export default {
       };
 
       if (confirm && this.editingMenu.name) {
-        var prompt = `删除后，“${this.editingMenu.name}”下设置的内容都将被删除，是否继续?',`;
+        var prompt = `删除后，“${
+          this.editingMenu.name
+        }”下设置的内容都将被删除，是否继续?',`;
         this.$confirm(prompt, "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -349,7 +350,7 @@ export default {
           .then(async () => {
             await removeAction(true);
           })
-          .catch((err = {}));
+          .catch(err => {});
       } else {
         await removeAction(false);
       }
@@ -496,11 +497,11 @@ export default {
 
 .iphone-content {
   flex: 1;
-  background: #F9F9FA;
+  background: #f9f9fa;
 }
 
 .iphone-subMenuItems {
-  background: #F9F9FA;
+  background: #f9f9fa;
   padding-left: 26px;
   justify-content: space-around;
   align-items: flex-end;
@@ -550,11 +551,11 @@ export default {
 }
 
 .addMainMenu:hover {
-  background: #F9F9FA;
+  background: #f9f9fa;
 }
 
 .editing {
-  background: #F9F9FA;
+  background: #f9f9fa;
   padding: 15px;
   min-height: 470px;
 }
@@ -587,7 +588,7 @@ export default {
 .subMenuItems {
   border: 1px solid #dcdde0;
   flex: 1;
-  color: #F9F9FA;
+  color: #f9f9fa;
   margin-left: 2px;
   margin-right: 2px;
   margin-bottom: 10px;

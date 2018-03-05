@@ -314,7 +314,7 @@ export default {
 
           group.apps = [];
         })
-        .catch((err = {}));
+        .catch(err => {});
     },
 
     getDefaultGroup() {
