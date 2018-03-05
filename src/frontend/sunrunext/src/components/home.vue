@@ -1,12 +1,5 @@
 <template>
   <div class="flexDiv-h div-root1">
-<<<<<<< HEAD
-    <el-collapse style="flex:1" :accordion="true">
-      <el-collapse-item v-for="(item,index) in news" :key="index" :title="item.title">
-        <div v-html="item.detail"></div>
-      </el-collapse-item>
-    </el-collapse>
-=======
     <div class="flexDiv-v" style="flex:1">
       <div class="text-font-normal" style="margin-bottom:20px">{{userName}}  您好，欢迎登录尚云企业应用管理平台。</div>
       <el-collapse :accordion="true">
@@ -15,7 +8,6 @@
         </el-collapse-item>
       </el-collapse>
     </div>
->>>>>>> a4c71ea046a3c75a2b7368054cbc75f99e92c8c2
     <div class="flexDiv-v div-right" v-if="config">
       <img :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log" />
       <div class="div-enterpriseName">{{config.enterpriseName}}</div>
