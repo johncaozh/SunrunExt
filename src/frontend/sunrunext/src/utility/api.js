@@ -1,5 +1,7 @@
-import axios from 'axios'
-import env from './env'
+import axios from 'axios';
+import env from './env';
+import { Message } from 'element-ui';
+import router from '../router/index.js';
 
 axios.defaults.baseURL = env.serverConfig.serverEndPoint;
 axios.defaults.timeout = env.serverConfig.requestTimeout;
@@ -8,8 +10,19 @@ axios.interceptors.response.use(function (response) {
   // Do something with response data
   return response.data.data;
 }, function (error) {
+  if (error.response.status == 403) {
+    var apiSegment = error.config.url.replace(error.config.baseURL, "");
+
+    if (apiSegment != "login" && apiSegment != "logout") {
+      Message.error("操作超时，请重新登录。");
+      router.replace({
+        path: '/login',
+        query: { redirect: router.currentRoute.fullPath }
+      })
+    }
+  }
   // Do something with response error
-  return Promise.reject(error);
+  return Promise.reject(error.response.data);
 });
 
 export default {
@@ -263,7 +276,6 @@ export default {
     var url = env.serverConfig.configSegment;
     return axios.put(url, param);
   },
-  
   async login(param) {
     var url = env.serverConfig.loginSegment;
     return axios.post(url, param);

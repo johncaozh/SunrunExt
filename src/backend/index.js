@@ -1,4 +1,5 @@
 var express = require('express');
+var https = require('https');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var favicon = require('serve-favicon');
@@ -11,6 +12,8 @@ var iam = require('./utilities/iam');
 var log = require('./utilities/log');
 var logger = require('./utilities/log').logger;
 var s3 = require('./utilities/s3');
+var fs = require('fs');
+var path = require('path');
 var appSentMessageScheduler = require('./utilities/appSentMessageScheduler');
 var ffmpeg = require('./utilities/ffmpeg');
 var v1_router_app = require("./routers/api/v1/app");
@@ -31,8 +34,8 @@ var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
 });
 
 promise.then(db => {
-        logger.info("连接数据库成功。");
-    })
+    logger.info("连接数据库成功。");
+})
     .catch(error => {
         logger.fatal("连接数据库失败：" + error);
     });
@@ -48,7 +51,7 @@ app.use(session({
     cookie: {
         secure: false,
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 // default session expiration is set to 1 hour
+        maxAge: 1000 * 60 * 60
     }
 }));
 
@@ -65,7 +68,7 @@ app.use(function (req, req, next) {
         req.session._garbage = Date();
         req.session.touch();
     }
-    next(); 
+    next();
 });
 
 //允许跨域访问
@@ -90,11 +93,11 @@ app.use(function (req, res, next) {
 
     logger.info(`url:${req.url},method:${req.method},request by ${userId}`);
 
-    // if (req.method !== 'GET' && !req.Authenticationed) {
-    //     res.status(403);
-    //     res.end();
-    //     return;
-    // }
+    if (req.url !== '/api/v1/login' && !req.Authenticationed) {
+        res.status(403);
+        res.end();
+        return;
+    }
 
     next();
 });
@@ -114,7 +117,7 @@ app.use("/api/v1/", v1_router_authentication);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
-    if (res.code != 200 || res != 302)
+    if (res.code != 200 && res != 302)
         logger.error(`url:${req.url},error:${res.msg}`)
 
     if (res.code == 302) {
@@ -143,9 +146,16 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json(resData);
 });
 
-var server = app.listen(3000, async function () {
+//根据项目的路径导入生成的证书文件  
+var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.pem'), 'utf8');
+var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
+var credentials = { key: privateKey, cert: certificate };
+
+var httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(8443, async function () {
     var host = common.getServerIp();
-    var port = server.address().port;
+    var port = httpsServer.address().port;
     env.serverEndConfig.endpoint = `http://${host}:${port}`;
     env.serverEndConfig.downloadResUrl = `http://${host}:${port}/download/`;
     await iam.syncIamUsers();

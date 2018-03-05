@@ -13,6 +13,11 @@
         <el-form :model="urlForm" :rules="urlRule" ref="urlForm">
           <el-form-item label="主页地址（以http://或https://开头的URL）" prop="url">
             <el-input v-model="urlForm.url" size="small" :autofocus=true prefix-icon="el-icon-location-outline" />
+            <div class="flexDiv-h" style="align-items:center">
+              <el-checkbox v-model="urlForm.isInternelUrl">识别为外网地址
+              </el-checkbox>
+              <tooltip text="当主页地址为外网地址时，融合客户端在任何的网络环境（内外网），都将以非代理的方式直接访问应用。" style="margin-left:20px" />
+            </div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer ">
@@ -26,6 +31,7 @@
 
 <script>
 import validator from "validator";
+import tooltip from "./tooltip";
 export default {
   data() {
     var checkUrl = (rule, value, callback) => {
@@ -48,9 +54,11 @@ export default {
 
     return {
       url: "",
+      isInternelUrl: false,
       dialogVisible: false,
       urlForm: {
-        url: ""
+        url: "",
+        isInternelUrl: false
       },
       urlRule: {
         url: [
@@ -62,29 +70,42 @@ export default {
       }
     };
   },
+  components: {
+    tooltip
+  },
   props: {
     homeUrl: {
       type: String,
+      required: false
+    },
+    homeIsInternelUrl: {
+      type: Boolean,
       required: false
     }
   },
   watch: {
     homeUrl() {
       this.url = this.homeUrl;
+    },
+    homeIsInternelUrl() {
+      this.isInternelUrl = this.homeIsInternelUrl;
     }
   },
   methods: {
     openDialog() {
       this.urlForm.url = this.url;
+      this.urlForm.isInternelUrl = this.isInternelUrl;
       this.dialogVisible = true;
     },
 
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(valid => { 
         if (valid) {
           this.dialogVisible = false;
           this.url = this.urlForm.url;
+          this.isInternelUrl = this.urlForm.isInternelUrl;
           this.$emit("urlChanged", this.url);
+          this.$emit("isInternelUrlChanged", this.isInternelUrl);
         } else {
           return false;
         }

@@ -21,6 +21,7 @@ Vue.use(VueLazyload, {
   attempt: 1
 })
 
+<<<<<<< HEAD
 router.beforeEach(function (to, from, next) {
   window.scrollTo(0, 0)
   if (to.path != "/login" && to.path != "/logout") {
@@ -34,6 +35,8 @@ router.beforeEach(function (to, from, next) {
   next();
 })
 
+=======
+>>>>>>> a4c71ea046a3c75a2b7368054cbc75f99e92c8c2
 Array.prototype.removeByValue = function (val) {
   for (var i = 0; i < this.length; i++) {
     if (this[i] == val) {

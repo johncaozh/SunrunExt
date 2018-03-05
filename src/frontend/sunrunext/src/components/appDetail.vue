@@ -57,7 +57,7 @@
         </div>
         <div class="flexDiv-h app-menu">
           <app-visible v-show="!appDetail.useInGroup" :visible="appDetail.visible" @visibleChanged="appVisibleChanged" />
-          <app-home-url :homeUrl="appDetail.home_url" @urlChanged="appUrlChanged" />
+          <app-home-url :homeUrl="appDetail.home_url" :homeIsInternelUrl="appDetail.home_url_isInternet" @urlChanged="appUrlChanged" @isInternelUrlChanged="appIsInternelUrlChanged" />
           <app-context-menu v-show="!appDetail.useInGroup" :appId="appId" :contextMenu="appDetail.contextMenu" />
           <app-send-msg v-show="!appDetail.useInGroup" :appId="appId" />
           <app-receive-msg v-show="!appDetail.useInGroup" :appId="appId" />
@@ -199,6 +199,11 @@ export default {
     },
     async appUrlChanged(url) {
       this.appDetail.home_url = url;
+      await this.updateApp(this.appDetail);
+      this.refreshAppDetail();
+    },
+    async appIsInternelUrlChanged(isInternetUrl) {
+      this.appDetail.home_url_isInternet = isInternetUrl;
       await this.updateApp(this.appDetail);
       this.refreshAppDetail();
     },
