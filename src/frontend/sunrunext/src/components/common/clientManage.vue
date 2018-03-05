@@ -18,7 +18,7 @@
         </div>
         <div class="flexDiv-h" style="margin-top:20px;align-items:center">
           <el-radio @change="valueChanged" v-model="config.clientSplashScreenMode" label="2">自定义</el-radio>
-          <el-upload style="margin-left:20px" :action="uploadUrl" :show-file-list="false" :on-success="handleSplashSuccess" :before-upload="beforeSplashUpload">
+          <el-upload :with-credentials="true" style="margin-left:20px" :action="uploadUrl" :show-file-list="false" :on-success="handleSplashSuccess" :before-upload="beforeSplashUpload">
             <div class="flexDiv-v div-uploader">
               <img v-if="config.clientSplashScreenMediaId" :src="config.clientSplashScreenMediaId|getMediaLink" class="img-splash">
               <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>

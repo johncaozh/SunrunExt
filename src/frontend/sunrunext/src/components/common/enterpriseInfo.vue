@@ -3,7 +3,7 @@
     <div class="flexDiv-v editItemContainer">
       <div class="flexDiv-h" style="align-items:center">
         <span class="text-font-normal item-header">企业Logo</span>
-        <el-upload :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
+        <el-upload :with-credentials="true" :action="uploadUrl" :show-file-list="false" :on-success="handleLogoSuccess" :before-upload="beforeLogoUpload">
           <div class="flexDiv-v div-uploader">
             <img v-if="config.enterpriseLogoMediaId" :src="config.enterpriseLogoMediaId|getMediaLink" class="img-log">
             <i v-else class="el-icon-custom-camera" style="font-size:20px"></i>

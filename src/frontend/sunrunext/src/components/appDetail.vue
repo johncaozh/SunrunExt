@@ -5,7 +5,7 @@
       <div class="flexDiv-v">
         <div class="flexDiv-v">
           <div class="flexDiv-h app-basic" style="align-items:flex-start">
-            <el-upload v-if="isEditingNameDesc" class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-upload :with-credentials="true" v-if="isEditingNameDesc" class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
               <img v-if="editingAvatar" :src="editingAvatar|getMediaLink" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>

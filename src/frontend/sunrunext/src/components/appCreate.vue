@@ -9,7 +9,7 @@
       <el-form :model="form" ref="form" class="creatApp" :rules="formRule">
         <el-form-item label="应用Logo" :rules="[ { required: true, message: '产品Logo不能为空'}] " prop="avatar">
           <div class="avatar-container">
-            <el-upload class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-upload :with-credentials="true" class="avatar-uploader" style="border: 1px dashed #d9d9d9;height:60px" :action="uploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
               <img v-if="form.avatar" :src="form.avatar|getMediaLink" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>

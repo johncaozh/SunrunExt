@@ -109,7 +109,7 @@
             </div>
           </div>
           <div class="flexDiv-h" style="align-items:center" v-else>
-            <el-upload class="avatar-uploader" :action="uploadUrl" :show-file-list="false" :on-success="handlePhotoSuccess" :before-upload="beforePhotoUpload" v-loading="photoMessageContext.isUploading">
+            <el-upload :with-credentials="true" class="avatar-uploader" :action="uploadUrl" :show-file-list="false" :on-success="handlePhotoSuccess" :before-upload="beforePhotoUpload" v-loading="photoMessageContext.isUploading">
               <img v-if="photoMessageContext.mediaId" :src="photoMessageContext.mediaId|getMediaLink" class="avatar">
               <div class="flexDiv-v border" v-else>
                 <i class="el-icon-plus icon-plus "></i>
@@ -138,7 +138,7 @@
             <el-button type="text" style="margin-left:10px;" class="button-link" size="small" @click="cleanVoiceMessageContext">删除</el-button>
           </div>
           <div class="flexDiv-h" style="align-items:center" v-else>
-            <el-upload class="avatar-uploader" :action="uploadUrl_audio" :show-file-list="false" :on-success="handleVoiceSuccess" :before-upload="beforeVoiceUpload" :on-error="handleVoiceError" v-loading="voiceMessageContext.isUploading">
+            <el-upload :with-credentials="true" class="avatar-uploader" :action="uploadUrl_audio" :show-file-list="false" :on-success="handleVoiceSuccess" :before-upload="beforeVoiceUpload" :on-error="handleVoiceError" v-loading="voiceMessageContext.isUploading">
               <div class="flexDiv-v border">
                 <i class="el-icon-plus icon-plus "></i>
                 添加语音
@@ -192,7 +192,7 @@
             <el-button type="text" style="margin-left:10px;" class="button-link" size="small" @click="cleanFileMessageContext">删除</el-button>
           </div>
           <div class="flexDiv-h" style="align-items:center" v-else>
-            <el-upload class="avatar-uploader" :action="uploadUrl" :show-file-list="false" :on-success="handleFileSuccess" :before-upload="beforeFileUpload" :on-error="handleFileError" v-loading="fileMessageContext.isUploading">
+            <el-upload :with-credentials="true" class="avatar-uploader" :action="uploadUrl" :show-file-list="false" :on-success="handleFileSuccess" :before-upload="beforeFileUpload" :on-error="handleFileError" v-loading="fileMessageContext.isUploading">
               <div class="flexDiv-v border">
                 <i class="el-icon-plus icon-plus "></i>
                 添加文件

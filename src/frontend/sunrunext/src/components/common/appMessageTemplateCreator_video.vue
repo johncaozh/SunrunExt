@@ -7,7 +7,7 @@
       <div class="editItemContainer">
         <span class="text-font-minor">
           <img :src="thumbMediaId|getMediaLink" style="width:100px" v-show="mediaId" />
-          <el-upload :show-file-list="false" :on-success="handleVideoSuccess" :before-upload="beforeVideoUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl_video">
+          <el-upload :with-credentials="true" :show-file-list="false" :on-success="handleVideoSuccess" :before-upload="beforeVideoUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl_video">
             <el-button type="text" class="button-link" style="margin-right:10px;">{{mediaId?"更改":"添加视频"}}</el-button>
           </el-upload>
           <span v-show="!mediaId">

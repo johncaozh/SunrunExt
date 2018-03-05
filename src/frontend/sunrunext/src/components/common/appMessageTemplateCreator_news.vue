@@ -5,15 +5,15 @@
         <input type="text" v-model="editingNew.title" placeholder="在此输入标题" class="input-title" />
       </div>
       <quill-editor v-model="editingNew.html" ref="editor" style="height:300px;margin-bottom:68px;width:735px" :options="editorOption" />
-      <el-upload ref="imageUploader" :action="uploadUrl" :before-upload='beforeImageUpload' :on-success='uploadImageSuccess' style="display:none">
+      <el-upload :with-credentials="true" ref="imageUploader" :action="uploadUrl" :before-upload='beforeImageUpload' :on-success='uploadImageSuccess' style="display:none">
         <el-button size="small" type="primary" id="imageInput" v-loading.fullscreen.lock="fullscreenLoading" element-loading-text="插入中,请稍候">点击上传</el-button>
       </el-upload>
-      <el-upload ref="videoUploader" :action="uploadUrl_video" :before-upload='beforeVideoUpload' :on-success='uploadVideoSuccess' style="display:none">
+      <el-upload :with-credentials="true" ref="videoUploader" :action="uploadUrl_video" :before-upload='beforeVideoUpload' :on-success='uploadVideoSuccess' style="display:none">
         <el-button size="small" type="primary" id="videoInput" v-loading.fullscreen.lock="fullscreenLoading" element-loading-text="插入中,请稍候">点击上传</el-button>
       </el-upload>
       <div class="editItemContainer">
         <div class="flexDiv-h" style="align-items:flex-start">
-          <el-upload style="flex:1" :action="uploadUrl" :before-upload='beforeFileUpload' :on-success='uploadFileSuccess' :file-list="editingNew.files" :multiple="false">
+          <el-upload :with-credentials="true" style="flex:1" :action="uploadUrl" :before-upload='beforeFileUpload' :on-success='uploadFileSuccess' :file-list="editingNew.files" :multiple="false">
             <i class="el-icon-custom-attachment" />
             <el-button type="text" class="button-link" style="padding:0px">{{editingNew.files.length>0?'继续添加...':'添加附件...'}}</el-button>
           </el-upload>
@@ -26,7 +26,7 @@
       <div class="editItemContainer">
         <span class="text-font-minor">
           <img :src="editingNew.mediaId|getMediaLink" style="width:120px;height:60px;" v-show="editingNew.mediaId" />
-          <el-upload :show-file-list="false" :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl">
+          <el-upload :with-credentials="true" :show-file-list="false" :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload" v-loading="isUploading" style="display:inline-block" :action="uploadUrl">
             <el-button type="text" class="button-link" style="margin-right:10px;">{{editingNew.mediaId?"更改":"添加封面图"}}</el-button>
           </el-upload>
           <span v-show="!editingNew.mediaId">
