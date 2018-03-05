@@ -1,7 +1,7 @@
 <template>
   <div id='root'>
     <div id='menu'>
-      <el-menu theme="dark" :default-active="defaultActive" mode="horizontal" :router="true" class="menu" style="border-bottom:0px" text-color="#2F5981" active-text-color="#36648F">
+      <el-menu theme="dark" :default-active="defaultActive" mode="horizontal" :router="true" class="menu" style="border-bottom:0px;min-width:800px" text-color="#2F5981" active-text-color="#36648F">
         <el-menu-item index="/home" class="menuItem">首页</el-menu-item>
         <el-menu-item index="/orgs" class="menuItem">组织架构</el-menu-item>
         <el-menu-item index="/apps" class="menuItem">企业应用</el-menu-item>
@@ -42,6 +42,7 @@ export default {
   background: white;
   -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  min-width: 1080px;
 }
 
 #content {

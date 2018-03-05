@@ -52,8 +52,6 @@ export default {
   background-color: @color-theme;
   color: #a4aebd;
   z-index: 1000;
-  padding-left: 200px;
-  padding-right: 200px;
   display: flex;
   align-items: center;
   justify-content: space-between;

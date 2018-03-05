@@ -19,14 +19,6 @@ router.post("/login", api.catchAsyncErrors(async function (req, res, next) {
     }
 
     var logonUserData = null;
-<<<<<<< HEAD
-
-    if (postData.mode == "system") {
-        var systemName = postData.userId;
-        var passsWord = postData.passsWord;
-
-        if (env.serverEndConfig.superAdmin != systemName || env.serverEndConfig.sunperAdminPWD != passsWord) {
-=======
     var userId = null;
 
     if (postData.mode == "system") {
@@ -34,7 +26,6 @@ router.post("/login", api.catchAsyncErrors(async function (req, res, next) {
         var passWord = postData.password;
 
         if (env.serverEndConfig.superAdmin != userId || env.serverEndConfig.sunperAdminPWD != passWord) {
->>>>>>> a4c71ea046a3c75a2b7368054cbc75f99e92c8c2
             api.attachData2Response(403, "账号或密码错误。", null, res);
             next();
             return;
@@ -52,16 +43,9 @@ router.post("/login", api.catchAsyncErrors(async function (req, res, next) {
             return;
         }
 
-<<<<<<< HEAD
-        var {
-            id,
-            userId
-        } = await iam.verifyST(st);
-=======
         var verifyData = await iam.verifyST(st);
         userId = verifyData.userId;
         var id = verifyData.id;
->>>>>>> a4c71ea046a3c75a2b7368054cbc75f99e92c8c2
 
         if (!id) {
             api.attachData2Response(403, "验证ST失败", null, res);
@@ -105,11 +89,8 @@ router.post("/login", api.catchAsyncErrors(async function (req, res, next) {
             api.attachData2Response(403, err, null, res);
             next();
         } else {
-<<<<<<< HEAD
-=======
             req.session.userId = userId;
             req.session.save();
->>>>>>> a4c71ea046a3c75a2b7368054cbc75f99e92c8c2
             api.attachData2Response(200, "登录成功", logonUserData, res);
             next();
         }
