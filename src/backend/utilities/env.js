@@ -11,9 +11,9 @@ const serverEndConfig = {
 }
 
 const iamConfig = {
-    service: "https://192.168.0.180:9531/sunruniam",
-    access_key: "Xctpww9mCiQV1W74vkK4Rj7vSZDe0j21",
-    access_secret: "1grsPpqMA65iSQH3hDC8y8MEIWUtkJ",
+    service: "https://10.50.0.5:9531/sunruniam",
+    access_key: "Ewx3EBwZWhGxip8tVFZO2RCLsUTCKz1",
+    access_secret: "9P7AkNiuR586Jt5CFDyHPSQjqexZwX",
     registerProductName: "SunrunExt",
 }
 
