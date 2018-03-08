@@ -1,25 +1,29 @@
 <template>
-    <div>
-        <sub-header></sub-header>
-        <div class="flexDiv-h" style="flex:1">
-            <div class="flexDiv-v div-aside">
-                <el-input v-model="filterText " placeholder="配置节点" prefix-icon="el-icon-search" size="mini" />
-                <el-tree v-loading="loading " :filter-node-method="filterNode" ref="tree" node-key="id" :render-content="renderTreaNode" @current-change="orgSelected" :data="treeData" :highlight-current="true" :props="defaultProps " style="background:transparent;margin-top:10px"></el-tree>
-                <el-button @click="mkdir">mkdir</el-button>
-                <el-button @click="createNode">createnode</el-button>
-                <el-button @click="setData">setData</el-button>
-                <el-button @click="getData">getData</el-button>
-            </div>
-            <!-- <el-table :data="users " style="width:100%">
-                <el-table-column prop="name" label="Name" width="280">
-                </el-table-column>
-                <el-table-column prop="value" label="Value" width="280">
-                </el-table-column>
-                <el-table-column prop="email" label="操作">
-                </el-table-column>
-            </el-table> -->
-        </div>
+  <div>
+    <sub-header></sub-header>
+    <div class="flexDiv-h" style="flex:1">
+      <div class="flexDiv-v div-aside">
+        <el-input v-model="filterText " placeholder="配置节点" prefix-icon="el-icon-search" size="mini" />
+        <el-tree v-loading="loading " :filter-node-method="filterNode" ref="tree" node-key="id" :render-content="renderTreaNode" @current-change="orgSelected" :data="treeData" :highlight-current="true" :props="defaultProps " style="background:transparent;margin-top:10px"></el-tree>
+        <el-button @click="mkdir">mkdir</el-button>
+        <el-button @click="createNode">createnode</el-button>
+        <el-button @click="setData">setData</el-button>
+        <el-button @click="getData">getData</el-button>
+      </div>
+      <el-table :data="selectedNode.children" style="width:100%">
+        <el-table-column prop="name" label="Name" width="280">
+        </el-table-column>
+        <el-table-column prop="value" label="Value" width="280">
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
+  </div>
 </template>
 
 <script>
@@ -37,6 +41,7 @@ export default {
         name: "根目录",
         id: "/",
         path: "/",
+        value: null,
         children: null
       },
       selectedNode: null,
