@@ -22,6 +22,7 @@ const serverConfig = {
   appGroupsSegment: "appGroups",
   productsSegment: "products",
   configSegment: "config",
+  zkSegment: "zk",
   loginSegment: "login",
   logoutSegment: "logout",
 }

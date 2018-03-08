@@ -37,7 +37,6 @@ export default {
   },
   watch: {
     filterText(val) {
-      console.log("fd");
       this.$refs.tree.filter(val);
     }
   },

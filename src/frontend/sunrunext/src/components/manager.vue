@@ -48,6 +48,14 @@
                 <span class="text-font-minor item-desc">可通过使用平台提供的API接口，轻松实现消息推送、文件上传、文件预览等功能</span>
             </div>
         </div>
+        <div class="flexDiv-h div-item" @click="$router.push('./manager/configPublish')">
+            <span class="item-icon" style="background-position: -551px -70px;">
+            </span>
+            <div class="flexDiv-v" style="flex:1">
+                <span class="item-header">配置发布</span>
+                <span class="text-font-minor item-desc">提供订阅发布模式，保证观察者可即时获得最新的配置</span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -87,5 +95,3 @@ export default {};
   margin-top: 5px;
 }
 </style>
-
-

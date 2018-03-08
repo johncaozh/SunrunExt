@@ -6,8 +6,9 @@ const serverEndConfig = {
     downloadResUrl: "", //下载资源的Url
     mongoDB: "mongodb://localhost:27017/sunrunExt", //mongoDB数据库连接字符串
     staticFileDir: path.resolve(__dirname, "../files"), //用于存放文件的文件夹绝对路径
-    superAdmin: "admin",//超级管理员账号
-    sunperAdminPWD: 'sunrun38288446',//超级管理员密码
+    superAdmin: "admin", //超级管理员账号
+    sunperAdminPWD: 'sunrun38288446', //超级管理员密码,
+    zookeeper: '10.21.1.150:2181,10.21.1.150:2182,10.21.1.150:2183', //zookeeper集群地址
 }
 
 const iamConfig = {

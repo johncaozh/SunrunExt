@@ -28,14 +28,15 @@ var v1_router_managerGroup = require('./routers/api/v1/managerGroup');
 var v1_router_appGroup = require('./routers/api/v1/appGroup');
 var v1_router_product = require('./routers/api/v1/product');
 var v1_router_authentication = require('./routers/api/v1/authentication');
+var v1_router_zk = require('./routers/api/v1/zk');
 
 var promise = mongoose.connect(env.serverEndConfig.mongoDB, {
     useMongoClient: true
 });
 
 promise.then(db => {
-    logger.info("连接数据库成功。");
-})
+        logger.info("连接数据库成功。");
+    })
     .catch(error => {
         logger.fatal("连接数据库失败：" + error);
     });
@@ -93,11 +94,11 @@ app.use(function (req, res, next) {
 
     logger.info(`url:${req.url},method:${req.method},request by ${userId}`);
 
-    if (req.url !== '/api/v1/login' && !req.Authenticationed) {
-        res.status(403);
-        res.end();
-        return;
-    }
+    // if (req.url !== '/api/v1/login' && !req.Authenticationed) {
+    //     res.status(403);
+    //     res.end();
+    //     return;
+    // }
 
     next();
 });
@@ -114,6 +115,7 @@ app.use("/api/v1/", v1_router_managerGroup.router);
 app.use("/api/v1/", v1_router_appGroup);
 app.use("/api/v1/", v1_router_product);
 app.use("/api/v1/", v1_router_authentication);
+app.use("/api/v1/", v1_router_zk);
 
 //生成特定格式的响应
 app.use(function (req, res, next) {
@@ -149,7 +151,10 @@ app.use((err, req, res, next) => {
 //根据项目的路径导入生成的证书文件  
 var privateKey = fs.readFileSync(path.join(__dirname, './certificate/private.pem'), 'utf8');
 var certificate = fs.readFileSync(path.join(__dirname, './certificate/file.crt'), 'utf8');
-var credentials = { key: privateKey, cert: certificate };
+var credentials = {
+    key: privateKey,
+    cert: certificate
+};
 
 var httpsServer = https.createServer(credentials, app);
 

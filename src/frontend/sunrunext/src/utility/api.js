@@ -1,6 +1,8 @@
 import axios from 'axios';
 import env from './env';
-import { Message } from 'element-ui';
+import {
+  Message
+} from 'element-ui';
 import router from '../router/index.js';
 
 axios.defaults.baseURL = env.serverConfig.serverEndPoint;
@@ -17,7 +19,9 @@ axios.interceptors.response.use(function (response) {
       Message.error("操作超时，请重新登录。");
       router.replace({
         path: '/login',
-        query: { redirect: router.currentRoute.fullPath }
+        query: {
+          redirect: router.currentRoute.fullPath
+        }
       })
     }
   }
@@ -266,6 +270,70 @@ export default {
   async getProducts() {
     var url = env.serverConfig.productsSegment;
     return axios.get(url);
+  },
+
+
+  async zk_getChildren(path) {
+    var url = env.serverConfig.zkSegment;
+
+    if (path)
+      url = `${url}?path=${path}&action=getChildren`;
+
+    return axios.get(url);
+  },
+
+  async zk_getData(path) {
+    var url = env.serverConfig.zkSegment;
+
+    if (path)
+      url = `${url}?path=${path}&action=getData`;
+
+    return axios.get(url);
+  },
+
+  async zk_setData(path, value) {
+    var url = env.serverConfig.zkSegment;
+
+    var data = {
+      path: path,
+      value: value,
+    }
+
+    return axios.put(url, data);
+  },
+
+  async zk_createNode(path, value) {
+    var url = env.serverConfig.zkSegment;
+    var data = {
+      path: path,
+      value: value,
+    }
+    return axios.post(url, data);
+  },
+
+  async zk_createNode(path, data) {
+    var url = env.serverConfig.zkSegment;
+    var data = {
+      path: path,
+      value: data,
+    }
+    return axios.post(url, data);
+  },
+
+  async zk_mkdir(path) {
+    var url = env.serverConfig.zkSegment;
+    url = `${url}?action=mkdir`;
+
+    var data = {
+      path: path
+    }
+    return axios.post(url, data);
+  },
+
+  async zk_remove(path) {
+    var url = env.serverConfig.zkSegment;
+    url = `${url}?path=${path}`;
+    return axios.delete(url);
   },
 
   async getConfig() {
