@@ -10,9 +10,11 @@ import './assets/common.css';
 import filter from './utility/filter'
 import VueLazyload from 'vue-lazyload'
 import helper from "./utility/helper";
+import VueClipboard from 'vue-clipboard2'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(VueClipboard);
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,

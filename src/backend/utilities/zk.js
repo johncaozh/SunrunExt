@@ -54,8 +54,8 @@ async function create(path, data) {
     return new Promise(function (resolve, reject) {
         zkClient.create(
             path,
-            data,
-            zookeeper.CreateMode.EPHEMERAL,
+            new Buffer(data),
+            zookeeper.CreateMode.PERSISTENT,
             function (error, path) {
                 if (error) {
                     reject(error.stack);

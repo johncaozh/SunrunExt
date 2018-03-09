@@ -275,19 +275,13 @@ export default {
 
   async zk_getChildren(path) {
     var url = env.serverConfig.zkSegment;
-
-    if (path)
-      url = `${url}?path=${path}&action=getChildren`;
-
+    url = `${url}?path=${path||'/'}&action=getChildren`;
     return axios.get(url);
   },
 
   async zk_getData(path) {
     var url = env.serverConfig.zkSegment;
-
-    if (path)
-      url = `${url}?path=${path}&action=getData`;
-
+    url = `${url}?path=${path||'/'}&action=getData`;
     return axios.get(url);
   },
 
@@ -307,15 +301,6 @@ export default {
     var data = {
       path: path,
       value: value,
-    }
-    return axios.post(url, data);
-  },
-
-  async zk_createNode(path, data) {
-    var url = env.serverConfig.zkSegment;
-    var data = {
-      path: path,
-      value: data,
     }
     return axios.post(url, data);
   },
