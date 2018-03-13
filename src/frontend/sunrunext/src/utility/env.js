@@ -1,8 +1,8 @@
 const serverConfig = {
   requestTimeout: 60000,
-  iamLoginRedirectUrl: "https://10.50.0.5:9531/sunruniam/sso/login",
-  iamLogoutRedirectUrl: "https://10.50.0.5:9531/sunruniam/sso/logout",
-  serverEndPoint: "https://localhost:8443/api/v1/",
+  iamLoginRedirectUrl: "https://10.50.0.5:9531/iam/sso/login",
+  iamLogoutRedirectUrl: "https://10.50.0.5:9531/iam/sso/logout",
+  serverEndPoint: "https://192.168.103.184:8443/api/v1/",
   apiDocsServerEndPoint: 'http://10.11.13.252:8084',
   filesSegment: "files",
   filesSegment_audio: "files/audio",

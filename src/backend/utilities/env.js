@@ -12,7 +12,7 @@ const serverEndConfig = {
 }
 
 const iamConfig = {
-    service: "https://10.50.0.5:9531/sunruniam",
+    service: "https://10.50.0.5:9531/iam",
     access_key: "Ewx3EBwZWhGxip8tVFZO2RCLsUTCKz1",
     access_secret: "9P7AkNiuR586Jt5CFDyHPSQjqexZwX",
     registerProductName: "SunrunExt",

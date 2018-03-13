@@ -94,11 +94,11 @@ app.use(function (req, res, next) {
 
     logger.info(`url:${req.url},method:${req.method},request by ${userId}`);
 
-    // if (req.url !== '/api/v1/login' && !req.Authenticationed) {
-    //     res.status(403);
-    //     res.end();
-    //     return;
-    // }
+    if (req.url !== '/api/v1/login' && !req.Authenticationed) {
+        res.status(403);
+        res.end();
+        return;
+    }
 
     next();
 });

@@ -11,7 +11,7 @@ var accessToken = null;
 
 //刷新AccessToken
 async function refreshAccessToken() {
-    var getAcessTokenUrl = `${env.iamConfig.service}/oauth2/token?grant_type=client_credentials&access_key=${env.iamConfig.access_key}&access_secret=${env.iamConfig.access_secret}&scope=SunrunIAM-api:*:*:*`
+    var getAcessTokenUrl = `${env.iamConfig.service}/oauth2/token?grant_type=client_credentials&access_key=${env.iamConfig.access_key}&access_secret=${env.iamConfig.access_secret}&scope=iam-api:*:*:*`
 
     try {
         var getAccessTokenRes = await rq({
