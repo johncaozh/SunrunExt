@@ -335,8 +335,12 @@
             <h3 id="menu-previewfile">文件接口</h3>
             <span class="desc">从本地存储或者沙箱中选择文件</span>
             <button class="btn btn_primary" id="chooseFile">chooseFile</button>
+            <span class="desc">从云盘中选择文件</span>
+            <button class="btn btn_primary" id="chooseFileFromCloudStorage">chooseFileFromCloudStorage</button>
             <span class="desc">文件预览接口</span>
             <button class="btn btn_primary" id="previewFile">previewFile</button>
+            <span class="desc">收藏文件接口</span>
+            <button class="btn btn_primary" id="favoriteFile">favoriteFile</button>
             <span class="desc">上传文件接口</span>
             <button class="btn btn_primary" id="uploadFile">uploadFile</button>
             <span class="desc">下载文件接口</span>
@@ -388,6 +392,8 @@
             <button class="btn btn_primary" id="buildAndOpenGroupChat">buildAndOpenGroupChat</button>
             <span class="desc">打开应用会话</span>
             <button class="btn btn_primary" id="openAppChat">openAppChat</button>
+            <span class="desc">打开音视频聊天</span>
+            <button class="btn btn_primary" id="openAudioVideoChat">openAudioVideoChat</button>
         </div>
     </div>
 </body>
@@ -410,13 +416,15 @@
             'shareWeiboApp', 'favorite', 'mail', 'openByBrowser', 'onHistoryBack', 'startRecord',
             'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd',
             'uploadVoice', 'downloadVoice', 'translateVoice', 'chooseImage', 'previewImage', 'uploadImage',
-            'downloadImage', 'getImageInfo', 'chooseFile', 'previewFile', 'uploadFile', 'downloadFile',
+            'downloadImage', 'getImageInfo', 'chooseFile', 'chooseFileFromCloudStorage', 'previewFile',
+            'favoriteFile', 'uploadFile',
+            'downloadFile',
             'getFileInfo',
             'getNetworkType',
             'openLocation', 'getLocation', 'hideOptionMenu', 'showOptionMenu', 'closeWindow',
             'hideMenuItems', 'showMenuItems', 'hideAllNonBaseMenuItem', 'showAllNonBaseMenuItem',
             'scanQRCode', 'selectContact', 'getUserInfo', 'redirectInApp', 'openUserChat', 'openGroupChat',
-            'buildAndOpenGroupChat', 'openAppChat'
+            'buildAndOpenGroupChat', 'openAppChat', 'openAudioVideoChat',
         ]
     });
 </script>

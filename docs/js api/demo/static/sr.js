@@ -607,11 +607,30 @@
                     }());
                 }, //end 'chooseFile' API
 
+                chooseFileFromCloudStorage: function (callbackObj) {
+                    invokeCmd('chooseFileFromCloudStorage', {
+                        count: callbackObj.count || 9,
+                    }, function () {
+                        callbackObj._complete = function (res) {};
+
+                        return callbackObj;
+                    }());
+                }, //end 'chooseFileFromCloudStorage' API
+
                 previewFile: function (callbackObj) {
                     invokeCmd("previewFile", {
-                        url: callbackObj.url
+                        serverId: callbackObj.serverId,
+                        name: callbackObj.name,
+                        size: callbackObj.size
                     }, callbackObj);
                 }, //end 'previewFile' API
+
+                favoriteFile: function (callbackObj) {
+                    invokeCmd("favoriteFile", {
+                        serverId: callbackObj.serverId,
+                        name: callbackObj.name,
+                    }, callbackObj);
+                }, //end 'favoriteFile' API
 
                 uploadFile: function (callbackObj) {
                     invokeCmd('uploadFile', {
@@ -804,6 +823,12 @@
                         appId: callbackObj.appId
                     }, callbackObj);
                 }, //add "打开应用会话" API
+
+                openAudioVideoChat: function (callbackObj) {
+                    invokeCmd("openAudioVideoChat", {
+                        userId: callbackObj.userId
+                    }, callbackObj);
+                }, //add "打开音视频聊天" API
             };
 
             if (setGlobal)

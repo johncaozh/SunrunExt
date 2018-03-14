@@ -336,15 +336,15 @@ sr.ready(function () {
 
   // 4 图片接口
   var images = {
-    localId: [],
-    serverId: []
+    localIds: [],
+    serverIds: []
   };
 
   // 4.1 拍照、本地选图
   document.querySelector('#chooseImage').onclick = function () {
     sr.chooseImage({
       success: function (res) {
-        images.localId = res.localIds;
+        images.localIds = res.localIds;
         alert('已选择 ' + res.localIds.length + ' 张图片');
       }
     });
@@ -364,21 +364,21 @@ sr.ready(function () {
 
   // 4.3 上传图片
   document.querySelector('#uploadImage').onclick = function () {
-    if (images.localId.length == 0) {
+    if (images.localIds.length == 0) {
       alert('请先使用 chooseImage 接口选择图片');
       return;
     }
     var i = 0,
-      length = images.localId.length;
-    images.serverId = [];
+      length = images.localIds.length;
+    images.serverIds = [];
 
     function upload() {
       sr.uploadImage({
-        localId: images.localId[i],
+        localId: images.localIds[i],
         success: function (res) {
           i++;
           //alert('已上传：' + i + '/' + length);
-          images.serverId.push(res.serverId);
+          images.serverIds.push(res.serverId);
           if (i < length) {
             upload();
           }
@@ -393,21 +393,21 @@ sr.ready(function () {
 
   // 4.4 下载图片
   document.querySelector('#downloadImage').onclick = function () {
-    if (images.serverId.length === 0) {
+    if (images.serverIds.length === 0) {
       alert('请先使用 uploadImage 上传文件');
       return;
     }
     var i = 0,
-      length = images.serverId.length;
-    images.localId = [];
+      length = images.serverIds.length;
+    images.localIds = [];
 
     function download() {
       sr.downloadImage({
-        serverId: images.serverId[i],
+        serverId: images.serverIds[i],
         success: function (res) {
           i++;
           alert('已下载：' + i + '/' + length);
-          images.localId.push(res.localId);
+          images.localIds.push(res.localId);
           if (i < length) {
             download();
           }
@@ -419,17 +419,17 @@ sr.ready(function () {
 
   // 5.4 获取图片信息
   document.querySelector('#getImageInfo').onclick = function () {
-    if (images.localId.length == 0) {
+    if (images.localIds.length == 0) {
       alert('请先使用 chooseImage 接口选择图片');
       return;
     }
     var i = 0,
-      length = images.localId.length;
-    images.serverId = [];
+      length = images.localIds.length;
+    images.serverIds = [];
 
     function getInfo() {
       sr.getImageInfo({
-        localId: images.localId[i],
+        localId: images.localIds[i],
         getThumb: true,
         maxThumbLength: 64,
         success: function (res) {
@@ -453,16 +453,30 @@ sr.ready(function () {
 
   // 5 文件接口
   var files = {
-    localId: [],
-    serverId: []
+    localIds: [],
+    serverIds: []
   };
 
   // 5.1 选择文件
   document.querySelector('#chooseFile').onclick = function () {
     sr.chooseFile({
       success: function (res) {
-        files.localId = res.localIds;
+        files.localIds = res.localIds;
         alert('已选择 ' + res.localIds.length + ' 个文件');
+      }
+    });
+  };
+
+  // 5.2 从云盘选择文件
+  document.querySelector('#chooseFileFromCloudStorage').onclick = function () {
+    sr.chooseFileFromCloudStorage({
+      success: function (res) {
+        var firstFile = res.serverFiles[0];
+        var serverId = firstFile.serverId; //s3 object key
+        var name = firstFile.name; //文件名
+        var size = firstFile.size; //文件大小
+        files.serverIds = res.serverFiles.map(i => i.serverId);
+        alert('已选择 ' + res.serverFiles.length + ' 个文件');
       }
     });
   };
@@ -470,29 +484,37 @@ sr.ready(function () {
   // 5.2 文件预览
   document.querySelector('#previewFile').onclick = function () {
     sr.previewFile({
-      url: 'http://img5.douban.com/view/photo/photo/public/p1353993776.jpg',
+      serverId: 's3 object key',
       name: "test.doc",
       size: 1048576
     });
   };
 
-  // 5.3 上传文件
+  // 5.3 收藏文件
+  document.querySelector('#favoriteFile').onclick = function () {
+    sr.favoriteFile({
+      serverId: 's3 object key',
+      name: "test.doc",
+    });
+  };
+
+  // 5.4 上传文件
   document.querySelector('#uploadFile').onclick = function () {
-    if (files.localId.length == 0) {
+    if (files.localIds.length == 0) {
       alert('请先使用 chooseFile 接口选择文件');
       return;
     }
     var i = 0,
-      length = files.localId.length;
-    files.serverId = [];
+      length = files.localIds.length;
+    files.serverIds = [];
 
     function upload() {
       sr.uploadFile({
-        localId: files.localId[i],
+        localId: files.localIds[i],
         success: function (res) {
           i++;
           //alert('已上传：' + i + '/' + length);
-          files.serverId.push(res.serverId);
+          files.serverIds.push(res.serverId);
           if (i < length) {
             upload();
           }
@@ -505,23 +527,23 @@ sr.ready(function () {
     upload();
   };
 
-  // 5.4 下载文件
+  // 5.5 下载文件
   document.querySelector('#downloadFile').onclick = function () {
-    if (files.serverId.length === 0) {
+    if (files.serverIds.length === 0) {
       alert('请先使用 uploadImage 上传图片');
       return;
     }
     var i = 0,
-      length = files.serverId.length;
-    files.localId = [];
+      length = files.serverIds.length;
+    files.localIds = [];
 
     function download() {
       sr.downloadFile({
-        serverId: files.serverId[i],
+        serverId: files.serverIds[i],
         success: function (res) {
           i++;
           alert('已下载：' + i + '/' + length);
-          files.localId.push(res.localId);
+          files.localIds.push(res.localId);
           if (i < length) {
             download();
           }
@@ -531,19 +553,19 @@ sr.ready(function () {
     download();
   };
 
-  // 5.4 获取文件信息
+  // 5.6 获取文件信息
   document.querySelector('#getFileInfo').onclick = function () {
-    if (files.localId.length == 0) {
+    if (files.localIds.length == 0) {
       alert('请先使用 chooseFile 接口选择文件');
       return;
     }
     var i = 0,
-      length = files.localId.length;
-    files.serverId = [];
+      length = files.localIds.length;
+    files.serverIds = [];
 
     function getInfo() {
       sr.getFileInfo({
-        localId: files.localId[i],
+        localId: files.localIds[i],
         success: function (res) {
           alert(`第 ${i} 个文件的信息:
                  文件名：${res.fileName}
@@ -731,7 +753,7 @@ sr.ready(function () {
   // 11.1 打开用户会话
   document.querySelector('#openUserChat').onclick = function () {
     sr.openUserChat({
-      userId: "czq",
+      userId: "czq", //需要具体的用户Id
       success: function (res) {
         alert("打开用户会话成功");
       },
@@ -768,7 +790,7 @@ sr.ready(function () {
     });
   };
 
-  // 11.2 打开应用会话
+  // 11.4 打开应用会话
   document.querySelector('#openAppChat').onclick = function () {
     sr.openAppChat({
       appId: "473248328404320", //需要具体的appId
@@ -777,6 +799,19 @@ sr.ready(function () {
       },
       fail: function (res) {
         alert("打开应用会话失败");
+      }
+    });
+  };
+
+  // 11.5 打开应用会话
+  document.querySelector('#openAudioVideoChat').onclick = function () {
+    sr.openAppChat({
+      userId: "czq", //需要具体的用户Id
+      success: function (res) {
+        alert("音视频聊天成功");
+      },
+      fail: function (res) {
+        alert("音视频聊天失败");
       }
     });
   };
