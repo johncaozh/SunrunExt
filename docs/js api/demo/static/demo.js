@@ -803,15 +803,15 @@ sr.ready(function () {
     });
   };
 
-  // 11.5 打开应用会话
+  // 11.5 打开音视频聊天
   document.querySelector('#openAudioVideoChat').onclick = function () {
-    sr.openAppChat({
+    sr.openAudioVideoChat({
       userId: "czq", //需要具体的用户Id
       success: function (res) {
-        alert("音视频聊天成功");
+        alert("打开音视频聊天成功");
       },
       fail: function (res) {
-        alert("音视频聊天失败");
+        alert("打开音视频聊天失败");
       }
     });
   };
