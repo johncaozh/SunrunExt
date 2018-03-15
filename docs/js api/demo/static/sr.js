@@ -21,14 +21,6 @@
         }
 
         function bindEvent(targetItem, callbackObj, debugCallback) {
-            // alert("测试ON接口");
-
-            // if (glob.SRJSBridge) {
-            //     alert("检查到SRJSBridge全局对象");
-            // } else {
-            //     alert("没有检查到SRJSBridge全局对象");
-            // }
-
             if (isAndroid) {
                 var callbackName = targetItem + "Callback";
                 glob[callbackName] = function (res) {
@@ -624,6 +616,14 @@
                         size: callbackObj.size
                     }, callbackObj);
                 }, //end 'previewFile' API
+
+                printFile: function (callbackObj) {
+                    invokeCmd("printFile", {
+                        serverId: callbackObj.serverId,
+                        name: callbackObj.name,
+                        size: callbackObj.size
+                    }, callbackObj);
+                }, //end 'printFile' API
 
                 favoriteFile: function (callbackObj) {
                     invokeCmd("favoriteFile", {

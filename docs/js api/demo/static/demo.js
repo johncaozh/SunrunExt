@@ -417,7 +417,7 @@ sr.ready(function () {
     download();
   };
 
-  // 5.4 获取图片信息
+  // 4.5 获取图片信息
   document.querySelector('#getImageInfo').onclick = function () {
     if (images.localIds.length == 0) {
       alert('请先使用 chooseImage 接口选择图片');
@@ -481,7 +481,7 @@ sr.ready(function () {
     });
   };
 
-  // 5.2 文件预览
+  // 5.3 文件预览
   document.querySelector('#previewFile').onclick = function () {
     sr.previewFile({
       serverId: 's3 object key',
@@ -490,7 +490,16 @@ sr.ready(function () {
     });
   };
 
-  // 5.3 收藏文件
+  // 5.4 文件打印
+  document.querySelector('#printFile').onclick = function () {
+    sr.printFile({
+      serverId: 's3 object key',
+      name: "test.doc",
+      size: 1048576
+    });
+  };
+
+  // 5.5 收藏文件
   document.querySelector('#favoriteFile').onclick = function () {
     sr.favoriteFile({
       serverId: 's3 object key',
@@ -498,7 +507,7 @@ sr.ready(function () {
     });
   };
 
-  // 5.4 上传文件
+  // 5.6 上传文件
   document.querySelector('#uploadFile').onclick = function () {
     if (files.localIds.length == 0) {
       alert('请先使用 chooseFile 接口选择文件');
@@ -527,7 +536,7 @@ sr.ready(function () {
     upload();
   };
 
-  // 5.5 下载文件
+  // 5.7 下载文件
   document.querySelector('#downloadFile').onclick = function () {
     if (files.serverIds.length === 0) {
       alert('请先使用 uploadImage 上传图片');
@@ -553,7 +562,7 @@ sr.ready(function () {
     download();
   };
 
-  // 5.6 获取文件信息
+  // 5.8 获取文件信息
   document.querySelector('#getFileInfo').onclick = function () {
     if (files.localIds.length == 0) {
       alert('请先使用 chooseFile 接口选择文件');
