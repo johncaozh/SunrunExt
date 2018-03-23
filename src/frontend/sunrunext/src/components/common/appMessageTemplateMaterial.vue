@@ -239,7 +239,6 @@ export default {
     hideTempldateCreator() {
       this.editingTemplate = null;
       this.dialogVisible = false;
-    alert("fd")
       this.$refs.appMessageTemplateCreator.clean();
     },
     selectTemplate(template) {
