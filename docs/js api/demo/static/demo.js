@@ -60,9 +60,9 @@ sr.ready(function () {
     alert('已注册获取“发送给朋友”状态事件');
   };
 
-  // 2.2监听“小部件”，按钮点击、自定义小部件内容及分享结果接口
-  document.querySelector('#onMenuWidget').onclick = function () {
-    sr.onMenuWidget({
+  // 2.2监听“添加小部件”，按钮点击、自定义小部件内容及分享结果接口
+  document.querySelector('#onMenuAddWidgets').onclick = function () {
+    sr.onMenuAddWidgets({
       widgets: [{
         title: "测试小部件",
         desc: "用于测试",
