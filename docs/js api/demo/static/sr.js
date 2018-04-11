@@ -392,6 +392,16 @@
                     }, shareParam);
                 }, //end 'onMenuShareAppMessage' API
 
+                onMenuAddWidgets: function (shareParam) {
+                    bindEvent("onMenuAddWidgets", {
+                        complete: function () {
+                            invokeCmd('addWidgets', {
+                                widgets: shareParam
+                            }, shareParam);
+                        }
+                    }, shareParam);
+                }, //end 'onMenuAddWidgets' API
+
                 onMenuShareWechat: function (shareParam) {
                     bindEvent("onMenuShareWechat", {
                         complete: function () {

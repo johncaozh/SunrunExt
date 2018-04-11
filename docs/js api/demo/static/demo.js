@@ -60,6 +60,32 @@ sr.ready(function () {
     alert('已注册获取“发送给朋友”状态事件');
   };
 
+  // 2.2监听“小部件”，按钮点击、自定义小部件内容及分享结果接口
+  document.querySelector('#onMenuWidget').onclick = function () {
+    sr.onMenuWidget({
+      widgets: [{
+        title: "测试小部件",
+        desc: "用于测试",
+        height: 200,
+        url: "http://10.11.13.252:8080/project",
+      }],
+      trigger: function (res) {
+        // 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+        alert('用户点击添加小部件');
+      },
+      success: function (res) {
+        alert('已添加小部件');
+      },
+      cancel: function (res) {
+        alert('已取消');
+      },
+      fail: function (res) {
+        alert(JSON.stringify(res));
+      }
+    });
+    alert('已注册获取“小部件”状态事件');
+  };
+
   // 2.3监听“分享到微信”，按钮点击、自定义分享内容及分享结果接口
   document.querySelector('#onMenuShareWechat').onclick = function () {
     sr.onMenuShareAppMessage({
