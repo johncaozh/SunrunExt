@@ -632,6 +632,18 @@ sr.ready(function () {
     });
   };
 
+  // 6.2 获取接入Wifi的BSSID
+  document.querySelector('#getWifiBSSID').onclick = function () {
+    sr.getWifiBSSID({
+      success: function (res) {
+        alert(res.bssid);
+      },
+      fail: function (res) {
+        alert(JSON.stringify(res));
+      }
+    });
+  };
+
   // 7 地理位置接口
   // 7.1 查看地理位置
   document.querySelector('#openLocation').onclick = function () {

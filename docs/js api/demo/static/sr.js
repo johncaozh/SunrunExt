@@ -695,7 +695,9 @@
                     }());
                 }, //end 'getNetworkType' API
 
-
+                getWifiBSSID: function (callbackObj) {
+                    invokeCmd('getWifiBSSID', {}, callbackObj);
+                }, //end 'getWifiBSSID' API
 
                 openLocation: function (callbackObj) {
                     invokeCmd('openLocation', {
