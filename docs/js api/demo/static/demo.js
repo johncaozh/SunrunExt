@@ -661,7 +661,7 @@ sr.ready(function () {
   document.querySelector('#getLocation').onclick = function () {
     sr.getLocation({
       success: function (res) {
-        alert(`经度：${res.longitude}，纬度:${res.latitude}`);
+        alert(`经度：${res.longitude}，纬度:${res.latitude}, 地名:${res.name}`);
       },
       cancel: function (res) {
         alert('用户拒绝授权获取地理位置');
