@@ -862,6 +862,33 @@ sr.ready(function () {
       }
     });
   };
+
+  // 12 认证接口
+  // 12.1 传递TGC
+  document.querySelector('#passTGC').onclick = function () {
+    sr.passTGC({
+      tgc: "这是一个测试TGC", //需要具体的tgc
+      success: function (res) {
+        alert("传递TGC成功");
+      },
+      fail: function (res) {
+        alert("传递TGC失败");
+      }
+    });
+  };
+
+  // 12.2 传递ST
+  document.querySelector('#passST').onclick = function () {
+    sr.passST({
+      st: "这是一个测试ST", //需要具体的ST
+      success: function (res) {
+        alert("传递ST成功");
+      },
+      fail: function (res) {
+        alert("传递ST失败");
+      }
+    });
+  };
 });
 
 sr.error(function (res) {

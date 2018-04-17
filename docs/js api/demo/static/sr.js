@@ -841,6 +841,18 @@
                         userId: callbackObj.userId
                     }, callbackObj);
                 }, //add "打开音视频聊天" API
+
+                passTGC: function (callbackObj) {
+                    invokeCmd("passTGC", {
+                        tgc: callbackObj.tgc
+                    }, callbackObj);
+                }, //add "传递TGC" API
+
+                passST: function (callbackObj) {
+                    invokeCmd("passST", {
+                        st: callbackObj.st
+                    }, callbackObj);
+                }, //add "传递ST" API
             };
 
             if (setGlobal)
