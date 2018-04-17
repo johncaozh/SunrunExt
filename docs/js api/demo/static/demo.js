@@ -660,8 +660,10 @@ sr.ready(function () {
   // 7.2 获取当前地理位置
   document.querySelector('#getLocation').onclick = function () {
     sr.getLocation({
+      slient: true,
+      withThumb: true,
       success: function (res) {
-        alert(`经度：${res.longitude}，纬度:${res.latitude}, 地名:${res.name}`);
+        alert(`经度：${res.longitude}，纬度:${res.latitude}, 地名:${res.name}，缩略图：${res.thumb}`);
       },
       cancel: function (res) {
         alert('用户拒绝授权获取地理位置');
