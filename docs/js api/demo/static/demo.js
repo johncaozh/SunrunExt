@@ -636,7 +636,7 @@ sr.ready(function () {
   document.querySelector('#getWifiBSSID').onclick = function () {
     sr.getWifiBSSID({
       success: function (res) {
-        alert(res.bssid);
+        alert(`bssid:${res.bssid},name:${res.name}`);
       },
       fail: function (res) {
         alert(JSON.stringify(res));
@@ -660,8 +660,22 @@ sr.ready(function () {
   // 7.2 获取当前地理位置
   document.querySelector('#getLocation').onclick = function () {
     sr.getLocation({
+      slient: false,
+      withThumb: false,
+      success: function (res) {
+        alert(`经度：${res.longitude}，纬度:${res.latitude}, 地名:${res.name}，缩略图：${res.thumb}`);
+      },
+      cancel: function (res) {
+        alert('用户拒绝授权获取地理位置');
+      }
+    });
+  };
+
+  // 7.3 获取当前地理位置
+  document.querySelector('#getLocation_slient').onclick = function () {
+    sr.getLocation({
       slient: true,
-      withThumb: true,
+      withThumb: false,
       success: function (res) {
         alert(`经度：${res.longitude}，纬度:${res.latitude}, 地名:${res.name}，缩略图：${res.thumb}`);
       },
