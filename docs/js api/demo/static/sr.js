@@ -715,7 +715,10 @@
                 getLocation: function (callbackObj) {
                     callbackObj = callbackObj || {};
 
-                    invokeCmd("getLocation", {}, function () {
+                    invokeCmd("getLocation", {
+                        slient: callbackObj.slient,
+                        withThumb: callbackObj.withThumb
+                    }, function () {
                         callbackObj._complete = function (res) {
                             delete res.type;
                         };
