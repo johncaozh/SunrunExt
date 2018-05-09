@@ -6,13 +6,21 @@
     function (glob, setGlobal) {
         function invokeCmd(cmd, param, callbackObj) {
             if (isAndroid) {
-                glob.invokeCallback = function (res) {
+                function RndNum(n) {
+                    var rnd = "";
+                    for (var i = 0; i < n; i++)
+                        rnd += Math.floor(Math.random() * 10);
+                    return rnd;
+                }
+                var invokeCallbackFunctionName = "invokeCallback_" + RndNum(20);
+                glob[invokeCallbackFunctionName] = function (res) {
                     completeBridgeInteraction(cmd, res, callbackObj);
+                    delete glob[invokeCallbackFunctionName];
                 };
 
                 var params = JSON.stringify(normParameter(param));
 
-                glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, params, "invokeCallback") : debugBridgeInteraction(cmd, callbackObj)
+                glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, params, invokeCallbackFunctionName) : debugBridgeInteraction(cmd, callbackObj)
             } else {
                 glob.SRJSBridge ? SRJSBridge.INVOKE(cmd, normParameter(param), function (res) {
                     completeBridgeInteraction(cmd, res, callbackObj);
@@ -354,7 +362,7 @@
                     invokeCmd('checkJsApi', {
                         jsApiList: checkParam.jsApiList
                     }, function () {
-                        checkParam._complete = function (res) {};
+                        checkParam._complete = function (res) { };
 
                         return checkParam;
                     }());
@@ -564,7 +572,7 @@
                         count: callbackObj.count || 9,
                         sizeType: callbackObj.sizeType || ['original', 'compressed']
                     }, function () {
-                        callbackObj._complete = function (res) {};
+                        callbackObj._complete = function (res) { };
 
                         return callbackObj;
                     }());
@@ -603,7 +611,7 @@
                     invokeCmd('chooseFile', {
                         count: callbackObj.count || 9,
                     }, function () {
-                        callbackObj._complete = function (res) {};
+                        callbackObj._complete = function (res) { };
 
                         return callbackObj;
                     }());
@@ -613,7 +621,7 @@
                     invokeCmd('chooseFileFromCloudStorage', {
                         count: callbackObj.count || 9,
                     }, function () {
-                        callbackObj._complete = function (res) {};
+                        callbackObj._complete = function (res) { };
 
                         return callbackObj;
                     }());
